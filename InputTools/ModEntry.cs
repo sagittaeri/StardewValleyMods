@@ -100,22 +100,6 @@ public class InputToolsAPI
 
     public Vector2 GetTargetedTile()
     {
-        //if (this.IsHeldItemBomb())
-        //{
-        //    if (this.modEntry.isLastTargetedTileFromCursor)
-        //        return this.modEntry.lastTileHighlightPos;
-        //    Vector2 pos = this.modEntry.lastTileHighlightPos;
-        //    if (Game1.player.facingDirection == 1)
-        //        pos.X--;
-        //    else if (Game1.player.facingDirection == 3)
-        //        pos.X++;
-
-        //    if (Game1.player.facingDirection == 2)
-        //        pos.Y--;
-        //    else if (Game1.player.facingDirection == 0)
-        //        pos.Y++;
-        //    return pos;
-        //}
         return this.modEntry.lastTileHighlightPos;
     }
 

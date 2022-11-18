@@ -20,10 +20,11 @@ public class InputToolsAPI
             bool IsKeyboardMoveButtonPressing();
             bool IsControllerMoveButtonPressing();
             bool IsControllerCursorButtonPressing();
-            bool IsTargetedTileChanged();
-            bool IsTargetedTileFromCursor();
-            Vector2 GetTargetedTile();
-            Vector2 GetTargetedTileWithController();
+            bool IsPlacementTileChanged();
+            bool IsPlacementTileFromCursor();
+            Vector2 GetPlacementTile();
+            Vector2 GetPlacementTileWithController();
+            Vector2 GetMoveVector();
         }
     */
 
@@ -87,23 +88,23 @@ public class InputToolsAPI
         return Utility.IsNormalObjectAtParentSheetIndex(item, itemID) && (itemID == 286 || itemID == 287 || itemID == 288);
     }
 
-    public bool IsTargetedTileFromCursor()
+    public bool IsPlacementTileFromCursor()
     {
-        return this.modEntry.isLastTargetedTileFromCursor;
+        return this.modEntry.isLastPlacementTileFromCursor;
     }
 
 
-    public bool IsTargetedTileChanged()
+    public bool IsPlacementTileChanged()
     {
-        return this.modEntry.isTargetedTileMovedLastTick;
+        return this.modEntry.isPlacementTileMovedLastTick;
     }
 
-    public Vector2 GetTargetedTile()
+    public Vector2 GetPlacementTile()
     {
         return this.modEntry.lastTileHighlightPos;
     }
 
-    public Vector2 GetTargetedTileWithController()
+    public Vector2 GetPlacementTileWithController()
     {
         Vector2 pos = Game1.player.Position / Game1.tileSize;
 
@@ -141,6 +142,47 @@ public class InputToolsAPI
         }
         return pos;
     }
+
+    public bool IsButtonPressed(SButton button)
+    {
+        return this.modEntry.buttonsPressing.Contains(button);
+    }
+
+    public bool IsMoveRightPressed(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
+    {
+        bool isControllerRightPressed = (controllerDPad && this.IsButtonPressed(SButton.DPadRight)) || (controllerThumbstick && this.IsButtonPressed(SButton.LeftThumbstickRight));
+        bool isKeyboardRightPressed = (keyboardWASD && this.IsButtonPressed(SButton.D)) || (keyboardArrows && this.IsButtonPressed(SButton.Right));
+        return isControllerRightPressed || isKeyboardRightPressed;
+    }
+
+    public bool IsMoveDownPressed(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
+    {
+        bool isControllerDownPressed = (controllerDPad && this.IsButtonPressed(SButton.DPadDown)) || (controllerThumbstick && this.IsButtonPressed(SButton.LeftThumbstickDown));
+        bool isKeyboardDownPressed = (keyboardWASD && this.IsButtonPressed(SButton.S)) || (keyboardArrows && this.IsButtonPressed(SButton.Down));
+        return isControllerDownPressed || isKeyboardDownPressed;
+    }
+
+    public bool IsMoveLeftPressed(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
+    {
+        bool isControllerLeftPressed = (controllerDPad && this.IsButtonPressed(SButton.DPadLeft)) || (controllerThumbstick && this.IsButtonPressed(SButton.LeftThumbstickLeft));
+        bool isKeyboardLeftPressed = (keyboardWASD && this.IsButtonPressed(SButton.A)) || (keyboardArrows && this.IsButtonPressed(SButton.Left));
+        return isControllerLeftPressed || isKeyboardLeftPressed;
+    }
+
+    public bool IsMoveUpPressed(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
+    {
+        bool isControllerUpPressed = (controllerDPad && this.IsButtonPressed(SButton.DPadUp)) || (controllerThumbstick && this.IsButtonPressed(SButton.LeftThumbstickUp));
+        bool isKeyboardUpPressed = (keyboardWASD && this.IsButtonPressed(SButton.U)) || (keyboardArrows && this.IsButtonPressed(SButton.Up));
+        return isControllerUpPressed || isKeyboardUpPressed;
+    }
+
+    public Vector2 GetInputMoveAxis(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
+    {
+        return new Vector2(this.IsMoveRightPressed(keyboardWASD, keyboardArrows, controllerDPad, controllerThumbstick) ?
+                1 : (this.IsMoveLeftPressed(keyboardWASD, keyboardArrows, controllerDPad, controllerThumbstick) ? -1 : 0),
+            this.IsMoveDownPressed(keyboardWASD, keyboardArrows, controllerDPad, controllerThumbstick) ?
+                1 : (this.IsMoveUpPressed(keyboardWASD, keyboardArrows, controllerDPad, controllerThumbstick) ? -1 : 0));
+    }
 }
 
 namespace InputTools
@@ -153,10 +195,10 @@ namespace InputTools
         public InputDevice lastInputDevice;
         public Vector2 lastCursorScreenPixels;
         public Vector2 lastTileHighlightPos;
-        public bool isLastTargetedTileFromCursor;
+        public bool isLastPlacementTileFromCursor;
         public bool isFarmerMovedLastTick;
         public bool isCursorMovedLastTick;
-        public bool isTargetedTileMovedLastTick;
+        public bool isPlacementTileMovedLastTick;
 
         /*********
         ** Public methods
@@ -191,6 +233,8 @@ namespace InputTools
             if (!this.buttonsPressing.Contains(e.Button))
                 this.buttonsPressing.Add(e.Button);
             this.lastInputDevice = (InputDevice)this.inputTools.GetInputDevice(e.Button);
+
+            this.Monitor.Log($"ButtonPressed{e.Button}", LogLevel.Debug);
         }
 
         private void OnButtonReleased(object sender, ButtonReleasedEventArgs e)
@@ -201,6 +245,8 @@ namespace InputTools
 
             if (this.buttonsPressing.Contains(e.Button))
                 this.buttonsPressing.Remove(e.Button);
+
+            this.Monitor.Log($"ButtonReleased{e.Button}", LogLevel.Debug);
         }
 
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
@@ -211,27 +257,31 @@ namespace InputTools
             this.isFarmerMovedLastTick = Game1.player.lastPosition != Game1.player.Position;
             this.isCursorMovedLastTick = this.lastCursorScreenPixels != this.Helper.Input.GetCursorPosition().ScreenPixels;
             this.lastCursorScreenPixels = this.Helper.Input.GetCursorPosition().ScreenPixels;
-            this.isTargetedTileMovedLastTick = false;
+            this.isPlacementTileMovedLastTick = false;
+
+            if (this.isFarmerMovedLastTick)
+            {
+                this.Monitor.Log($"InputMoveAxis{this.inputTools.GetInputMoveAxis()}", LogLevel.Debug);
+            }
 
             if (this.isFarmerMovedLastTick && this.inputTools.IsControllerMoveButtonPressing())
             {
                 // If controller last used, active tile is the grab tile i.e. tile in front of player
                 Game1.timerUntilMouseFade = 0;
-                this.isTargetedTileMovedLastTick = this.lastTileHighlightPos != this.inputTools.GetTargetedTileWithController();
-                if (!this.isTargetedTileMovedLastTick) // hasn't moved far enough
+                this.isPlacementTileMovedLastTick = this.lastTileHighlightPos != this.inputTools.GetPlacementTileWithController();
+                if (!this.isPlacementTileMovedLastTick) // hasn't moved far enough
                     return;
-                //this.lastTileHighlightPos = this.Helper.Input.GetCursorPosition().GrabTile;
-                this.lastTileHighlightPos = this.inputTools.GetTargetedTileWithController();
-                this.isLastTargetedTileFromCursor = false;
+                this.lastTileHighlightPos = this.inputTools.GetPlacementTileWithController();
+                this.isLastPlacementTileFromCursor = false;
             }
             else if (this.isCursorMovedLastTick || this.inputTools.IsKeyboardMoveButtonPressing())
             {
                 // Otherwise active tile is the tile under the cursor
-                this.isTargetedTileMovedLastTick = this.lastTileHighlightPos != this.Helper.Input.GetCursorPosition().Tile;
-                if (!this.isTargetedTileMovedLastTick) // hasn't moved far enough
+                this.isPlacementTileMovedLastTick = this.lastTileHighlightPos != this.Helper.Input.GetCursorPosition().Tile;
+                if (!this.isPlacementTileMovedLastTick) // hasn't moved far enough
                     return;
                 this.lastTileHighlightPos = this.Helper.Input.GetCursorPosition().Tile;
-                this.isLastTargetedTileFromCursor = true;
+                this.isLastPlacementTileFromCursor = true;
             }
         }
     }

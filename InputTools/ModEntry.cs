@@ -163,12 +163,12 @@ namespace InputTools
             if (this.farmerMovedLastTick && this.inputTools.IsControllerMoveButtonPressing())
             {
                 // If controller last used, active tile is the grab tile i.e. tile in front of player
+                Game1.timerUntilMouseFade = 0;
                 this.activeTileMovedLastTick = this.lastTileHighlightPos != this.Helper.Input.GetCursorPosition().GrabTile;
                 if (!this.activeTileMovedLastTick) // hasn't moved far enough
                     return;
                 this.lastTileHighlightPos = this.Helper.Input.GetCursorPosition().GrabTile;
                 this.lastActiveTileFromCursor = false;
-                Game1.timerUntilMouseFade = 0;
             }
             else if (this.cursorMovedLastTick || this.inputTools.IsKeyboardMoveButtonPressing())
             {

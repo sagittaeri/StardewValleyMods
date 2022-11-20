@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using InputTools;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -8,182 +10,6 @@ using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Monsters;
-using static InputToolsAPI;
-
-public class InputToolsAPI
-{
-    /*
-    // Copy and paste the interface below if needed
-        public interface IInputToolsAPI
-        {
-            int GetInputDevice(SButton button); // 0 = Mouse, 1 = Keyboard, 2 = Controller
-            bool IsKeyboardMoveButtonPressing();
-            bool IsControllerMoveButtonPressing();
-            bool IsControllerCursorButtonPressing();
-            bool IsPlacementTileChanged();
-            bool IsPlacementTileFromCursor();
-            Vector2 GetPlacementTile();
-            Vector2 GetPlacementTileWithController();
-            Vector2 GetMoveVector();
-        }
-    */
-
-    private ModEntry modEntry;
-
-    public InputToolsAPI(ModEntry modEntry)
-    {
-        this.modEntry = modEntry;
-    }
-
-    public enum InputDevice
-    {
-        Mouse,
-        Keyboard,
-        Controller
-    }
-
-    public int GetInputDevice(SButton button)
-    {
-        if (SButtonExtensions.TryGetController(button, out _))
-            return (int)InputDevice.Controller;
-        if (SButtonExtensions.TryGetKeyboard(button, out _))
-            return (int)InputDevice.Keyboard;
-        return (int)InputDevice.Mouse;
-    }
-
-    public bool IsKeyboardMoveButtonPressing()
-    {
-        return this.modEntry.buttonsPressing.Contains(SButton.W)
-            || this.modEntry.buttonsPressing.Contains(SButton.D)
-            || this.modEntry.buttonsPressing.Contains(SButton.S)
-            || this.modEntry.buttonsPressing.Contains(SButton.A);
-    }
-
-    public bool IsControllerMoveButtonPressing()
-    {
-        return this.modEntry.buttonsPressing.Contains(SButton.LeftThumbstickUp)
-            || this.modEntry.buttonsPressing.Contains(SButton.LeftThumbstickRight)
-            || this.modEntry.buttonsPressing.Contains(SButton.LeftThumbstickDown)
-            || this.modEntry.buttonsPressing.Contains(SButton.LeftThumbstickLeft)
-            || this.modEntry.buttonsPressing.Contains(SButton.DPadLeft)
-            || this.modEntry.buttonsPressing.Contains(SButton.DPadRight)
-            || this.modEntry.buttonsPressing.Contains(SButton.DPadDown)
-            || this.modEntry.buttonsPressing.Contains(SButton.DPadUp);
-    }
-
-    public bool IsControllerCursorButtonPressing()
-    {
-        return this.modEntry.buttonsPressing.Contains(SButton.RightThumbstickUp)
-            || this.modEntry.buttonsPressing.Contains(SButton.RightThumbstickRight)
-            || this.modEntry.buttonsPressing.Contains(SButton.RightThumbstickDown)
-            || this.modEntry.buttonsPressing.Contains(SButton.RightThumbstickLeft);
-    }
-
-    public bool IsHeldItemBomb()
-    {
-        Item item = Game1.player.CurrentItem;
-        if (item == null)
-            return false;
-        int itemID = item.ParentSheetIndex;
-        return Utility.IsNormalObjectAtParentSheetIndex(item, itemID) && (itemID == 286 || itemID == 287 || itemID == 288);
-    }
-
-    public bool IsPlacementTileFromCursor()
-    {
-        return this.modEntry.isLastPlacementTileFromCursor;
-    }
-
-
-    public bool IsPlacementTileChanged()
-    {
-        return this.modEntry.isPlacementTileMovedLastTick;
-    }
-
-    public Vector2 GetPlacementTile()
-    {
-        return this.modEntry.lastTileHighlightPos;
-    }
-
-    public Vector2 GetPlacementTileWithController()
-    {
-        Vector2 pos = Game1.player.Position / Game1.tileSize;
-
-        if (this.IsHeldItemBomb())
-        {
-            if (Game1.player.facingDirection == 1)
-                pos.X = MathF.Round(pos.X + 0.47f);
-            else if (Game1.player.facingDirection == 3)
-                pos.X = MathF.Round(pos.X - 0.45f);
-            else
-                pos.X = MathF.Round(pos.X - 0f);
-
-            if (Game1.player.facingDirection == 2)
-                pos.Y = MathF.Round(pos.Y + 0.05f);
-            else if (Game1.player.facingDirection == 0)
-                pos.Y = MathF.Round(pos.Y - 0.58f);
-            else
-                pos.Y = MathF.Round(pos.Y - 0.2f);
-        }
-        else
-        {
-            if (Game1.player.facingDirection == 1)
-                pos.X = MathF.Ceiling(pos.X + 0.85f);
-            else if (Game1.player.facingDirection == 3)
-                pos.X = MathF.Floor(pos.X - 0.9f);
-            else
-                pos.X = MathF.Round(pos.X - 0f);
-
-            if (Game1.player.facingDirection == 2)
-                pos.Y = MathF.Ceiling(pos.Y + 0.5f);
-            else if (Game1.player.facingDirection == 0)
-                pos.Y = MathF.Floor(pos.Y - 1f);
-            else
-                pos.Y = MathF.Round(pos.Y - 0.25f);
-        }
-        return pos;
-    }
-
-    public bool IsButtonPressed(SButton button)
-    {
-        return this.modEntry.buttonsPressing.Contains(button);
-    }
-
-    public bool IsMoveRightPressed(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
-    {
-        bool isControllerRightPressed = (controllerDPad && this.IsButtonPressed(SButton.DPadRight)) || (controllerThumbstick && this.IsButtonPressed(SButton.LeftThumbstickRight));
-        bool isKeyboardRightPressed = (keyboardWASD && this.IsButtonPressed(SButton.D)) || (keyboardArrows && this.IsButtonPressed(SButton.Right));
-        return isControllerRightPressed || isKeyboardRightPressed;
-    }
-
-    public bool IsMoveDownPressed(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
-    {
-        bool isControllerDownPressed = (controllerDPad && this.IsButtonPressed(SButton.DPadDown)) || (controllerThumbstick && this.IsButtonPressed(SButton.LeftThumbstickDown));
-        bool isKeyboardDownPressed = (keyboardWASD && this.IsButtonPressed(SButton.S)) || (keyboardArrows && this.IsButtonPressed(SButton.Down));
-        return isControllerDownPressed || isKeyboardDownPressed;
-    }
-
-    public bool IsMoveLeftPressed(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
-    {
-        bool isControllerLeftPressed = (controllerDPad && this.IsButtonPressed(SButton.DPadLeft)) || (controllerThumbstick && this.IsButtonPressed(SButton.LeftThumbstickLeft));
-        bool isKeyboardLeftPressed = (keyboardWASD && this.IsButtonPressed(SButton.A)) || (keyboardArrows && this.IsButtonPressed(SButton.Left));
-        return isControllerLeftPressed || isKeyboardLeftPressed;
-    }
-
-    public bool IsMoveUpPressed(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
-    {
-        bool isControllerUpPressed = (controllerDPad && this.IsButtonPressed(SButton.DPadUp)) || (controllerThumbstick && this.IsButtonPressed(SButton.LeftThumbstickUp));
-        bool isKeyboardUpPressed = (keyboardWASD && this.IsButtonPressed(SButton.U)) || (keyboardArrows && this.IsButtonPressed(SButton.Up));
-        return isControllerUpPressed || isKeyboardUpPressed;
-    }
-
-    public Vector2 GetInputMoveAxis(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true)
-    {
-        return new Vector2(this.IsMoveRightPressed(keyboardWASD, keyboardArrows, controllerDPad, controllerThumbstick) ?
-                1 : (this.IsMoveLeftPressed(keyboardWASD, keyboardArrows, controllerDPad, controllerThumbstick) ? -1 : 0),
-            this.IsMoveDownPressed(keyboardWASD, keyboardArrows, controllerDPad, controllerThumbstick) ?
-                1 : (this.IsMoveUpPressed(keyboardWASD, keyboardArrows, controllerDPad, controllerThumbstick) ? -1 : 0));
-    }
-}
 
 namespace InputTools
 {
@@ -191,14 +17,23 @@ namespace InputTools
     public class ModEntry : Mod
     {
         public InputToolsAPI inputTools;
+        public Actions actions;
+        public ControlStack controlStack;
+
         public List<SButton> buttonsPressing = new List<SButton>();
-        public InputDevice lastInputDevice;
+        public List<Tuple<SButton, SButton>> buttonPairsPressing = new List<Tuple<SButton, SButton>>();
+        public List<Tuple<SButton, SButton>> buttonPairsReleased = new List<Tuple<SButton, SButton>>();
+        public int tickButtonPairsReleased;
+        public IInputToolsAPI.InputDevice lastInputDevice;
         public Vector2 lastCursorScreenPixels;
         public Vector2 lastTileHighlightPos;
+        public Item lastItemHeld;
         public bool isLastPlacementTileFromCursor;
         public bool isFarmerMovedLastTick;
         public bool isCursorMovedLastTick;
         public bool isPlacementTileMovedLastTick;
+        public bool isItemChangedLastTick;
+        public Vector2 moveAxisLastTick;
 
         /*********
         ** Public methods
@@ -210,6 +45,9 @@ namespace InputTools
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
             helper.Events.Input.ButtonReleased += this.OnButtonReleased;
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
+
+            this.actions = new Actions(this);
+            this.controlStack = new ControlStack(this);
         }
 
         public override object GetApi()
@@ -228,61 +66,190 @@ namespace InputTools
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
             // ignore if player hasn't loaded a save yet
-            if (!Context.IsWorldReady)
-                return;
+            //if (!Context.IsWorldReady)
+            //    return;
+
+            this.lastInputDevice = this.inputTools.GetInputDevice(e.Button);
+
+            if (this.buttonsPressing.Count > 0)
+            {
+                foreach (SButton heldButton in this.buttonsPressing)
+                {
+                    Tuple<SButton, SButton> buttonPair = new Tuple<SButton, SButton>(heldButton, e.Button);
+                    if (!this.buttonPairsPressing.Contains(buttonPair))
+                        this.buttonPairsPressing.Add(buttonPair);
+                    foreach (string groupID in this.actions.GetActionsFromKeyPair(buttonPair))
+                        this.inputTools._Global.OnActionPressed(groupID);
+                    this.inputTools._Global.OnButtonPairPressed(buttonPair);
+                    //this.Monitor.Log($"{Game1.ticks} ButtonPairPressed {buttonPair}", LogLevel.Debug);
+                }
+            }
+
             if (!this.buttonsPressing.Contains(e.Button))
                 this.buttonsPressing.Add(e.Button);
-            this.lastInputDevice = (InputDevice)this.inputTools.GetInputDevice(e.Button);
+            this.inputTools._Global.OnButtonPressed(e.Button);
+            foreach (string groupID in this.actions.GetActionsFromKey(e.Button))
+                this.inputTools._Global.OnActionPressed(groupID);
 
-            this.Monitor.Log($"ButtonPressed{e.Button}", LogLevel.Debug);
+            if (this.inputTools.IsConfirmButton(e.Button) != IInputToolsAPI.InputDevice.None)
+                this.inputTools._Global.OnConfirmPressed(this.inputTools.IsConfirmButton(e.Button));
+            if (this.inputTools.IsCancelButton(e.Button) != IInputToolsAPI.InputDevice.None)
+                this.inputTools._Global.OnCancelPressed(this.inputTools.IsCancelButton(e.Button));
+            if (this.inputTools.IsAltButton(e.Button) != IInputToolsAPI.InputDevice.None)
+                this.inputTools._Global.OnAltPressed(this.inputTools.IsAltButton(e.Button));
+            if (this.inputTools.IsMenuButton(e.Button) != IInputToolsAPI.InputDevice.None)
+                this.inputTools._Global.OnMenuPressed(this.inputTools.IsMenuButton(e.Button));
+
+            if (this.inputTools.IsMoveRightButton(e.Button) != IInputToolsAPI.MoveSource.None)
+                this.inputTools._Global.OnMoveRightPressed(this.inputTools.IsMoveRightButton(e.Button));
+            if (this.inputTools.IsMoveDownButton(e.Button) != IInputToolsAPI.MoveSource.None)
+                this.inputTools._Global.OnMoveDownPressed(this.inputTools.IsMoveDownButton(e.Button));
+            if (this.inputTools.IsMoveLeftButton(e.Button) != IInputToolsAPI.MoveSource.None)
+                this.inputTools._Global.OnMoveLeftPressed(this.inputTools.IsMoveLeftButton(e.Button));
+            if (this.inputTools.IsMoveUpButton(e.Button) != IInputToolsAPI.MoveSource.None)
+                this.inputTools._Global.OnMoveUpPressed(this.inputTools.IsMoveUpButton(e.Button));
+
+            Vector2 moveAxis = this.inputTools._Global.GetMoveAxis();
+            if (this.moveAxisLastTick == Vector2.Zero && moveAxis != Vector2.Zero)
+                this.inputTools._Global.OnMoveAxisPressed(moveAxis);
+            this.moveAxisLastTick = moveAxis;
+
+            //this.Monitor.Log($"{Game1.ticks} ButtonPressed {e.Button}", LogLevel.Debug);
         }
 
         private void OnButtonReleased(object sender, ButtonReleasedEventArgs e)
         {
             // ignore if player hasn't loaded a save yet
-            if (!Context.IsWorldReady)
-                return;
+            //if (!Context.IsWorldReady)
+            //    return;
+
+            if (this.buttonPairsPressing.Count > 0)
+            {
+                this.buttonPairsReleased.Clear();
+                this.tickButtonPairsReleased = Game1.ticks;
+                foreach (Tuple<SButton, SButton> buttonPair in new List<Tuple<SButton, SButton>>(this.buttonPairsPressing))
+                {
+                    if (buttonPair.Item1 == e.Button || buttonPair.Item2 == e.Button)
+                    {
+                        this.buttonPairsReleased.Add(buttonPair);
+                        this.buttonPairsPressing.Remove(buttonPair);
+                        this.inputTools._Global.OnButtonPairReleased(buttonPair);
+                        //this.Monitor.Log($"{Game1.ticks} ButtonPairRemoved {buttonPair}", LogLevel.Debug);
+                        foreach (string groupID in this.actions.GetActionsFromKeyPair(buttonPair))
+                            this.inputTools._Global.OnActionReleased(groupID);
+                    }
+                }
+            }
 
             if (this.buttonsPressing.Contains(e.Button))
                 this.buttonsPressing.Remove(e.Button);
+            this.inputTools._Global.OnButtonReleased(e.Button);
+            foreach (string groupID in this.actions.GetActionsFromKey(e.Button))
+                this.inputTools._Global.OnActionReleased(groupID);
 
-            this.Monitor.Log($"ButtonReleased{e.Button}", LogLevel.Debug);
+            if (this.inputTools.IsConfirmButton(e.Button) != IInputToolsAPI.InputDevice.None)
+                this.inputTools._Global.OnConfirmReleased(this.inputTools.IsConfirmButton(e.Button));
+            if (this.inputTools.IsCancelButton(e.Button) != IInputToolsAPI.InputDevice.None)
+                this.inputTools._Global.OnCancelReleased(this.inputTools.IsCancelButton(e.Button));
+            if (this.inputTools.IsAltButton(e.Button) != IInputToolsAPI.InputDevice.None)
+                this.inputTools._Global.OnAltReleased(this.inputTools.IsAltButton(e.Button));
+            if (this.inputTools.IsMenuButton(e.Button) != IInputToolsAPI.InputDevice.None)
+                this.inputTools._Global.OnMenuReleased(this.inputTools.IsMenuButton(e.Button));
+
+            if (this.inputTools.IsMoveRightButton(e.Button) != IInputToolsAPI.MoveSource.None)
+                this.inputTools._Global.OnMoveRightReleased(this.inputTools.IsMoveRightButton(e.Button));
+            if (this.inputTools.IsMoveDownButton(e.Button) != IInputToolsAPI.MoveSource.None)
+                this.inputTools._Global.OnMoveDownReleased(this.inputTools.IsMoveDownButton(e.Button));
+            if (this.inputTools.IsMoveLeftButton(e.Button) != IInputToolsAPI.MoveSource.None)
+                this.inputTools._Global.OnMoveLeftReleased(this.inputTools.IsMoveLeftButton(e.Button));
+            if (this.inputTools.IsMoveUpButton(e.Button) != IInputToolsAPI.MoveSource.None)
+                this.inputTools._Global.OnMoveUpReleased(this.inputTools.IsMoveUpButton(e.Button));
+
+            Vector2 moveAxis = this.inputTools._Global.GetMoveAxis();
+            if (this.moveAxisLastTick != Vector2.Zero && moveAxis == Vector2.Zero)
+                this.inputTools._Global.OnMoveAxisReleased(moveAxis);
+            this.moveAxisLastTick = Vector2.Zero;
+
+            //this.Monitor.Log($"{Game1.ticks} ButtonReleased {e.Button}", LogLevel.Debug);
         }
 
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             // ignore if player hasn't loaded a save yet
-            if (!Context.IsWorldReady)
-                return;
+            //if (!Context.IsWorldReady)
+            //    return;
+
+            this.inputTools.CurrentInputDevice();
+
             this.isFarmerMovedLastTick = Game1.player.lastPosition != Game1.player.Position;
             this.isCursorMovedLastTick = this.lastCursorScreenPixels != this.Helper.Input.GetCursorPosition().ScreenPixels;
             this.lastCursorScreenPixels = this.Helper.Input.GetCursorPosition().ScreenPixels;
             this.isPlacementTileMovedLastTick = false;
+            this.isItemChangedLastTick = this.lastItemHeld != Game1.player.CurrentItem;
+            this.lastItemHeld = Game1.player.CurrentItem;
+            if (this.isItemChangedLastTick)
+                this.inputTools.OnPlacementItemChanged(Game1.player.CurrentItem);
 
-            if (this.isFarmerMovedLastTick)
+            bool isKeyboardMoveButtonHeld = this.inputTools._Global.IsMoveButtonHeld(keyboardWASD: true, keyboardArrows: false, controllerThumbstick: false, controllerDPad: false) != IInputToolsAPI.MoveSource.None;
+            bool isControllerMoveButtonHeld = this.inputTools._Global.IsMoveButtonHeld(keyboardWASD: false, keyboardArrows: false, controllerThumbstick: true, controllerDPad: true) != IInputToolsAPI.MoveSource.None;
+            if ((!Game1.wasMouseVisibleThisFrame && this.isItemChangedLastTick) || (this.isFarmerMovedLastTick && !isKeyboardMoveButtonHeld) || isControllerMoveButtonHeld)
             {
-                this.Monitor.Log($"InputMoveAxis{this.inputTools.GetInputMoveAxis()}", LogLevel.Debug);
-            }
-
-            if (this.isFarmerMovedLastTick && this.inputTools.IsControllerMoveButtonPressing())
-            {
-                // If controller last used, active tile is the grab tile i.e. tile in front of player
+                // If controller last used, placement tile is the grab tile i.e. tile in front of player
                 Game1.timerUntilMouseFade = 0;
                 this.isPlacementTileMovedLastTick = this.lastTileHighlightPos != this.inputTools.GetPlacementTileWithController();
-                if (!this.isPlacementTileMovedLastTick) // hasn't moved far enough
-                    return;
-                this.lastTileHighlightPos = this.inputTools.GetPlacementTileWithController();
-                this.isLastPlacementTileFromCursor = false;
+                if (this.isPlacementTileMovedLastTick)
+                {
+                    this.lastTileHighlightPos = this.inputTools.GetPlacementTileWithController();
+                    this.isLastPlacementTileFromCursor = false;
+                    this.inputTools.OnPlacementTileChanged(this.lastTileHighlightPos);
+                }
             }
-            else if (this.isCursorMovedLastTick || this.inputTools.IsKeyboardMoveButtonPressing())
+            else if ((this.isLastPlacementTileFromCursor && this.isItemChangedLastTick) || this.isCursorMovedLastTick || isKeyboardMoveButtonHeld)
             {
-                // Otherwise active tile is the tile under the cursor
+                // Otherwise placement tile is the tile under the cursor
                 this.isPlacementTileMovedLastTick = this.lastTileHighlightPos != this.Helper.Input.GetCursorPosition().Tile;
-                if (!this.isPlacementTileMovedLastTick) // hasn't moved far enough
-                    return;
-                this.lastTileHighlightPos = this.Helper.Input.GetCursorPosition().Tile;
-                this.isLastPlacementTileFromCursor = true;
+                if (this.isPlacementTileMovedLastTick)
+                {
+                    this.lastTileHighlightPos = this.Helper.Input.GetCursorPosition().Tile;
+                    this.isLastPlacementTileFromCursor = true;
+                    this.inputTools.OnPlacementTileChanged(this.lastTileHighlightPos);
+                }
             }
+
+            foreach (SButton button in this.buttonsPressing)
+            {
+                this.inputTools._Global.OnButtonHeld(button);
+                foreach (string groupID in this.actions.GetActionsFromKey(button))
+                    this.inputTools._Global.OnActionHeld(groupID);
+
+                if (this.inputTools.IsConfirmButton(button) != IInputToolsAPI.InputDevice.None)
+                    this.inputTools._Global.OnConfirmHeld(this.inputTools.IsConfirmButton(button));
+                if (this.inputTools.IsCancelButton(button) != IInputToolsAPI.InputDevice.None)
+                    this.inputTools._Global.OnCancelHeld(this.inputTools.IsCancelButton(button));
+                if (this.inputTools.IsAltButton(button) != IInputToolsAPI.InputDevice.None)
+                    this.inputTools._Global.OnAltHeld(this.inputTools.IsAltButton(button));
+                if (this.inputTools.IsMenuButton(button) != IInputToolsAPI.InputDevice.None)
+                    this.inputTools._Global.OnMenuHeld(this.inputTools.IsMenuButton(button));
+
+                if (this.inputTools.IsMoveRightButton(button) != IInputToolsAPI.MoveSource.None)
+                    this.inputTools._Global.OnMoveRightHeld(this.inputTools.IsMoveRightButton(button));
+                if (this.inputTools.IsMoveDownButton(button) != IInputToolsAPI.MoveSource.None)
+                    this.inputTools._Global.OnMoveDownHeld(this.inputTools.IsMoveDownButton(button));
+                if (this.inputTools.IsMoveLeftButton(button) != IInputToolsAPI.MoveSource.None)
+                    this.inputTools._Global.OnMoveLeftHeld(this.inputTools.IsMoveLeftButton(button));
+                if (this.inputTools.IsMoveUpButton(button) != IInputToolsAPI.MoveSource.None)
+                    this.inputTools._Global.OnMoveUpHeld(this.inputTools.IsMoveUpButton(button));
+            }
+            foreach (Tuple<SButton, SButton> buttonPair in this.buttonPairsPressing)
+            {
+                this.inputTools._Global.OnButtonPairHeld(buttonPair);
+                foreach (string groupID in this.actions.GetActionsFromKeyPair(buttonPair))
+                    this.inputTools._Global.OnActionHeld(groupID);
+            }
+
+            this.moveAxisLastTick = this.inputTools._Global.GetMoveAxis();
+            if (this.moveAxisLastTick != Vector2.Zero)
+                this.inputTools._Global.OnMoveAxisHeld(this.moveAxisLastTick);
         }
     }
 }

@@ -8,7 +8,8 @@ handle inputs across mouse, keyboard and controller.
 This mod is mostly meant for other modders as a modding tool, but it does do one
 thing for users:
 
-* Immediately force hide the mouse cursor when controller is used
+* Immediately force hides the mouse cursor when controller is used to improve
+  gamepad experience
 
 ### Compatibility
 

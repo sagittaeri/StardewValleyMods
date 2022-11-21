@@ -35,7 +35,7 @@ This mod provides an API for the following:
 * Get a custom keybinding from the user, both single-button and button-pair
 * Get the corrected location for item placement tile when gamepad is used
 * Group input event handling and per-tick polling into an "Input Stack" which can be turned off and on
-* In more complex systems, create multiple Input Stacks and dictate their behaviour e.g. whether or not to allow input from an Input Stack above to continue to the Input Stack below
+* In more complex systems, create multiple Input Stacks and dictate their behaviour e.g. whether or not to allow input events from an Input Stack to propagate to the Input Stack below
 
 For the full API, see [`IInputToolsAPI.cs`](https://github.com/sagittaeri/StardewValleyMods/blob/main/InputTools/IInputToolsAPI.cs).
 
@@ -78,7 +78,7 @@ This says `Jump` is triggered in three ways; (1) `Space` on keyboard; (2) `X` on
 #### Input Stacks
 This is for advanced usage of Input Tools. If you're only using it for small stuff, you can just use the default stack `InputToolsAPI.Global` to do all your input work.
 
-An Input Stack is an object which contains all the input events and per-tick polling methods. You can set a stack to `inactive` to pause input handling which can be useful especially if you require multiple different sets of input handling, many of them conflicting. For example, the Escape button can have different uses depending on the state of the game, so you can create an Input Stack for each state for input handling.
+An Input Stack is an object which contains all the input events and per-tick polling methods. You can deactivate a stack to pause input handling which can be useful especially if you require multiple different sets of input handling, many of them conflicting. For example, the Escape button can have different uses depending on the state of the game, so you can create an Input Stack for each state for input handling.
 
 Additionally, the reason why they are called "Stacks" is because they are like UI popups: when they are created, they are added on top of the stack. Each stack can determine whether or not to allow input events to pass down to the stack below, which is useful for UI popups where you don't want the Escape button to close all the popups at once, just the one on top.
 

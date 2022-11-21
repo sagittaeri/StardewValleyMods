@@ -14,13 +14,13 @@ namespace InputTools
 {
     public class Actions
     {
-        private ModEntry modEntry;
+        private InputToolsAPI inputTools;
         private Dictionary<string, List<Tuple<SButton, SButton>>> allActions = new Dictionary<string, List<Tuple<SButton, SButton>>>();
         private Dictionary<Tuple<SButton, SButton>, List<string>> allActionsByKeys = new Dictionary<Tuple<SButton, SButton>, List<string>>();
 
-        public Actions(ModEntry modEntry)
+        public Actions(InputToolsAPI inputTools)
         {
-            this.modEntry = modEntry;
+            this.inputTools = inputTools;
         }
 
         public void RegisterAction(string actionID, params SButton[] keyTriggers)

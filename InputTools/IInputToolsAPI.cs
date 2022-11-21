@@ -37,17 +37,8 @@ namespace InputTools
             PassBelow
         }
 
-        public event EventHandler<IInputToolsAPI.InputDevice> InputDeviceChanged;
-        public event EventHandler<Vector2> PlacementTileChanged;
-        public event EventHandler<Item> PlacementItemChanged;
-
-        public IInputToolsAPI.InputDevice CurrentInputDevice();
+        public List<string> GetListOfModIDs();
         public IInputToolsAPI.InputDevice GetInputDevice(SButton button);
-        public bool IsHeldItemBomb();
-        public bool IsPlacementTileFromCursor();
-        public bool IsPlacementTileChanged();
-        public Vector2 GetPlacementTile();
-        public Vector2 GetPlacementTileWithController();
         public IInputToolsAPI.InputDevice IsConfirmButton(SButton button);
         public IInputToolsAPI.InputDevice IsCancelButton(SButton button);
         public IInputToolsAPI.InputDevice IsAltButton(SButton button);
@@ -67,11 +58,13 @@ namespace InputTools
 
         public IInputToolsAPI.IInputStack StackCreate(object stackKey, bool startActive = true, IInputToolsAPI.StackBlockBehavior defaultBlockBehaviour = IInputToolsAPI.StackBlockBehavior.Block);
         public void StackRemove(object stackKey);
-        public IInputToolsAPI.IInputStack GetStack(object stackKey);
+        public IInputToolsAPI.IInputStack GetStack(object stackKey, string uniqueModID = null);
 
         public IInputStack Global { get; }
         public interface IInputStack
         {
+            public event EventHandler<IInputToolsAPI.InputDevice> InputDeviceChanged;
+
             public event EventHandler<SButton> ButtonPressed;
             public event EventHandler<SButton> ButtonHeld;
             public event EventHandler<SButton> ButtonReleased;
@@ -120,24 +113,63 @@ namespace InputTools
             public event EventHandler<Vector2> MoveAxisHeld;
             public event EventHandler<Vector2> MoveAxisReleased;
 
+            public event EventHandler<Vector2> MouseWheelMoved;
+            public event EventHandler<IInputToolsAPI.InputDevice> CursorMoved;
+            public event EventHandler<Vector2> PlacementTileChanged;
+            public event EventHandler<Item> PlacementItemChanged;
+
+            public event EventHandler<UpdateTickedEventArgs> StackUpdateTicked;
+
             public object stackKey { get; }
 
+            public IInputToolsAPI.InputDevice CurrentInputDevice();
             public bool IsButtonPressed(SButton button);
             public bool IsButtonHeld(SButton button);
             public bool IsButtonReleased(SButton button);
             public bool IsButtonPairPressed(Tuple<SButton, SButton> buttonPair);
             public bool IsButtonPairHeld(Tuple<SButton, SButton> buttonPair);
             public bool IsButtonPairReleased(Tuple<SButton, SButton> buttonPair);
+            public bool IsMouseWheelMoved();
             public IInputToolsAPI.InputDevice IsCursorMoved(bool mouse = true, bool controller = true);
+            public bool IsHeldItemBomb();
+            public bool IsPlacementTileFromCursor();
+            public bool IsPlacementTileChanged();
+            public IInputToolsAPI.InputDevice IsConfirmPressed(bool keyboard = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsConfirmHeld(bool keyboard = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsConfirmReleased(bool keyboard = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsCancelPressed(bool keyboard = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsCancelHeld(bool keyboard = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsCancelReleased(bool keyboard = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsAltPressed(bool keyboard = true, bool mouse = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsAltHeld(bool keyboard = true, bool mouse = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsAltReleased(bool keyboard = true, bool mouse = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsMenuPressed(bool keyboard = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsMenuHeld(bool keyboard = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsMenuReleased(bool keyboard = true, bool controller = true);
+            public IInputToolsAPI.MoveSource IsMoveButtonPressed(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
             public IInputToolsAPI.MoveSource IsMoveButtonHeld(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
+            public IInputToolsAPI.MoveSource IsMoveButtonReleased(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
+            public IInputToolsAPI.MoveSource IsMoveRightPressed(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
             public IInputToolsAPI.MoveSource IsMoveRightHeld(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
+            public IInputToolsAPI.MoveSource IsMoveRightReleased(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
+            public IInputToolsAPI.MoveSource IsMoveDownPressed(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
             public IInputToolsAPI.MoveSource IsMoveDownHeld(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
+            public IInputToolsAPI.MoveSource IsMoveDownReleased(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
+            public IInputToolsAPI.MoveSource IsMoveLeftPressed(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
             public IInputToolsAPI.MoveSource IsMoveLeftHeld(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
+            public IInputToolsAPI.MoveSource IsMoveLeftReleased(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
+            public IInputToolsAPI.MoveSource IsMoveUpPressed(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
             public IInputToolsAPI.MoveSource IsMoveUpHeld(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
+            public IInputToolsAPI.MoveSource IsMoveUpReleased(bool keyboardWASD = true, bool keyboardArrows = false, bool controllerDPad = true, bool controllerThumbstick = true);
             public Tuple<SButton, SButton> IsActionPressed(string actionID);
             public Tuple<SButton, SButton> IsActionHeld(string actionID);
             public Tuple<SButton, SButton> IsActionReleased(string actionID);
             public Vector2 GetMoveAxis(bool keyboardWASD = true, bool keyboardArrows = true, bool controllerDPad = true, bool controllerThumbstick = true);
+            public Vector2 GetCursorScreenPos();
+            public Vector2 GetCursorTilePos();
+            public Vector2 GetMouseWheelPos();
+            public Vector2 GetPlacementTile();
+            public Vector2 GetPlacementTileWithController();
             public void SetStackActive(bool active);
             public void SetStackDefaultBlockBehaviour(IInputToolsAPI.StackBlockBehavior stackBlockBehaviour);
             public void MoveToTopOfStack();

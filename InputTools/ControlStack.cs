@@ -16,42 +16,46 @@ namespace InputTools
 {
     public class ControlStack
     {
-        private ModEntry modEntry;
+        private InputToolsAPI inputTools;
 
         internal Dictionary<object, InputToolsAPI.InputStack> stacksDict = new Dictionary<object, InputToolsAPI.InputStack>();
         internal List<object> stacks = new List<object>();
 
-        public ControlStack(ModEntry modEntry)
+        public ControlStack(InputToolsAPI inputTools)
         {
-            this.modEntry = modEntry;
+            this.inputTools = inputTools;
         }
 
         public InputToolsAPI.InputStack StackCreate(object stackKey, bool startActive = true, IInputToolsAPI.StackBlockBehavior defaultBlockBehaviour = IInputToolsAPI.StackBlockBehavior.Block)
         {
             if (stackKey == null)
             {
-                this.modEntry.Monitor.Log($"Stack key required to create an input stack", LogLevel.Warn);
+                this.inputTools.Monitor.Log($"Stack key required to create an input stack", LogLevel.Warn);
                 return null;
             }
             if (this.stacks.Contains(stackKey))
-                this.modEntry.Monitor.Log($"Stack {stackKey} is being created more than once - remove it first if it's intentional", LogLevel.Warn);
-            this.stacksDict[stackKey] = new InputToolsAPI.InputStack(this.modEntry, stackKey) { isActive = startActive, blockBehaviour = defaultBlockBehaviour };
+                this.inputTools.Monitor.Log($"Stack {stackKey} is being created more than once - remove it first if it's intentional", LogLevel.Warn);
+            this.stacksDict[stackKey] = new InputToolsAPI.InputStack(this.inputTools, stackKey) { isActive = startActive, blockBehaviour = defaultBlockBehaviour };
             this.stacks.Add(stackKey);
             return this.stacksDict[stackKey];
         }
 
         public void StackRemove(object stackKey)
         {
+            if (stackKey == null)
+                return;
             if (this.stacks.Contains(stackKey))
                 this.stacks.Remove(stackKey);
             else
-                this.modEntry.Monitor.Log($"Tried to remove stack {stackKey} that hasn't been created", LogLevel.Warn);
+                this.inputTools.Monitor.Log($"Tried to remove stack {stackKey} that hasn't been created", LogLevel.Warn);
             if (this.stacksDict.ContainsKey(stackKey))
                 this.stacksDict.Remove(stackKey);
         }
 
         public InputToolsAPI.InputStack GetStack(object stackKey)
         {
+            if (stackKey == null)
+                return this.inputTools.Global as InputToolsAPI.InputStack;
             if (this.stacksDict.ContainsKey(stackKey))
                 return this.stacksDict[stackKey];
             return null;
@@ -59,6 +63,8 @@ namespace InputTools
 
         public void MoveToTopOfStack(object stackKey)
         {
+            if (stackKey == null)
+                return;
             if (!this.stacks.Contains(stackKey))
                 return;
             this.stacks.Remove(stackKey);
@@ -67,10 +73,12 @@ namespace InputTools
 
         public bool IsStackReachableByInput(object stackKey)
         {
-            if (stackKey == null)
-                return false;
             InputToolsAPI.InputStack stack = this.GetStack(stackKey);
             if (stack == null || !stack.isActive)
+                return false;
+            if (stackKey == null)
+                return stack.isActive;
+            if (stackKey != null && this.inputTools._Global.isActive && this.inputTools._Global.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
                 return false;
 
             for (int i=this.stacks.Count-1; i>=0; i--)
@@ -79,7 +87,7 @@ namespace InputTools
                     return true;
                 InputToolsAPI.InputStack stackI = this.GetStack(this.stacks[i]);
                 if (stackI.isActive && stackI.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
-                    continue;
+                    break;
             }
             return false;
         }

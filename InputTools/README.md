@@ -9,7 +9,7 @@ This mod is mostly meant for other modders as a modding tool, but it does do one
 thing for users:
 
 * Immediately force hides the mouse cursor when controller is used to improve
-  gamepad experience
+  gamepad experience (cursor reappears when moved with mouse or gamepad right stick)
 
 ### Compatibility
 
@@ -106,7 +106,7 @@ normalStack.StackUpdateTicked += new EventHandler<UpdateTickedEventArgs>((s, e) 
 
         // While Popup stack is active and blocking, Normal stack will no longer receive button events
         // Additionally, normalStack.IsButtonPairPressed() etc will always return false since the Popup stack
-        // above is preventing input events from reaching Normal
+        // above is preventing input events from reaching the Normal stack
     }
 };
 

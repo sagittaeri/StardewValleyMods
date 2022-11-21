@@ -18,7 +18,7 @@ namespace InputTools
     {
         private InputToolsAPI inputTools;
 
-        internal Dictionary<object, InputToolsAPI.InputStack> stacksDict = new Dictionary<object, InputToolsAPI.InputStack>();
+        internal Dictionary<object, InputStack> stacksDict = new Dictionary<object, InputStack>();
         internal List<object> stacks = new List<object>();
 
         public ControlStack(InputToolsAPI inputTools)
@@ -26,7 +26,7 @@ namespace InputTools
             this.inputTools = inputTools;
         }
 
-        public InputToolsAPI.InputStack StackCreate(object stackKey, bool startActive = true, IInputToolsAPI.StackBlockBehavior defaultBlockBehaviour = IInputToolsAPI.StackBlockBehavior.Block)
+        public InputStack StackCreate(object stackKey, bool startActive = true, IInputToolsAPI.StackBlockBehavior defaultBlockBehaviour = IInputToolsAPI.StackBlockBehavior.Block)
         {
             if (stackKey == null)
             {
@@ -35,7 +35,7 @@ namespace InputTools
             }
             if (this.stacks.Contains(stackKey))
                 this.inputTools.Monitor.Log($"Stack {stackKey} is being created more than once - remove it first if it's intentional", LogLevel.Warn);
-            this.stacksDict[stackKey] = new InputToolsAPI.InputStack(this.inputTools, stackKey) { isActive = startActive, blockBehaviour = defaultBlockBehaviour };
+            this.stacksDict[stackKey] = new InputStack(this.inputTools, stackKey) { isActive = startActive, blockBehaviour = defaultBlockBehaviour };
             this.stacks.Add(stackKey);
             return this.stacksDict[stackKey];
         }
@@ -55,7 +55,7 @@ namespace InputTools
         public IInputToolsAPI.IInputStack GetStack(object stackKey)
         {
             if (stackKey == null)
-                return this.inputTools.Global as InputToolsAPI.InputStack;
+                return this.inputTools.Global as InputStack;
             if (this.stacksDict.ContainsKey(stackKey))
                 return this.stacksDict[stackKey];
             return null;
@@ -73,7 +73,7 @@ namespace InputTools
 
         public bool IsStackReachableByInput(object stackKey)
         {
-            InputToolsAPI.InputStack stack = this.GetStack(stackKey) as InputToolsAPI.InputStack;
+            InputStack stack = this.GetStack(stackKey) as InputStack;
             if (stack == null || !stack.isActive)
                 return false;
             if (stackKey == null)
@@ -85,7 +85,7 @@ namespace InputTools
             {
                 if (stackKey == this.stacks[i])
                     return true;
-                InputToolsAPI.InputStack stackI = this.GetStack(this.stacks[i]) as InputToolsAPI.InputStack;
+                InputStack stackI = this.GetStack(this.stacks[i]) as InputStack;
                 if (stackI.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
                     break;
             }

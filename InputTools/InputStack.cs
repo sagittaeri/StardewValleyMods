@@ -30,10 +30,12 @@ namespace InputTools
         {
             if (this == this.inputTools.Global)
             {
+                if (stopAtBlock && this.inputTools._Global.blockBehaviour == StackBlockBehavior.Block)
+                    return null;
                 if (this.inputTools.controlStack.stacks.Count > 0)
                     return this.inputTools.controlStack.GetStack(this.inputTools.controlStack.stacks[this.inputTools.controlStack.stacks.Count - 1]) as InputStack;
             }
-            else if (!stopAtBlock || !this.isActive || this.blockBehaviour == StackBlockBehavior.PassBelow)
+            else if (!stopAtBlock || this.blockBehaviour == StackBlockBehavior.PassBelow)
             {
                 for (int i = this.inputTools.controlStack.stacks.Count - 1; i >= 0; i--)
                 {
@@ -527,6 +529,8 @@ namespace InputTools
 
         public bool IsPlacementTileChanged()
         {
+            if (!this.inputTools.controlStack.IsStackReachableByInput(this.stackKey))
+                return false;
             return this.inputTools.isPlacementTileMovedLastTick;
         }
 

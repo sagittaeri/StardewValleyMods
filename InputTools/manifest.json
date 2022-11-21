@@ -1,7 +1,7 @@
 ﻿{
     "Name": "InputTools",
     "Author": "Sagittaeri",
-    "Version": "0.0.1",
+    "Version": "0.1.0",
     "Description": "Tools to simplify inputs from keyboard, mouse and controller.",
     "UniqueID": "Sagittaeri.InputTools",
     "EntryDll": "InputTools.dll",

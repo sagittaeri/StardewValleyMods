@@ -78,7 +78,7 @@ namespace InputTools
                 return false;
             if (stackKey == null)
                 return stack.isActive;
-            if (stackKey != null && this.inputTools._Global.isActive && this.inputTools._Global.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
+            if (stackKey != null && this.inputTools._Global.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
                 return false;
 
             for (int i=this.stacks.Count-1; i>=0; i--)
@@ -86,7 +86,7 @@ namespace InputTools
                 if (stackKey == this.stacks[i])
                     return true;
                 InputToolsAPI.InputStack stackI = this.GetStack(this.stacks[i]);
-                if (stackI.isActive && stackI.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
+                if (stackI.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
                     break;
             }
             return false;

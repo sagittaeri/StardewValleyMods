@@ -52,7 +52,7 @@ namespace InputTools
                 this.stacksDict.Remove(stackKey);
         }
 
-        public InputToolsAPI.InputStack GetStack(object stackKey)
+        public IInputToolsAPI.IInputStack GetStack(object stackKey)
         {
             if (stackKey == null)
                 return this.inputTools.Global as InputToolsAPI.InputStack;
@@ -73,7 +73,7 @@ namespace InputTools
 
         public bool IsStackReachableByInput(object stackKey)
         {
-            InputToolsAPI.InputStack stack = this.GetStack(stackKey);
+            InputToolsAPI.InputStack stack = this.GetStack(stackKey) as InputToolsAPI.InputStack;
             if (stack == null || !stack.isActive)
                 return false;
             if (stackKey == null)
@@ -85,7 +85,7 @@ namespace InputTools
             {
                 if (stackKey == this.stacks[i])
                     return true;
-                InputToolsAPI.InputStack stackI = this.GetStack(this.stacks[i]);
+                InputToolsAPI.InputStack stackI = this.GetStack(this.stacks[i]) as InputToolsAPI.InputStack;
                 if (stackI.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
                     break;
             }

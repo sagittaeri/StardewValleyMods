@@ -423,13 +423,10 @@ namespace InputTools
             this.controlStack.StackRemove(stackKey);
         }
 
-        public IInputToolsAPI.IInputStack GetStack(object stackKey, string uniqueModID = null)
+        public IInputToolsAPI.IInputStack GetStack(object stackKey)
         {
-            if (uniqueModID == null || this.modEntry.GetInstanceFromAnotherMod(uniqueModID) == null)
-                return this.controlStack.GetStack(stackKey);
-            return this.modEntry.GetInstanceFromAnotherMod(uniqueModID).controlStack.GetStack(stackKey);
+            return this.controlStack.GetStack(stackKey);
         }
-
 
         public IInputStack Global { get { return this._Global; } }
         public class InputStack : IInputToolsAPI.IInputStack
@@ -444,19 +441,19 @@ namespace InputTools
                 this.stackKey = stackKey;
             }
 
-            internal InputToolsAPI.InputStack GetStackBelow(bool stopAtBlock = true)
+            public InputToolsAPI.InputStack GetStackBelow(bool stopAtBlock = true)
             {
                 if (this == this.inputTools.Global)
                 {
                     if (this.inputTools.controlStack.stacks.Count > 0)
-                        return this.inputTools.controlStack.GetStack(this.inputTools.controlStack.stacks[this.inputTools.controlStack.stacks.Count - 1]);
+                        return this.inputTools.controlStack.GetStack(this.inputTools.controlStack.stacks[this.inputTools.controlStack.stacks.Count - 1]) as InputToolsAPI.InputStack;
                 }
                 else if (!stopAtBlock || !this.isActive || this.blockBehaviour == StackBlockBehavior.PassBelow)
                 {
                     for (int i = this.inputTools.controlStack.stacks.Count - 1; i >= 0; i--)
                     {
                         if (this.inputTools.controlStack.stacks[i] == this.stackKey && i > 0)
-                            return this.inputTools.controlStack.GetStack(this.inputTools.controlStack.stacks[i - 1]);
+                            return this.inputTools.controlStack.GetStack(this.inputTools.controlStack.stacks[i - 1]) as InputToolsAPI.InputStack;
                     }
                 }
                 return null;
@@ -814,6 +811,11 @@ namespace InputTools
             public event EventHandler<UpdateTickedEventArgs> StackUpdateTicked;
 
             public object stackKey { get; }
+
+            public IInputToolsAPI.IInputStack GetBelow(bool stopAtBlock = true)
+            {
+                return this.GetStackBelow(stopAtBlock);
+            }
 
             public IInputToolsAPI.InputDevice CurrentInputDevice()
             {

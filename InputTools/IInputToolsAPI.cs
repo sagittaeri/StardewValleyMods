@@ -58,7 +58,7 @@ namespace InputTools
 
         public IInputToolsAPI.IInputStack StackCreate(object stackKey, bool startActive = true, IInputToolsAPI.StackBlockBehavior defaultBlockBehaviour = IInputToolsAPI.StackBlockBehavior.Block);
         public void StackRemove(object stackKey);
-        public IInputToolsAPI.IInputStack GetStack(object stackKey, string uniqueModID = null);
+        public IInputToolsAPI.IInputStack GetStack(object stackKey);
 
         public IInputStack Global { get; }
         public interface IInputStack
@@ -122,6 +122,7 @@ namespace InputTools
 
             public object stackKey { get; }
 
+            public IInputToolsAPI.IInputStack GetBelow(bool stopAtBlock = true);
             public IInputToolsAPI.InputDevice CurrentInputDevice();
             public bool IsButtonPressed(SButton button);
             public bool IsButtonHeld(SButton button);

@@ -28,12 +28,12 @@ Follow the usual installation proceedure for SMAPI mods:
 ## For mod developers
 
 This mod provides an API for the following:
-* Allow both event handlers (`ButtonPairPressed += MyDelegate`) and per tick polling (`IsButtonPairPressed(CtrlSpace)`) to check if a button pair (e.g. ctrl+space) is Pressed, Held or Released
-* Direct methods and event handlers for multi-device Confirm, Cancel, Alt, Menu, MoveRight, MoveDown, MoveLeft and MoveUp input actions
-* A way define and use custom input actions (e.g. Jump, NavigateDown, CustomConfirm, etc) and assign it to mouse, keyboard and gamepad effortlessy
+* Allow event handlers (`ButtonPairPressed += MyDelegate`) and per tick polling (`IsButtonPairPressed(CtrlSpace)`) to check if a button pair (e.g. ctrl+space) is Pressed, Held or Released
+* Direct methods and event handlers for Confirm, Cancel, Alt, Menu, MoveRight, MoveDown, MoveLeft and MoveUp input actions supporting mouse, keyboard and gamepad
+* A way define and use custom input actions (e.g. Jump, NavigateDown, CustomConfirm, etc) and assign it to mouse, keyboard and gamepad
 * Check which input device was most recently used and get event updates whenever it changes
 * Get a custom keybinding from the user, both single-button and button-pair
-* Corrected location for item placement tile when gamepad is used
+* Get the corrected location for item placement tile when gamepad is used
 * Group input event handling and per-tick polling into an "Input Stack" which can be turned off and on
 * In more complex systems, create multiple Input Stacks and dictate their behaviour e.g. whether or not to allow input from an Input Stack above to continue to the Input Stack below
 

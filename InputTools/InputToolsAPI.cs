@@ -257,32 +257,39 @@ namespace InputTools
         internal bool mouseWheelMovedLastTick;
 
         private Action<Tuple<SButton, SButton>> keyBindingCallback;
-        private SButton keyBindingCandidate;
+        private Tuple<SButton, SButton> keyBindingCandidate;
         private void KeyBindingSinglePressed(object? sender, SButton val)
         {
             if (this.IsCancelButton(val) != IInputToolsAPI.InputDevice.None)
             {
                 this.StopListeningForKeybinding();
                 this.keyBindingCallback?.Invoke(null);
-                this.keyBindingCandidate = SButton.None;
+                this.keyBindingCandidate = null;
                 return;
             }
-            this.keyBindingCandidate = val;
+            if (this.keyBindingCandidate == null)
+                this.keyBindingCandidate = new Tuple<SButton, SButton>(val, SButton.None);
         }
         private void KeyBindingSingleReleased(object? sender, SButton val)
         {
-            if (this.keyBindingCandidate == val)
+            if (this.keyBindingCandidate != null && this.keyBindingCandidate.Item1 == val && this.keyBindingCandidate.Item2 == SButton.None)
             {
                 this.StopListeningForKeybinding();
                 this.keyBindingCallback?.Invoke(new Tuple<SButton, SButton>(val, SButton.None));
-                this.keyBindingCandidate = SButton.None;
-                return;
+                this.keyBindingCandidate = null;
             }
         }
         private void KeyBindingPairPressed(object? sender, Tuple<SButton, SButton> val)
         {
-            this.StopListeningForKeybinding();
-            this.keyBindingCallback?.Invoke(val);
+            this.keyBindingCandidate = val;
+        }
+        private void KeyBindingPairReleased(object? sender, Tuple<SButton, SButton> val)
+        {
+            if (this.keyBindingCandidate == val)
+            {
+                this.StopListeningForKeybinding();
+                this.keyBindingCallback?.Invoke(val);
+            }
         }
 
         public List<string> GetListOfModIDs()
@@ -369,18 +376,28 @@ namespace InputTools
             DelayedAction.functionAfterDelay(new DelayedAction.delayedBehavior(() =>
             {
                 this.StopListeningForKeybinding();
-                this.Global.ButtonPressed += this.KeyBindingSinglePressed;
-                this.Global.ButtonReleased += this.KeyBindingSingleReleased;
-                this.Global.ButtonPairPressed += this.KeyBindingPairPressed;
+                IInputStack tempStack = this.StackCreate(this);
+                this.Global.SetStackActive(false);
+                tempStack.ButtonPressed += this.KeyBindingSinglePressed;
+                tempStack.ButtonReleased += this.KeyBindingSingleReleased;
+                tempStack.ButtonPairPressed += this.KeyBindingPairPressed;
+                tempStack.ButtonPairReleased += this.KeyBindingPairReleased;
+                this.keyBindingCandidate = null;
                 this.keyBindingCallback = keyBindingCallback;
             }), 1);
         }
 
         public void StopListeningForKeybinding()
         {
-            this.Global.ButtonPressed -= this.KeyBindingSinglePressed;
-            this.Global.ButtonReleased -= this.KeyBindingSingleReleased;
-            this.Global.ButtonPairPressed -= this.KeyBindingPairPressed;
+            IInputStack tempStack = this.GetStack(this);
+            if (tempStack == null)
+                return;
+            tempStack.ButtonPressed -= this.KeyBindingSinglePressed;
+            tempStack.ButtonReleased -= this.KeyBindingSingleReleased;
+            tempStack.ButtonPairPressed -= this.KeyBindingPairPressed;
+            tempStack.ButtonPairReleased -= this.KeyBindingPairReleased;
+            this.StackRemove(this);
+            this.Global.SetStackActive(true);
         }
 
         public void RegisterAction(string actionID, params SButton[] keyTriggers)

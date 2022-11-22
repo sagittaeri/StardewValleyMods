@@ -33,6 +33,10 @@ namespace InputTools
             this.Helper.Events.Input.ButtonPressed += this.inputTools[mod.Manifest.UniqueID].OnButtonPressed;
             this.Helper.Events.Input.ButtonReleased += this.inputTools[mod.Manifest.UniqueID].OnButtonReleased;
             this.Helper.Events.GameLoop.UpdateTicked += this.inputTools[mod.Manifest.UniqueID].OnUpdateTicked;
+            this.Helper.Events.GameLoop.GameLaunched += new EventHandler<GameLaunchedEventArgs>((s, e) =>
+            {
+                this.inputTools[mod.Manifest.UniqueID].ReloadKeybindings();
+            });
             return this.inputTools[mod.Manifest.UniqueID];
         }
 

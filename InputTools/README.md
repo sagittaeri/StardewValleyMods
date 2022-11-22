@@ -32,10 +32,11 @@ This mod provides an API for the following:
 * Direct methods and event handlers for Confirm, Cancel, Alt, Menu, MoveRight, MoveDown, MoveLeft and MoveUp input actions supporting mouse, keyboard and gamepad
 * A way define and use custom input actions (e.g. Jump, NavigateDown, CustomConfirm, etc) and assign it to mouse, keyboard and gamepad
 * Check which input device was most recently used and get event updates whenever it changes
+* Get a string from the player using an automatially-created and cleaned up Virtual Keyboard
 * Get a custom keybinding from the user, both single-button and button-pair
 * Get the corrected location for item placement tile when gamepad is used
-* Group input event handling and per-tick polling into an "Input Stack" which can be turned off and on
-* In more complex systems, create multiple Input Stacks and dictate their behaviour e.g. whether or not to allow input events from an Input Stack to propagate to the Input Stack below
+* Group input event handling and per-tick polling into an "Input Layer" which can be turned off and on
+* In more complex systems, create multiple Input Layers and dictate their behaviour e.g. whether or not to allow input events from a layer to propagate to the layer below
 
 For the full API, see [`IInputToolsAPI.cs`](https://github.com/sagittaeri/StardewValleyMods/blob/main/InputTools/IInputToolsAPI.cs).
 
@@ -75,19 +76,19 @@ this.InputToolsAPI.Global.ActionPressed +=  new EventHandler<string>((s, e) =>
 ```
 This says `Jump` is triggered in three ways; (1) `Space` on keyboard; (2) `X` on gamepad; and (3) `Left+Right` mouse clicks. Then it uses an event handler to listen for all custom action input events.
 
-#### Input Stacks
-This is for advanced usage of Input Tools. If you're only using it for small stuff, you can just use the default stack `InputToolsAPI.Global` to do all your input work.
+#### Input Layers and the Stack
+This is for advanced usage of Input Tools. If you're only using it for small stuff, you can just use the default layer `InputToolsAPI.Global` to do all your input work.
 
-An Input Stack is an object which contains all the input events and per-tick polling methods. You can deactivate a stack to pause input handling which can be useful especially if you require multiple different sets of input handling, many of them conflicting. For example, the Escape button can have different uses depending on the state of the game, so you can create an Input Stack for each state for input handling.
+An Input Layer is an object which contains all the input events and per-tick polling methods. You can deactivate a layer to pause input handling which can be useful especially if you require multiple different sets of input handling, many of them conflicting. For example, the Escape button can have different uses depending on the state of the game, so you can create an Input Layer for each state for input handling.
 
-Additionally, the reason why they are called "Stacks" is because they are like UI popups: when they are created, they are added on top of the stack. Each stack can determine whether or not to allow input events to pass down to the stack below, which is useful for UI popups where you don't want the Escape button to close all the popups at once, just the one on top.
+Additionally, the layers are grouped into a "Stack" i.e. they are like UI popups: when they are created, they are added on top of the stack. Each layer can determine whether or not to allow input events to pass down to the layer below in the stack, which is useful for UI popups where you don't want the Escape button to close all the popups at once, just the one on top.
 
 An example:
 
 ```cs
-// Define an Input Stack for the initial state
-IInputToolsAPI.IInputStack normalStack = this.InputToolsAPI.StackCreate("Normal");
-normalStack.ButtonPressed += new EventHandler<SButton>((s, e) =>
+// Define an Input Layer for the initial state
+IInputToolsAPI.IInputLayer normalLayer = this.InputToolsAPI.LayerCreate("Normal");
+normalLayer.ButtonPressed += new EventHandler<SButton>((s, e) =>
 {
     // In this context, s = "Normal", and e is an SButton enum
     if (e == SButton.Escape)
@@ -95,39 +96,39 @@ normalStack.ButtonPressed += new EventHandler<SButton>((s, e) =>
         // Perform action in normal state
     }
 });
-normalStack.StackUpdateTicked += new EventHandler<UpdateTickedEventArgs>((s, e) =>
+normalLayer.LayerUpdateTicked += new EventHandler<UpdateTickedEventArgs>((s, e) =>
 {
-    // This is like a normal UpdateTicked event, except it's specific for this stack
-    if (normalStack.IsButtonPairPressed(new Tuple<SButton, SButton>(SButton.LeftShift, SButton.Enter)))
+    // This is like a normal UpdateTicked event, except it's specific for this layer
+    if (normalLayer.IsButtonPairPressed(new Tuple<SButton, SButton>(SButton.LeftShift, SButton.Enter)))
     {
-        // When LShift+Enter is pressed, switch to the Popup stack
-        IInputToolsAPI.GetStack("Popup").SetStackDefaultBlockBehaviour(IInputToolsAPI.StackBlockBehavior.Block);
-        IInputToolsAPI.GetStack("Popup").SetStackActive(true);
+        // When LShift+Enter is pressed, switch to the Popup layer
+        IInputToolsAPI.GetLayer("Popup").SetLayerBlockBehaviour(IInputToolsAPI.BlockBehavior.Block);
+        IInputToolsAPI.GetLayer("Popup").SetLayerActive(true);
 
-        // While Popup stack is active and blocking, Normal stack will no longer receive button events
-        // Additionally, normalStack.IsButtonPairPressed() etc will always return false since the Popup stack
-        // above is preventing input events from reaching the Normal stack
+        // While Popup layer is active and blocking, Normal layer will no longer receive button events
+        // Additionally, normalLayer.IsButtonPairPressed() etc will always return false since the Popup layer
+        // above is preventing input events from reaching the Normal layer
     }
 };
 
-// Define the Input Stack for the popup. Note that stacks are always created on top of the existing stacks.
-// The default stack, InputToolsAPI.Global, is the exception, which is always above all the other stacks,
-// which means if InputToolsAPI.Global is set to Block, no other stack will receive input events
-IInputToolsAPI.IInputStack popupStack = this.InputToolsAPI.StackCreate("Popup");
-popupStack.ButtonPressed += new EventHandler<SButton>((s, e) =>
+// Define the Input Layer for the popup. Note that layers are always created on top of the stack.
+// The default layer, InputToolsAPI.Global, is the exception, which is always above the entire stack,
+// which means if InputToolsAPI.Global is set to Block, no other layer will receive input events
+IInputToolsAPI.IInputLayer popupLayer = this.InputToolsAPI.LayerCreate("Popup");
+popupLayer.ButtonPressed += new EventHandler<SButton>((s, e) =>
 {
     // In this context, s = "Popup", and e is an SButton enum
     if (e == SButton.Escape)
     {
-        // Deactivate this stack and allow inputs to pass below to Normal stack again
-        IInputToolsAPI.GetStack(s).SetStackDefaultBlockBehaviour(IInputToolsAPI.StackBlockBehavior.PassBelow);
-        IInputToolsAPI.GetStack(s).SetStackActive(false);
+        // Deactivate this layer and allow inputs to pass below to Normal layer again
+        IInputToolsAPI.GetLayer(s).SetLayerBlockBehaviour(IInputToolsAPI.BlockBehavior.PassBelow);
+        IInputToolsAPI.GetLayer(s).SetLayerActive(false);
     }
 });
 
-// By default, created stacks are active and will block inputs, so turn them off and allow inputs to pass down
-popupStack.SetStackDefaultBlockBehaviour(IInputToolsAPI.StackBlockBehavior.PassBelow);
-popupStack.SetStackActive(false);
+// By default, created layers are active and will block inputs, so turn them off and allow inputs to pass down
+popupLayer.SetLayerBlockBehaviour(IInputToolsAPI.BlockBehavior.PassBelow);
+popupLayer.SetLayerActive(false);
 
 ```
 
@@ -137,14 +138,14 @@ To start integrating this mod into your own, you'll first need to define the int
 ```cs
 public interface IInputToolsAPI
 {
-    public IInputStack Global { get; }
-    public interface IInputStack
+    public IInputLayer Global { get; }
+    public interface IInputLayer
     {
         public Vector2 GetPlacementTile();
     }
 }
 ```
-Note: `IInputStack Global` object is the default Input Stack, and for most use-cases you'll need it.
+Note: `IInputLayer Global` object is the default Input Layer, and for most use-cases you'll need it.
 
 If you want to implement the entire API instead, just copy this file onto your project: [`IInputToolsAPI.cs`](https://github.com/sagittaeri/StardewValleyMods/blob/main/InputTools/IInputToolsAPI.cs)
 

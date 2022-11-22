@@ -18,75 +18,75 @@ namespace InputTools
     {
         private InputToolsAPI inputTools;
 
-        internal Dictionary<object, InputStack> stacksDict = new Dictionary<object, InputStack>();
-        internal List<object> stacks = new List<object>();
+        internal Dictionary<object, InputLayer> layerDict = new Dictionary<object, InputLayer>();
+        internal List<object> layers = new List<object>();
 
         public ControlStack(InputToolsAPI inputTools)
         {
             this.inputTools = inputTools;
         }
 
-        public InputStack StackCreate(object stackKey, bool startActive = true, IInputToolsAPI.StackBlockBehavior defaultBlockBehaviour = IInputToolsAPI.StackBlockBehavior.Block)
+        public InputLayer LayerCreate(object layerKey, bool startActive = true, IInputToolsAPI.BlockBehavior blockBehaviour = IInputToolsAPI.BlockBehavior.Block)
         {
-            if (stackKey == null)
+            if (layerKey == null)
             {
-                this.inputTools.Monitor.Log($"Stack key required to create an input stack", LogLevel.Warn);
+                this.inputTools.Monitor.Log($"Layer key required to create an input layer", LogLevel.Warn);
                 return null;
             }
-            if (this.stacks.Contains(stackKey))
-                this.inputTools.Monitor.Log($"Stack {stackKey} is being created more than once - remove it first if it's intentional", LogLevel.Warn);
-            this.stacksDict[stackKey] = new InputStack(this.inputTools, stackKey) { isActive = startActive, blockBehaviour = defaultBlockBehaviour };
-            this.stacks.Add(stackKey);
-            return this.stacksDict[stackKey];
+            if (this.layers.Contains(layerKey))
+                this.inputTools.Monitor.Log($"Layer {layerKey} is being created more than once - remove it first if it's intentional", LogLevel.Warn);
+            this.layerDict[layerKey] = new InputLayer(this.inputTools, layerKey) { isActive = startActive, blockBehaviour = blockBehaviour };
+            this.layers.Add(layerKey);
+            return this.layerDict[layerKey];
         }
 
-        public void StackRemove(object stackKey)
+        public void LayerRemove(object layerKey)
         {
-            if (stackKey == null)
+            if (layerKey == null)
                 return;
-            if (this.stacks.Contains(stackKey))
-                this.stacks.Remove(stackKey);
+            if (this.layers.Contains(layerKey))
+                this.layers.Remove(layerKey);
             else
-                this.inputTools.Monitor.Log($"Tried to remove stack {stackKey} that hasn't been created", LogLevel.Warn);
-            if (this.stacksDict.ContainsKey(stackKey))
-                this.stacksDict.Remove(stackKey);
+                this.inputTools.Monitor.Log($"Tried to remove layer {layerKey} that hasn't been created", LogLevel.Warn);
+            if (this.layerDict.ContainsKey(layerKey))
+                this.layerDict.Remove(layerKey);
         }
 
-        public IInputToolsAPI.IInputStack GetStack(object stackKey)
+        public IInputToolsAPI.IInputLayer GetLayer(object layerKey)
         {
-            if (stackKey == null)
-                return this.inputTools.Global as InputStack;
-            if (this.stacksDict.ContainsKey(stackKey))
-                return this.stacksDict[stackKey];
+            if (layerKey == null)
+                return this.inputTools.Global as InputLayer;
+            if (this.layerDict.ContainsKey(layerKey))
+                return this.layerDict[layerKey];
             return null;
         }
 
-        public void MoveToTopOfStack(object stackKey)
+        public void MoveToTopOfStack(object layerKey)
         {
-            if (stackKey == null)
+            if (layerKey == null)
                 return;
-            if (!this.stacks.Contains(stackKey))
+            if (!this.layers.Contains(layerKey))
                 return;
-            this.stacks.Remove(stackKey);
-            this.stacks.Add(stackKey);
+            this.layers.Remove(layerKey);
+            this.layers.Add(layerKey);
         }
 
-        public bool IsStackReachableByInput(object stackKey)
+        public bool IsLayerReachableByInput(object layerKey)
         {
-            InputStack stack = this.GetStack(stackKey) as InputStack;
-            if (stack == null || !stack.isActive)
+            InputLayer layer = this.GetLayer(layerKey) as InputLayer;
+            if (layer == null || !layer.isActive)
                 return false;
-            if (stackKey == null)
-                return stack.isActive;
-            if (stackKey != null && this.inputTools._Global.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
+            if (layerKey == null)
+                return layer.isActive;
+            if (layerKey != null && this.inputTools._Global.blockBehaviour == IInputToolsAPI.BlockBehavior.Block)
                 return false;
 
-            for (int i=this.stacks.Count-1; i>=0; i--)
+            for (int i=this.layers.Count-1; i>=0; i--)
             {
-                if (stackKey == this.stacks[i])
+                if (layerKey == this.layers[i])
                     return true;
-                InputStack stackI = this.GetStack(this.stacks[i]) as InputStack;
-                if (stackI.blockBehaviour == IInputToolsAPI.StackBlockBehavior.Block)
+                InputLayer layerI = this.GetLayer(this.layers[i]) as InputLayer;
+                if (layerI.blockBehaviour == IInputToolsAPI.BlockBehavior.Block)
                     break;
             }
             return false;

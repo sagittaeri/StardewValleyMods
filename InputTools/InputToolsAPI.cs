@@ -22,24 +22,34 @@ namespace InputTools
         internal IModHelper Helper;
         internal IMonitor Monitor;
 
-        internal InputStack _Global;
+        internal InputLayer _Global;
         public Actions actions;
-        public ControlStack controlStack;
+        public ControlStack stack;
 
-        public List<SButton> buttonsPressing = new List<SButton>();
-        public List<Tuple<SButton, SButton>> buttonPairsPressing = new List<Tuple<SButton, SButton>>();
-        public List<Tuple<SButton, SButton>> buttonPairsReleased = new List<Tuple<SButton, SButton>>();
-        public int tickButtonPairsReleased;
-        public IInputToolsAPI.InputDevice lastInputDevice;
-        public Vector2 lastCursorScreenPixels;
-        public Vector2 lastTileHighlightPos;
-        public Item lastItemHeld;
-        public bool isLastPlacementTileFromCursor;
-        public bool isFarmerMovedLastTick;
-        public bool isCursorMovedLastTick;
-        public bool isPlacementTileMovedLastTick;
-        public bool isItemChangedLastTick;
-        public Vector2 moveAxisLastTick;
+        internal List<SButton> confirmButtons = new List<SButton>();
+        internal List<SButton> cancelButtons = new List<SButton>();
+        internal List<SButton> altButtons = new List<SButton>();
+        internal List<SButton> menuButtons = new List<SButton>();
+        internal List<SButton> moveRightButtons = new List<SButton>();
+        internal List<SButton> moveDownButtons = new List<SButton>();
+        internal List<SButton> moveLeftButtons = new List<SButton>();
+        internal List<SButton> moveUpButtons = new List<SButton>();
+
+        internal List<SButton> buttonsPressing = new List<SButton>();
+        internal List<Tuple<SButton, SButton>> buttonPairsPressing = new List<Tuple<SButton, SButton>>();
+        internal List<Tuple<SButton, SButton>> buttonPairsReleased = new List<Tuple<SButton, SButton>>();
+        internal int tickButtonPairsReleased;
+        internal IInputToolsAPI.InputDevice lastInputDevice;
+        internal Vector2 lastCursorScreenPixels;
+        internal Vector2 lastTileHighlightPos;
+        internal Item lastItemHeld;
+        internal bool isLastPlacementTileFromCursor;
+        internal bool isFarmerMovedLastTick;
+        internal bool isCursorMovedLastTick;
+        internal bool isPlacementTileMovedLastTick;
+        internal bool isItemChangedLastTick;
+        internal Vector2 moveAxisLastTick;
+        internal bool isDirty = Game1.options.optionsDirty;
 
         internal InputToolsAPI(ModEntry modEntry)
         {
@@ -48,8 +58,38 @@ namespace InputTools
             this.Monitor = modEntry.Monitor;
 
             this.actions = new Actions(this);
-            this.controlStack = new ControlStack(this);
-            this._Global = new InputStack(this, null) { blockBehaviour = StackBlockBehavior.PassBelow };
+            this.stack = new ControlStack(this);
+            this._Global = new InputLayer(this, null) { blockBehaviour = BlockBehavior.PassBelow };
+        }
+
+        internal void ReloadOneKeybinding(ref List<SButton> outButtons, string id, InputButton[] sdvButtons, params SButton[] controllerButtons)
+        {
+            if (outButtons == null)
+                outButtons = new List<SButton>();
+            bool hasController = false;
+            outButtons.Clear();
+            foreach (InputButton b in sdvButtons)
+            {
+                outButtons.Add(b.ToSButton());
+                if (this.GetInputDevice(outButtons[outButtons.Count - 1]) == InputDevice.Controller)
+                    hasController = true;
+            }
+            if (!hasController && controllerButtons != null && controllerButtons.Length > 0)
+                outButtons.AddRange(controllerButtons);
+
+            this.Monitor.Log($"{id}: {string.Join('/', outButtons)}", LogLevel.Debug);
+        }
+
+        internal void ReloadKeybindings()
+        {
+            this.ReloadOneKeybinding(ref this.confirmButtons, "Confirm", Game1.options.actionButton, SButton.ControllerA);
+            this.ReloadOneKeybinding(ref this.cancelButtons, "Cancel", Game1.options.menuButton, SButton.ControllerB);
+            this.ReloadOneKeybinding(ref this.altButtons, "Alt", Game1.options.useToolButton, SButton.ControllerX);
+            this.ReloadOneKeybinding(ref this.menuButtons, "Menu", Game1.options.menuButton, SButton.ControllerY);
+            this.ReloadOneKeybinding(ref this.moveRightButtons, "MoveRight", Game1.options.moveRightButton, SButton.DPadRight, SButton.LeftThumbstickRight);
+            this.ReloadOneKeybinding(ref this.moveDownButtons, "MoveDown", Game1.options.moveDownButton, SButton.DPadDown, SButton.LeftThumbstickDown);
+            this.ReloadOneKeybinding(ref this.moveLeftButtons, "MoveLeft", Game1.options.moveLeftButton, SButton.DPadLeft, SButton.LeftThumbstickLeft);
+            this.ReloadOneKeybinding(ref this.moveUpButtons, "MoveUp", Game1.options.moveUpButton, SButton.DPadUp, SButton.LeftThumbstickUp);
         }
 
         /*********
@@ -87,23 +127,23 @@ namespace InputTools
             foreach (string groupID in this.actions.GetActionsFromKey(e.Button))
                 this._Global.OnActionPressed(groupID);
 
-            if (this.IsConfirmButton(e.Button) != IInputToolsAPI.InputDevice.None)
-                this._Global.OnConfirmPressed(this.IsConfirmButton(e.Button));
-            if (this.IsCancelButton(e.Button) != IInputToolsAPI.InputDevice.None)
-                this._Global.OnCancelPressed(this.IsCancelButton(e.Button));
-            if (this.IsAltButton(e.Button) != IInputToolsAPI.InputDevice.None)
-                this._Global.OnAltPressed(this.IsAltButton(e.Button));
-            if (this.IsMenuButton(e.Button) != IInputToolsAPI.InputDevice.None)
-                this._Global.OnMenuPressed(this.IsMenuButton(e.Button));
+            if (this.IsConfirmButton(e.Button))
+                this._Global.OnConfirmPressed(e.Button);
+            if (this.IsCancelButton(e.Button))
+                this._Global.OnCancelPressed(e.Button);
+            if (this.IsAltButton(e.Button))
+                this._Global.OnAltPressed(e.Button);
+            if (this.IsMenuButton(e.Button))
+                this._Global.OnMenuPressed(e.Button);
 
-            if (this.IsMoveRightButton(e.Button) != IInputToolsAPI.MoveSource.None)
-                this._Global.OnMoveRightPressed(this.IsMoveRightButton(e.Button));
-            if (this.IsMoveDownButton(e.Button) != IInputToolsAPI.MoveSource.None)
-                this._Global.OnMoveDownPressed(this.IsMoveDownButton(e.Button));
-            if (this.IsMoveLeftButton(e.Button) != IInputToolsAPI.MoveSource.None)
-                this._Global.OnMoveLeftPressed(this.IsMoveLeftButton(e.Button));
-            if (this.IsMoveUpButton(e.Button) != IInputToolsAPI.MoveSource.None)
-                this._Global.OnMoveUpPressed(this.IsMoveUpButton(e.Button));
+            if (this.IsMoveRightButton(e.Button))
+                this._Global.OnMoveRightPressed(e.Button);
+            if (this.IsMoveDownButton(e.Button))
+                this._Global.OnMoveDownPressed(e.Button);
+            if (this.IsMoveLeftButton(e.Button))
+                this._Global.OnMoveLeftPressed(e.Button);
+            if (this.IsMoveUpButton(e.Button))
+                this._Global.OnMoveUpPressed(e.Button);
 
             Vector2 moveAxis = this._Global.GetMoveAxis();
             if (this.moveAxisLastTick == Vector2.Zero && moveAxis != Vector2.Zero)
@@ -143,23 +183,23 @@ namespace InputTools
             foreach (string groupID in this.actions.GetActionsFromKey(e.Button))
                 this._Global.OnActionReleased(groupID);
 
-            if (this.IsConfirmButton(e.Button) != IInputToolsAPI.InputDevice.None)
-                this._Global.OnConfirmReleased(this.IsConfirmButton(e.Button));
-            if (this.IsCancelButton(e.Button) != IInputToolsAPI.InputDevice.None)
-                this._Global.OnCancelReleased(this.IsCancelButton(e.Button));
-            if (this.IsAltButton(e.Button) != IInputToolsAPI.InputDevice.None)
-                this._Global.OnAltReleased(this.IsAltButton(e.Button));
-            if (this.IsMenuButton(e.Button) != IInputToolsAPI.InputDevice.None)
-                this._Global.OnMenuReleased(this.IsMenuButton(e.Button));
+            if (this.IsConfirmButton(e.Button))
+                this._Global.OnConfirmReleased(e.Button);
+            if (this.IsCancelButton(e.Button))
+                this._Global.OnCancelReleased(e.Button);
+            if (this.IsAltButton(e.Button))
+                this._Global.OnAltReleased(e.Button);
+            if (this.IsMenuButton(e.Button))
+                this._Global.OnMenuReleased(e.Button);
 
-            if (this.IsMoveRightButton(e.Button) != IInputToolsAPI.MoveSource.None)
-                this._Global.OnMoveRightReleased(this.IsMoveRightButton(e.Button));
-            if (this.IsMoveDownButton(e.Button) != IInputToolsAPI.MoveSource.None)
-                this._Global.OnMoveDownReleased(this.IsMoveDownButton(e.Button));
-            if (this.IsMoveLeftButton(e.Button) != IInputToolsAPI.MoveSource.None)
-                this._Global.OnMoveLeftReleased(this.IsMoveLeftButton(e.Button));
-            if (this.IsMoveUpButton(e.Button) != IInputToolsAPI.MoveSource.None)
-                this._Global.OnMoveUpReleased(this.IsMoveUpButton(e.Button));
+            if (this.IsMoveRightButton(e.Button))
+                this._Global.OnMoveRightReleased(e.Button);
+            if (this.IsMoveDownButton(e.Button))
+                this._Global.OnMoveDownReleased(e.Button);
+            if (this.IsMoveLeftButton(e.Button))
+                this._Global.OnMoveLeftReleased(e.Button);
+            if (this.IsMoveUpButton(e.Button))
+                this._Global.OnMoveUpReleased(e.Button);
 
             Vector2 moveAxis = this._Global.GetMoveAxis();
             if (this.moveAxisLastTick != Vector2.Zero && moveAxis == Vector2.Zero)
@@ -175,7 +215,8 @@ namespace InputTools
             //if (!Context.IsWorldReady)
             //    return;
 
-            this.Global.CurrentInputDevice();
+            this.IsKeybindingConfigChanged();
+            this.GetCurrentInputDevice();
 
             this.isFarmerMovedLastTick = Game1.player.lastPosition != Game1.player.Position;
             this.isCursorMovedLastTick = this.lastCursorScreenPixels != this.Helper.Input.GetCursorPosition().ScreenPixels;
@@ -186,8 +227,9 @@ namespace InputTools
             if (this.isItemChangedLastTick)
                 this._Global.OnPlacementItemChanged(Game1.player.CurrentItem);
 
-            bool isKeyboardMoveButtonHeld = this._Global.IsMoveButtonHeld(keyboardWASD: true, keyboardArrows: false, controllerThumbstick: false, controllerDPad: false) != IInputToolsAPI.MoveSource.None;
-            bool isControllerMoveButtonHeld = this._Global.IsMoveButtonHeld(keyboardWASD: false, keyboardArrows: false, controllerThumbstick: true, controllerDPad: true) != IInputToolsAPI.MoveSource.None;
+            SButton moveButtonHeld = this._Global.IsMoveButtonHeld();
+            bool isKeyboardMoveButtonHeld = this.GetInputDevice(moveButtonHeld) == InputDevice.Keyboard;
+            bool isControllerMoveButtonHeld = this.GetInputDevice(moveButtonHeld) == InputDevice.Controller;
             if ((!Game1.wasMouseVisibleThisFrame && this.isItemChangedLastTick) || (this.isFarmerMovedLastTick && !isKeyboardMoveButtonHeld) || isControllerMoveButtonHeld)
             {
                 // If controller last used, placement tile is the grab tile i.e. tile in front of player
@@ -218,23 +260,23 @@ namespace InputTools
                 foreach (string groupID in this.actions.GetActionsFromKey(button))
                     this._Global.OnActionHeld(groupID);
 
-                if (this.IsConfirmButton(button) != IInputToolsAPI.InputDevice.None)
-                    this._Global.OnConfirmHeld(this.IsConfirmButton(button));
-                if (this.IsCancelButton(button) != IInputToolsAPI.InputDevice.None)
-                    this._Global.OnCancelHeld(this.IsCancelButton(button));
-                if (this.IsAltButton(button) != IInputToolsAPI.InputDevice.None)
-                    this._Global.OnAltHeld(this.IsAltButton(button));
-                if (this.IsMenuButton(button) != IInputToolsAPI.InputDevice.None)
-                    this._Global.OnMenuHeld(this.IsMenuButton(button));
+                if (this.IsConfirmButton(button))
+                    this._Global.OnConfirmHeld(button);
+                if (this.IsCancelButton(button))
+                    this._Global.OnCancelHeld(button);
+                if (this.IsAltButton(button))
+                    this._Global.OnAltHeld(button);
+                if (this.IsMenuButton(button))
+                    this._Global.OnMenuHeld(button);
 
-                if (this.IsMoveRightButton(button) != IInputToolsAPI.MoveSource.None)
-                    this._Global.OnMoveRightHeld(this.IsMoveRightButton(button));
-                if (this.IsMoveDownButton(button) != IInputToolsAPI.MoveSource.None)
-                    this._Global.OnMoveDownHeld(this.IsMoveDownButton(button));
-                if (this.IsMoveLeftButton(button) != IInputToolsAPI.MoveSource.None)
-                    this._Global.OnMoveLeftHeld(this.IsMoveLeftButton(button));
-                if (this.IsMoveUpButton(button) != IInputToolsAPI.MoveSource.None)
-                    this._Global.OnMoveUpHeld(this.IsMoveUpButton(button));
+                if (this.IsMoveRightButton(button))
+                    this._Global.OnMoveRightHeld(button);
+                if (this.IsMoveDownButton(button))
+                    this._Global.OnMoveDownHeld(button);
+                if (this.IsMoveLeftButton(button))
+                    this._Global.OnMoveLeftHeld(button);
+                if (this.IsMoveUpButton(button))
+                    this._Global.OnMoveUpHeld(button);
             }
             foreach (Tuple<SButton, SButton> buttonPair in this.buttonPairsPressing)
             {
@@ -247,11 +289,22 @@ namespace InputTools
             if (this.moveAxisLastTick != Vector2.Zero)
                 this._Global.OnMoveAxisHeld(this.moveAxisLastTick);
 
-            this._Global.OnStackUpdateTicked(e);
+            this._Global.OnLayerUpdateTicked(e);
+        }
+        internal void OnInputDeviceChanged(IInputToolsAPI.InputDevice inputDevice)
+        {
+            InputDeviceChanged?.Invoke(this, inputDevice);
+        }
+
+        internal void OnKeybindingConfigChanged()
+        {
+            KeybindingConfigChanged?.Invoke(this, null);
         }
 
         internal IInputToolsAPI.InputDevice lastInputDeviceUsed = InputDevice.None;
-        internal int lastTickUpdated;
+        internal bool lastConfigChanged = false;
+        internal int lastTickInputDeviceUpdated;
+        internal int lastTickConfigUpdated;
         internal Vector2 lastMousePos;
         internal int lastScrollWheelPos;
         internal int lastHorizontalScrollWheelPos;
@@ -261,10 +314,10 @@ namespace InputTools
         private Action<Tuple<SButton, SButton>> keyBindingCallback;
         private Tuple<SButton, SButton> keyBindingCandidate;
         private bool? savedGlobalActive;
-        private IInputToolsAPI.StackBlockBehavior? savedGlobalBlock;
+        private IInputToolsAPI.BlockBehavior? savedGlobalBlock;
         private void KeyBindingSinglePressed(object? sender, SButton val)
         {
-            if (this.IsCancelButton(val) != IInputToolsAPI.InputDevice.None)
+            if (this.IsCancelButton(val))
             {
                 this.StopListeningForKeybinding();
                 this.keyBindingCallback?.Invoke(null);
@@ -301,6 +354,69 @@ namespace InputTools
             return this.modEntry.GetListOfModIDs();
         }
 
+        public event EventHandler<IInputToolsAPI.InputDevice> InputDeviceChanged;
+        public event EventHandler KeybindingConfigChanged;
+
+        public IInputToolsAPI.InputDevice GetCurrentInputDevice()
+        {
+            if (this.lastTickInputDeviceUpdated == Game1.ticks)
+                return this.lastInputDeviceUsed;
+            this.lastTickInputDeviceUpdated = Game1.ticks;
+
+            IInputToolsAPI.InputDevice newInputDevice = this.lastInputDeviceUsed;
+            if (Game1.isAnyGamePadButtonBeingPressed() || Game1.isAnyGamePadButtonBeingHeld() || Game1.isGamePadThumbstickInMotion())
+                newInputDevice = InputDevice.Controller;
+            else if (Game1.GetKeyboardState().GetPressedKeyCount() > 0)
+                newInputDevice = InputDevice.Keyboard;
+            else if (Game1.input.GetMouseState().LeftButton == ButtonState.Pressed
+                || Game1.input.GetMouseState().MiddleButton == ButtonState.Pressed
+                || Game1.input.GetMouseState().RightButton == ButtonState.Pressed
+                || Game1.input.GetMouseState().XButton1 == ButtonState.Pressed
+                || Game1.input.GetMouseState().XButton2 == ButtonState.Pressed
+                || (Game1.input.GetMouseState().Position.ToVector2() != this.lastMousePos && Game1.lastCursorMotionWasMouse)
+                || Game1.input.GetMouseState().ScrollWheelValue != this.lastScrollWheelPos
+                || Game1.input.GetMouseState().HorizontalScrollWheelValue != this.lastHorizontalScrollWheelPos
+                )
+                newInputDevice = InputDevice.Mouse;
+
+            this.mouseMovedLastTick = this.lastMousePos != Game1.input.GetMouseState().Position.ToVector2();
+            this.mouseWheelMovedLastTick = (this.lastScrollWheelPos != Game1.input.GetMouseState().ScrollWheelValue) || (this.lastHorizontalScrollWheelPos != Game1.input.GetMouseState().HorizontalScrollWheelValue);
+
+            this.lastMousePos = Game1.input.GetMouseState().Position.ToVector2();
+            this.lastScrollWheelPos = Game1.input.GetMouseState().ScrollWheelValue;
+            this.lastHorizontalScrollWheelPos = Game1.input.GetMouseState().HorizontalScrollWheelValue;
+            if (this.lastInputDeviceUsed != newInputDevice)
+            {
+                this.lastInputDeviceUsed = newInputDevice;
+                this.OnInputDeviceChanged(newInputDevice);
+            }
+            else
+                this.lastInputDeviceUsed = newInputDevice;
+            if (this.mouseMovedLastTick)
+                this._Global.OnCursorMoved(newInputDevice);
+            if (this.mouseWheelMovedLastTick)
+                this._Global.OnMouseWheelMoved(this._Global.GetMouseWheelPos());
+            return this.lastInputDeviceUsed;
+        }
+
+        public bool IsKeybindingConfigChanged()
+        {
+            if (this.lastTickConfigUpdated == Game1.ticks)
+                return this.lastConfigChanged;
+            this.lastTickConfigUpdated = Game1.ticks;
+
+            this.lastConfigChanged = false;
+            if (Game1.options.optionsDirty != this.isDirty && Game1.options.optionsDirty)
+            {
+                this.lastConfigChanged = true;
+                Game1.options.SaveDefaultOptions();
+                this.ReloadKeybindings();
+                KeybindingConfigChanged?.Invoke(this, null);
+            }
+            this.isDirty = Game1.options.optionsDirty;
+            return this.lastConfigChanged;
+        }
+
         public IInputToolsAPI.InputDevice GetInputDevice(SButton button)
         {
             if (SButtonExtensions.TryGetController(button, out _))
@@ -310,69 +426,44 @@ namespace InputTools
             return IInputToolsAPI.InputDevice.Mouse;
         }
 
-        public IInputToolsAPI.InputDevice IsConfirmButton(SButton button)
+        public bool IsConfirmButton(SButton button)
         {
-            return button == SButton.ControllerA ? IInputToolsAPI.InputDevice.Controller :
-                button == SButton.Enter ? IInputToolsAPI.InputDevice.Keyboard :
-                IInputToolsAPI.InputDevice.None;
+            return this.confirmButtons.Contains(button);
         }
 
-        public IInputToolsAPI.InputDevice IsCancelButton(SButton button)
+        public bool IsCancelButton(SButton button)
         {
-            return button == SButton.ControllerB ? IInputToolsAPI.InputDevice.Controller :
-                button == SButton.Escape ? IInputToolsAPI.InputDevice.Keyboard :
-                IInputToolsAPI.InputDevice.None;
+            return this.cancelButtons.Contains(button);
         }
 
-        public IInputToolsAPI.InputDevice IsAltButton(SButton button)
+        public bool IsAltButton(SButton button)
         {
-            return button == SButton.ControllerX ? IInputToolsAPI.InputDevice.Controller :
-                button == SButton.Space ? IInputToolsAPI.InputDevice.Keyboard :
-                button == SButton.MouseRight ? IInputToolsAPI.InputDevice.Mouse :
-                IInputToolsAPI.InputDevice.None;
+            return this.altButtons.Contains(button);
         }
 
-        public IInputToolsAPI.InputDevice IsMenuButton(SButton button)
+        public bool IsMenuButton(SButton button)
         {
-            return button == SButton.ControllerY ? IInputToolsAPI.InputDevice.Controller :
-                button == SButton.Escape ? IInputToolsAPI.InputDevice.Keyboard :
-                IInputToolsAPI.InputDevice.None;
+            return this.menuButtons.Contains(button);
         }
 
-        public IInputToolsAPI.MoveSource IsMoveRightButton(SButton button)
+        public bool IsMoveRightButton(SButton button)
         {
-            return button == SButton.D ? IInputToolsAPI.MoveSource.KeyboardWASD :
-                button == SButton.Right ? IInputToolsAPI.MoveSource.KeyboardArrow :
-                button == SButton.DPadRight ? IInputToolsAPI.MoveSource.ControllerDPad :
-                button == SButton.LeftThumbstickRight ? IInputToolsAPI.MoveSource.ControllerLeftThumbstick :
-                IInputToolsAPI.MoveSource.None;
+            return this.moveRightButtons.Contains(button);
         }
 
-        public IInputToolsAPI.MoveSource IsMoveDownButton(SButton button)
+        public bool IsMoveDownButton(SButton button)
         {
-            return button == SButton.S ? IInputToolsAPI.MoveSource.KeyboardWASD :
-                button == SButton.Down ? IInputToolsAPI.MoveSource.KeyboardArrow :
-                button == SButton.DPadDown ? IInputToolsAPI.MoveSource.ControllerDPad :
-                button == SButton.LeftThumbstickDown ? IInputToolsAPI.MoveSource.ControllerLeftThumbstick :
-                IInputToolsAPI.MoveSource.None;
+            return this.moveDownButtons.Contains(button);
         }
 
-        public IInputToolsAPI.MoveSource IsMoveLeftButton(SButton button)
+        public bool IsMoveLeftButton(SButton button)
         {
-            return button == SButton.A ? IInputToolsAPI.MoveSource.KeyboardWASD :
-                button == SButton.Left ? IInputToolsAPI.MoveSource.KeyboardArrow :
-                button == SButton.DPadLeft ? IInputToolsAPI.MoveSource.ControllerDPad :
-                button == SButton.LeftThumbstickLeft ? IInputToolsAPI.MoveSource.ControllerLeftThumbstick :
-                IInputToolsAPI.MoveSource.None;
+            return this.moveLeftButtons.Contains(button);
         }
 
-        public IInputToolsAPI.MoveSource IsMoveUpButton(SButton button)
+        public bool IsMoveUpButton(SButton button)
         {
-            return button == SButton.W ? IInputToolsAPI.MoveSource.KeyboardWASD :
-                button == SButton.Up ? IInputToolsAPI.MoveSource.KeyboardArrow :
-                button == SButton.DPadUp ? IInputToolsAPI.MoveSource.ControllerDPad :
-                button == SButton.LeftThumbstickUp ? IInputToolsAPI.MoveSource.ControllerLeftThumbstick :
-                IInputToolsAPI.MoveSource.None;
+            return this.moveUpButtons.Contains(button);
         }
 
         public void GetTextFromVirtualKeyboard(Action<string> finishedCallback, Action<string> updateCallback = null, int? textboxWidth = 300, string initialText = "")
@@ -380,11 +471,11 @@ namespace InputTools
             DelayedAction.functionAfterDelay(new DelayedAction.delayedBehavior(() =>
             {
                 this.StopListeningForKeybinding();
-                IInputStack tempStack = this.StackCreate(this);
+                IInputLayer tempLayer = this.LayerCreate(this);
                 this.savedGlobalActive = this._Global.isActive;
                 this.savedGlobalBlock = this._Global.blockBehaviour;
-                this.Global.SetStackActive(false);
-                this.Global.SetStackDefaultBlockBehaviour(StackBlockBehavior.PassBelow);
+                this.Global.SetLayerActive(false);
+                this.Global.SetLayerBlockBehaviour(BlockBehavior.PassBelow);
                 TextBox textbox = new TextBox(Game1.content.Load<Texture2D>("LooseSprites\\textbox"), null, Game1.smallFont, Game1.textColor);
                 textbox.TitleText = "Enter input";
                 textbox.Text = initialText;
@@ -394,7 +485,7 @@ namespace InputTools
                 Game1.showTextEntry(textbox);
 
                 string textboxTextLastTick = initialText;
-                tempStack.StackUpdateTicked += new EventHandler<UpdateTickedEventArgs>((s, e) =>
+                tempLayer.LayerUpdateTicked += new EventHandler<UpdateTickedEventArgs>((s, e) =>
                 {
                     if (Game1.textEntry != null)
                     {
@@ -419,14 +510,14 @@ namespace InputTools
 
         public void CloseVirtualKeyboard()
         {
-            IInputStack tempStack = this.GetStack(this);
-            if (tempStack == null)
+            IInputLayer tempLayer = this.GetLayer(this);
+            if (tempLayer == null)
                 return;
-            this.StackRemove(this);
+            this.LayerRemove(this);
             if (this.savedGlobalActive != null)
-                this.Global.SetStackActive(this.savedGlobalActive.Value);
+                this.Global.SetLayerActive(this.savedGlobalActive.Value);
             if (this.savedGlobalBlock != null)
-                this.Global.SetStackDefaultBlockBehaviour(this.savedGlobalBlock.Value);
+                this.Global.SetLayerBlockBehaviour(this.savedGlobalBlock.Value);
             this.savedGlobalActive = null;
             this.savedGlobalBlock = null;
         }
@@ -436,15 +527,15 @@ namespace InputTools
             DelayedAction.functionAfterDelay(new DelayedAction.delayedBehavior(() =>
             {
                 this.StopListeningForKeybinding();
-                IInputStack tempStack = this.StackCreate(this);
+                IInputLayer tempLayer = this.LayerCreate(this);
                 this.savedGlobalActive = this._Global.isActive;
                 this.savedGlobalBlock = this._Global.blockBehaviour;
-                this.Global.SetStackActive(false);
-                this.Global.SetStackDefaultBlockBehaviour(StackBlockBehavior.PassBelow);
-                tempStack.ButtonPressed += this.KeyBindingSinglePressed;
-                tempStack.ButtonReleased += this.KeyBindingSingleReleased;
-                tempStack.ButtonPairPressed += this.KeyBindingPairPressed;
-                tempStack.ButtonPairReleased += this.KeyBindingPairReleased;
+                this.Global.SetLayerActive(false);
+                this.Global.SetLayerBlockBehaviour(BlockBehavior.PassBelow);
+                tempLayer.ButtonPressed += this.KeyBindingSinglePressed;
+                tempLayer.ButtonReleased += this.KeyBindingSingleReleased;
+                tempLayer.ButtonPairPressed += this.KeyBindingPairPressed;
+                tempLayer.ButtonPairReleased += this.KeyBindingPairReleased;
                 this.keyBindingCandidate = null;
                 this.keyBindingCallback = keyBindingCallback;
             }), 1);
@@ -452,18 +543,18 @@ namespace InputTools
 
         public void StopListeningForKeybinding()
         {
-            IInputStack tempStack = this.GetStack(this);
-            if (tempStack == null)
+            IInputLayer tempLayer = this.GetLayer(this);
+            if (tempLayer == null)
                 return;
-            tempStack.ButtonPressed -= this.KeyBindingSinglePressed;
-            tempStack.ButtonReleased -= this.KeyBindingSingleReleased;
-            tempStack.ButtonPairPressed -= this.KeyBindingPairPressed;
-            tempStack.ButtonPairReleased -= this.KeyBindingPairReleased;
-            this.StackRemove(this);
+            tempLayer.ButtonPressed -= this.KeyBindingSinglePressed;
+            tempLayer.ButtonReleased -= this.KeyBindingSingleReleased;
+            tempLayer.ButtonPairPressed -= this.KeyBindingPairPressed;
+            tempLayer.ButtonPairReleased -= this.KeyBindingPairReleased;
+            this.LayerRemove(this);
             if (this.savedGlobalActive != null)
-                this.Global.SetStackActive(this.savedGlobalActive.Value);
+                this.Global.SetLayerActive(this.savedGlobalActive.Value);
             if (this.savedGlobalBlock != null)
-                this.Global.SetStackDefaultBlockBehaviour(this.savedGlobalBlock.Value);
+                this.Global.SetLayerBlockBehaviour(this.savedGlobalBlock.Value);
             this.savedGlobalActive = null;
             this.savedGlobalBlock = null;
         }
@@ -498,21 +589,21 @@ namespace InputTools
             return this.actions.GetKeyPairsFromActions(actionID);
         }
 
-        public IInputToolsAPI.IInputStack StackCreate(object stackKey, bool startActive = true, IInputToolsAPI.StackBlockBehavior defaultBlockBehaviour = IInputToolsAPI.StackBlockBehavior.Block)
+        public IInputToolsAPI.IInputLayer LayerCreate(object layerKey, bool startActive = true, IInputToolsAPI.BlockBehavior defaultBlockBehaviour = IInputToolsAPI.BlockBehavior.Block)
         {
-            return this.controlStack.StackCreate(stackKey, startActive, defaultBlockBehaviour);
+            return this.stack.LayerCreate(layerKey, startActive, defaultBlockBehaviour);
         }
 
-        public void StackRemove(object stackKey)
+        public void LayerRemove(object layerKey)
         {
-            this.controlStack.StackRemove(stackKey);
+            this.stack.LayerRemove(layerKey);
         }
 
-        public IInputToolsAPI.IInputStack GetStack(object stackKey)
+        public IInputToolsAPI.IInputLayer GetLayer(object layerKey)
         {
-            return this.controlStack.GetStack(stackKey);
+            return this.stack.GetLayer(layerKey);
         }
 
-        public IInputStack Global { get { return this._Global; } }
+        public IInputLayer Global { get { return this._Global; } }
     }
 }

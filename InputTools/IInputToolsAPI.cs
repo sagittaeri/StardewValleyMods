@@ -104,6 +104,16 @@ namespace InputTools
         /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
         public IInputToolsAPI.MoveSource IsMoveUpButton(SButton button);
 
+        /// <summary>Shows a virtual keyboard to get text from user</summary>
+        /// <param name="finishedCallback">Callback with the text when keyboard is closed. Text is null if user cancelled instead of confirmed.</param>
+        /// <param name="updateCallback">Callback with the text at every letter update by user.</param>
+        /// <param name="textboxWidth">Width of the input text box above the keyboard.</param>
+        /// <param name="initialText">Initial text inside the input text box.</param>
+        public void GetTextFromVirtualKeyboard(Action<string> finishedCallback, Action<string> updateCallback = null, int? textboxWidth = 300, string initialText = "");
+
+        /// <summary>Force-closes the virtual keyboard before the user finishes their text entry.</summary>
+        public void CloseVirtualKeyboard();
+
         /// <summary>Listens for the next keystroke (can be two keys). Useful to get keybinding from user.</summary>
         /// <param name="keyBindingCallback">Callback function with argument Tuple<SButton, SButton> when keybinding is done. Null is sent if user pressed Cancel instead.</param>
         public void ListenForKeybinding(Action<Tuple<SButton, SButton>> keyBindingCallback);

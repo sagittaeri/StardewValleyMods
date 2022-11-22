@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using InputTools;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
+using StardewValley.Menus;
 using StardewValley.Monsters;
 using static InputTools.IInputToolsAPI;
 
@@ -258,6 +260,8 @@ namespace InputTools
 
         private Action<Tuple<SButton, SButton>> keyBindingCallback;
         private Tuple<SButton, SButton> keyBindingCandidate;
+        private bool? savedGlobalActive;
+        private IInputToolsAPI.StackBlockBehavior? savedGlobalBlock;
         private void KeyBindingSinglePressed(object? sender, SButton val)
         {
             if (this.IsCancelButton(val) != IInputToolsAPI.InputDevice.None)
@@ -371,13 +375,72 @@ namespace InputTools
                 IInputToolsAPI.MoveSource.None;
         }
 
+        public void GetTextFromVirtualKeyboard(Action<string> finishedCallback, Action<string> updateCallback = null, int? textboxWidth = 300, string initialText = "")
+        {
+            DelayedAction.functionAfterDelay(new DelayedAction.delayedBehavior(() =>
+            {
+                this.StopListeningForKeybinding();
+                IInputStack tempStack = this.StackCreate(this);
+                this.savedGlobalActive = this._Global.isActive;
+                this.savedGlobalBlock = this._Global.blockBehaviour;
+                this.Global.SetStackActive(false);
+                this.Global.SetStackDefaultBlockBehaviour(StackBlockBehavior.PassBelow);
+                TextBox textbox = new TextBox(Game1.content.Load<Texture2D>("LooseSprites\\textbox"), null, Game1.smallFont, Game1.textColor);
+                textbox.TitleText = "Enter input";
+                textbox.Text = initialText;
+                if (textboxWidth.HasValue)
+                    textbox.Width = textboxWidth.Value;
+                textbox.SelectMe();
+                Game1.showTextEntry(textbox);
+
+                string textboxTextLastTick = initialText;
+                tempStack.StackUpdateTicked += new EventHandler<UpdateTickedEventArgs>((s, e) =>
+                {
+                    if (Game1.textEntry != null)
+                    {
+                        if (textboxTextLastTick != textbox.Text)
+                            updateCallback?.Invoke(textbox.Text);
+                        textboxTextLastTick = textbox.Text;
+                        textbox.SelectMe();
+                    }
+                    else
+                    {
+                        this.CloseVirtualKeyboard();
+                        finishedCallback.Invoke(null);
+                    }
+                });
+                textbox.OnEnterPressed += new TextBoxEvent(target =>
+                {
+                    this.CloseVirtualKeyboard();
+                    finishedCallback.Invoke(textbox.Text);
+                });
+            }), 1);
+        }
+
+        public void CloseVirtualKeyboard()
+        {
+            IInputStack tempStack = this.GetStack(this);
+            if (tempStack == null)
+                return;
+            this.StackRemove(this);
+            if (this.savedGlobalActive != null)
+                this.Global.SetStackActive(this.savedGlobalActive.Value);
+            if (this.savedGlobalBlock != null)
+                this.Global.SetStackDefaultBlockBehaviour(this.savedGlobalBlock.Value);
+            this.savedGlobalActive = null;
+            this.savedGlobalBlock = null;
+        }
+
         public void ListenForKeybinding(Action<Tuple<SButton, SButton>> keyBindingCallback)
         {
             DelayedAction.functionAfterDelay(new DelayedAction.delayedBehavior(() =>
             {
                 this.StopListeningForKeybinding();
                 IInputStack tempStack = this.StackCreate(this);
+                this.savedGlobalActive = this._Global.isActive;
+                this.savedGlobalBlock = this._Global.blockBehaviour;
                 this.Global.SetStackActive(false);
+                this.Global.SetStackDefaultBlockBehaviour(StackBlockBehavior.PassBelow);
                 tempStack.ButtonPressed += this.KeyBindingSinglePressed;
                 tempStack.ButtonReleased += this.KeyBindingSingleReleased;
                 tempStack.ButtonPairPressed += this.KeyBindingPairPressed;
@@ -397,7 +460,12 @@ namespace InputTools
             tempStack.ButtonPairPressed -= this.KeyBindingPairPressed;
             tempStack.ButtonPairReleased -= this.KeyBindingPairReleased;
             this.StackRemove(this);
-            this.Global.SetStackActive(true);
+            if (this.savedGlobalActive != null)
+                this.Global.SetStackActive(this.savedGlobalActive.Value);
+            if (this.savedGlobalBlock != null)
+                this.Global.SetStackDefaultBlockBehaviour(this.savedGlobalBlock.Value);
+            this.savedGlobalActive = null;
+            this.savedGlobalBlock = null;
         }
 
         public void RegisterAction(string actionID, params SButton[] keyTriggers)

@@ -12,7 +12,6 @@ now than layer when there are more users.
 - Fix: Default actions (Confirm, MoveX, etc) to use Stardew Valley keybinding options where possible
 - New function: "PopLayer" and "PeekLayer" to make it clearer that the input layers are in a stack
 - New function: "GetTextFromVirtualKeyboard" which works with keyboard, controller and mouse
-- New function: "RightStickSnapToTile" to snap the cursor to tile when moved with right stick
 - New event: "KeybindingConfigChanged" fires when SDV keybinding config is changed. Known issue: Reset keybindings button doesn't fire this event for now.
 
 ## Version 0.1.0

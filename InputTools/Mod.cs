@@ -74,25 +74,33 @@ namespace InputTools
             this.Helper.Events.GameLoop.GameLaunched += new EventHandler<GameLaunchedEventArgs>((s, e) =>
             {
                 // get Generic Mod Config Menu's API (if it's installed)
-                GenericModConfigMenu.IGenericModConfigMenuApi configMenu = this.Helper.ModRegistry.GetApi<GenericModConfigMenu.IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-                if (configMenu is null)
-                    return;
+                try
+                {
+                    GenericModConfigMenu.IGenericModConfigMenuApi configMenu = this.Helper.ModRegistry.GetApi<GenericModConfigMenu.IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+                    if (configMenu is null)
+                        return;
 
-                // register mod
-                configMenu.Register(
-                    mod: this.ModManifest,
-                    reset: () => this.Config = new ModConfig(),
-                    save: () => this.Helper.WriteConfig(this.Config)
-                );
+                    // register mod
+                    configMenu.Register(
+                        mod: this.ModManifest,
+                        reset: () => this.Config = new ModConfig(),
+                        save: () => this.Helper.WriteConfig(this.Config)
+                    );
 
-                // add some config options
-                configMenu.AddBoolOption(
-                    mod: this.ModManifest,
-                    name: () => this.Helper.Translation.Get("config.HideCursorInstantlyWhenControllerUsed.name"),
-                    tooltip: () => this.Helper.Translation.Get("config.HideCursorInstantlyWhenControllerUsed.tooltip"),
-                    getValue: () => this.Config.HideCursorInstantlyWhenControllerUsed,
-                    setValue: value => this.Config.HideCursorInstantlyWhenControllerUsed = value
-                );
+                    // add some config options
+                    configMenu.AddBoolOption(
+                        mod: this.ModManifest,
+                        name: () => this.Helper.Translation.Get("config.HideCursorInstantlyWhenControllerUsed.name"),
+                        tooltip: () => this.Helper.Translation.Get("config.HideCursorInstantlyWhenControllerUsed.tooltip"),
+                        getValue: () => this.Config.HideCursorInstantlyWhenControllerUsed,
+                        setValue: value => this.Config.HideCursorInstantlyWhenControllerUsed = value
+                    );
+                }
+                catch (Exception exception)
+                {
+                    this.Monitor.Log($"Failed to load spacechase0.GenericModConfigMenu. Reason: {exception.Message}", LogLevel.Error);
+                    this.Config = new ModConfig();
+                }
 
                 this.ReloadKeybindings();
             });

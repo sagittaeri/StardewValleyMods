@@ -8,8 +8,8 @@ handle inputs across mouse, keyboard and controller.
 This mod is mostly meant for other modders as a modding tool, but it does do one
 thing for users:
 
-* Immediately force hides the mouse cursor when controller is used to improve
-  gamepad experience (cursor reappears when moved with mouse or gamepad right stick)
+* Mod Config: immediately force hides the mouse cursor when controller is used to improve
+  gamepad experience (cursor reappears when moved with mouse or gamepad right stick). Defaults yes.
 
 ### Compatibility
 
@@ -87,7 +87,7 @@ An example:
 
 ```cs
 // Define an Input Layer for the initial state
-IInputToolsAPI.IInputLayer normalLayer = this.InputToolsAPI.LayerCreate("Normal");
+IInputToolsAPI.IInputLayer normalLayer = this.InputToolsAPI.CreateLayer("Normal");
 normalLayer.ButtonPressed += new EventHandler<SButton>((s, e) =>
 {
     // In this context, s = "Normal", and e is an SButton enum
@@ -96,14 +96,15 @@ normalLayer.ButtonPressed += new EventHandler<SButton>((s, e) =>
         // Perform action in normal state
     }
 });
+
 normalLayer.LayerUpdateTicked += new EventHandler<UpdateTickedEventArgs>((s, e) =>
 {
     // This is like a normal UpdateTicked event, except it's specific for this layer
     if (normalLayer.IsButtonPairPressed(new Tuple<SButton, SButton>(SButton.LeftShift, SButton.Enter)))
     {
         // When LShift+Enter is pressed, switch to the Popup layer
-        IInputToolsAPI.GetLayer("Popup").SetLayerBlockBehaviour(IInputToolsAPI.BlockBehavior.Block);
-        IInputToolsAPI.GetLayer("Popup").SetLayerActive(true);
+        IInputToolsAPI.GetLayer("Popup").SetBlock(IInputToolsAPI.BlockBehavior.Block);
+        IInputToolsAPI.GetLayer("Popup").SetActive(true);
 
         // While Popup layer is active and blocking, Normal layer will no longer receive button events
         // Additionally, normalLayer.IsButtonPairPressed() etc will always return false since the Popup layer
@@ -114,21 +115,21 @@ normalLayer.LayerUpdateTicked += new EventHandler<UpdateTickedEventArgs>((s, e) 
 // Define the Input Layer for the popup. Note that layers are always created on top of the stack.
 // The default layer, InputToolsAPI.Global, is the exception, which is always above the entire stack,
 // which means if InputToolsAPI.Global is set to Block, no other layer will receive input events
-IInputToolsAPI.IInputLayer popupLayer = this.InputToolsAPI.LayerCreate("Popup");
+IInputToolsAPI.IInputLayer popupLayer = this.InputToolsAPI.CreateLayer("Popup");
 popupLayer.ButtonPressed += new EventHandler<SButton>((s, e) =>
 {
     // In this context, s = "Popup", and e is an SButton enum
     if (e == SButton.Escape)
     {
         // Deactivate this layer and allow inputs to pass below to Normal layer again
-        IInputToolsAPI.GetLayer(s).SetLayerBlockBehaviour(IInputToolsAPI.BlockBehavior.PassBelow);
-        IInputToolsAPI.GetLayer(s).SetLayerActive(false);
+        IInputToolsAPI.GetLayer(s).SetBlock(IInputToolsAPI.BlockBehavior.PassBelow);
+        IInputToolsAPI.GetLayer(s).SetActive(false);
     }
 });
 
 // By default, created layers are active and will block inputs, so turn them off and allow inputs to pass down
-popupLayer.SetLayerBlockBehaviour(IInputToolsAPI.BlockBehavior.PassBelow);
-popupLayer.SetLayerActive(false);
+popupLayer.SetBlock(IInputToolsAPI.BlockBehavior.PassBelow);
+popupLayer.SetActive(false);
 
 ```
 

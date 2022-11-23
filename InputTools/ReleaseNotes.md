@@ -12,7 +12,8 @@ now than layer when there are more users.
 - Fix: Default actions (Confirm, MoveX, etc) to use Stardew Valley keybinding options where possible
 - New function: "PopLayer" and "PeekLayer" to make it clearer that the input layers are in a stack
 - New function: "GetTextFromVirtualKeyboard" which works with keyboard, controller and mouse
-- New event: "KeybindingConfigChanged" fires when SDV keybinding config is changed. Known issue: Reset keybindings button doesn't fire this event for now.
+- New event: "KeybindingConfigChanged" fires when SDV keybinding config is changed. Known issue: Reset keybindings button doesn't fire this event for now
+- New config: "Instantly hide cursor when gamepad is used" is now a config that the user can disable
 
 ## Version 0.1.0
 

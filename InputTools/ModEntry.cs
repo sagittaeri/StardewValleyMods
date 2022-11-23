@@ -407,41 +407,12 @@ namespace InputTools
 
         public Vector2 GetPlacementTileWithController()
         {
-            Vector2 pos = Game1.player.Position / Game1.tileSize;
-
-            if (this.IsHeldItemBomb())
-            {
-                if (Game1.player.facingDirection == 1)
-                    pos.X = MathF.Round(pos.X + 0.47f);
-                else if (Game1.player.facingDirection == 3)
-                    pos.X = MathF.Round(pos.X - 0.45f);
-                else
-                    pos.X = MathF.Round(pos.X - 0f);
-
-                if (Game1.player.facingDirection == 2)
-                    pos.Y = MathF.Round(pos.Y + 0.05f);
-                else if (Game1.player.facingDirection == 0)
-                    pos.Y = MathF.Round(pos.Y - 0.58f);
-                else
-                    pos.Y = MathF.Round(pos.Y - 0.2f);
-            }
-            else
-            {
-                if (Game1.player.facingDirection == 1)
-                    pos.X = MathF.Ceiling(pos.X + 0.85f);
-                else if (Game1.player.facingDirection == 3)
-                    pos.X = MathF.Floor(pos.X - 0.88f);
-                else
-                    pos.X = MathF.Round(pos.X - 0f);
-
-                if (Game1.player.facingDirection == 2)
-                    pos.Y = MathF.Ceiling(pos.Y + 0.5f);
-                else if (Game1.player.facingDirection == 0)
-                    pos.Y = MathF.Floor(pos.Y - 1f);
-                else
-                    pos.Y = MathF.Round(pos.Y - 0.25f);
-            }
-            return pos;
+            Vector2 grabTile = Game1.player.GetGrabTile();
+            bool previousValue = Game1.isCheckingNonMousePlacement;
+            Game1.isCheckingNonMousePlacement = true;
+            Vector2 placementTile = Utility.GetNearbyValidPlacementPosition(Game1.player, Game1.currentLocation, Game1.player.CurrentItem, (int)grabTile.X * 64 + 32, (int)grabTile.Y * 64 + 32) / 64;
+            Game1.isCheckingNonMousePlacement = previousValue;
+            return placementTile;
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -650,11 +621,12 @@ namespace InputTools
             if ((!Game1.wasMouseVisibleThisFrame && this.isItemChangedLastTick) || (this.isFarmerMovedLastTick && !isKeyboardMoveButtonHeld) || isControllerMoveButtonHeld)
             {
                 // If controller last used, placement tile is the grab tile i.e. tile in front of player
+                Vector2 placementTile = this.GetPlacementTileWithController();
                 Game1.timerUntilMouseFade = 0;
-                this.isPlacementTileMovedLastTick = this.lastTileHighlightPos != this.GetPlacementTileWithController();
+                this.isPlacementTileMovedLastTick = this.lastTileHighlightPos != placementTile;
                 if (this.isPlacementTileMovedLastTick)
                 {
-                    this.lastTileHighlightPos = this.GetPlacementTileWithController();
+                    this.lastTileHighlightPos = placementTile;
                     this.isLastPlacementTileFromCursor = false;
                     foreach (InputToolsAPI api in this.inputTools.Values)
                         api._Global.OnPlacementTileChanged(this.lastTileHighlightPos);

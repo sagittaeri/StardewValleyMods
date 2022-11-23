@@ -15,10 +15,16 @@ using StardewValley.Monsters;
 
 namespace InputTools
 {
+    public class ModConfig
+    {
+        public bool HideCursorInstantlyWhenControllerUsed { get; set; } = true;
+    }
+
     /// <summary>The mod entry point.</summary>
     public class ModEntry : Mod
     {
         public Dictionary<string, InputToolsAPI> inputTools = new Dictionary<string, InputToolsAPI>();
+        public ModConfig Config;
 
         internal List<SButton> confirmButtons = new List<SButton>();
         internal List<SButton> cancelButtons = new List<SButton>();
@@ -67,12 +73,36 @@ namespace InputTools
             this.Helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
             this.Helper.Events.GameLoop.GameLaunched += new EventHandler<GameLaunchedEventArgs>((s, e) =>
             {
+                // get Generic Mod Config Menu's API (if it's installed)
+                GenericModConfigMenu.IGenericModConfigMenuApi configMenu = this.Helper.ModRegistry.GetApi<GenericModConfigMenu.IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+                if (configMenu is null)
+                    return;
+
+                // register mod
+                configMenu.Register(
+                    mod: this.ModManifest,
+                    reset: () => this.Config = new ModConfig(),
+                    save: () => this.Helper.WriteConfig(this.Config)
+                );
+
+                // add some config options
+                configMenu.AddBoolOption(
+                    mod: this.ModManifest,
+                    name: () => this.Helper.Translation.Get("config.HideCursorInstantlyWhenControllerUsed.name"),
+                    tooltip: () => this.Helper.Translation.Get("config.HideCursorInstantlyWhenControllerUsed.tooltip"),
+                    getValue: () => this.Config.HideCursorInstantlyWhenControllerUsed,
+                    setValue: value => this.Config.HideCursorInstantlyWhenControllerUsed = value
+                );
+
                 this.ReloadKeybindings();
             });
             this.Helper.Events.GameLoop.SaveLoaded += new EventHandler<SaveLoadedEventArgs>((s, e) =>
             {
                 this.ReloadKeybindings();
             });
+
+            this.Config = this.Helper.ReadConfig<ModConfig>();
+
         }
 
         public override object GetApi(IModInfo mod)
@@ -618,11 +648,13 @@ namespace InputTools
             SButton moveButtonHeld = this.IsMoveButtonHeld();
             bool isKeyboardMoveButtonHeld = this.GetInputDevice(moveButtonHeld) == IInputToolsAPI.InputDevice.Keyboard;
             bool isControllerMoveButtonHeld = this.GetInputDevice(moveButtonHeld) == IInputToolsAPI.InputDevice.Controller;
-            if ((!Game1.wasMouseVisibleThisFrame && this.isItemChangedLastTick) || (this.isFarmerMovedLastTick && !isKeyboardMoveButtonHeld) || isControllerMoveButtonHeld)
+            if ((this.Config.HideCursorInstantlyWhenControllerUsed || !Game1.wasMouseVisibleThisFrame) && (
+                (!Game1.wasMouseVisibleThisFrame && this.isItemChangedLastTick) || (this.isFarmerMovedLastTick && !isKeyboardMoveButtonHeld)))
             {
                 // If controller last used, placement tile is the grab tile i.e. tile in front of player
                 Vector2 placementTile = this.GetPlacementTileWithController();
-                Game1.timerUntilMouseFade = 0;
+                if (this.Config.HideCursorInstantlyWhenControllerUsed)
+                    Game1.timerUntilMouseFade = 0;
                 this.isPlacementTileMovedLastTick = this.lastTileHighlightPos != placementTile;
                 if (this.isPlacementTileMovedLastTick)
                 {
@@ -632,7 +664,7 @@ namespace InputTools
                         api._Global.OnPlacementTileChanged(this.lastTileHighlightPos);
                 }
             }
-            else if ((this.isLastPlacementTileFromCursor && this.isItemChangedLastTick) || this.isCursorMovedLastTick || isKeyboardMoveButtonHeld)
+            else if ((this.isLastPlacementTileFromCursor && this.isItemChangedLastTick) || this.isCursorMovedLastTick || this.isFarmerMovedLastTick)
             {
                 // Otherwise placement tile is the tile under the cursor
                 this.isPlacementTileMovedLastTick = this.lastTileHighlightPos != this.Helper.Input.GetCursorPosition().Tile;

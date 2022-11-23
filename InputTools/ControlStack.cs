@@ -26,7 +26,7 @@ namespace InputTools
             this.inputTools = inputTools;
         }
 
-        public InputLayer LayerCreate(object layerKey, bool startActive = true, IInputToolsAPI.BlockBehavior blockBehaviour = IInputToolsAPI.BlockBehavior.Block)
+        public InputLayer Create(object layerKey, bool startActive = true, IInputToolsAPI.BlockBehavior blockBehaviour = IInputToolsAPI.BlockBehavior.Block)
         {
             if (layerKey == null)
             {
@@ -35,12 +35,27 @@ namespace InputTools
             }
             if (this.layers.Contains(layerKey))
                 this.inputTools.Monitor.Log($"Layer {layerKey} is being created more than once - remove it first if it's intentional", LogLevel.Warn);
-            this.layerDict[layerKey] = new InputLayer(this.inputTools, layerKey) { isActive = startActive, blockBehaviour = blockBehaviour };
+            this.layerDict[layerKey] = new InputLayer(this.inputTools, layerKey) { _isActive = startActive, _block = blockBehaviour };
             this.layers.Add(layerKey);
             return this.layerDict[layerKey];
         }
 
-        public void LayerRemove(object layerKey)
+        public InputLayer Pop()
+        {
+            if (this.layers.Count == 0)
+                return null;
+            object layerKey = this.layers[this.layers.Count - 1];
+            this.layers.Remove(layerKey);
+            if (this.layerDict.ContainsKey(layerKey))
+            {
+                InputLayer poppedLayer = this.layerDict[layerKey];
+                this.layerDict.Remove(layerKey);
+                return poppedLayer;
+            }
+            return null;
+        }
+
+        public void Remove(object layerKey)
         {
             if (layerKey == null)
                 return;
@@ -52,7 +67,15 @@ namespace InputTools
                 this.layerDict.Remove(layerKey);
         }
 
-        public IInputToolsAPI.IInputLayer GetLayer(object layerKey)
+        public IInputToolsAPI.IInputLayer Peek()
+        {
+            if (this.layers.Count == 0)
+                return null;
+            object layerKey = this.layers[this.layers.Count - 1];
+            return this.Get(layerKey);
+        }
+
+        public IInputToolsAPI.IInputLayer Get(object layerKey)
         {
             if (layerKey == null)
                 return this.inputTools.Global as InputLayer;
@@ -61,7 +84,7 @@ namespace InputTools
             return null;
         }
 
-        public void MoveToTopOfStack(object layerKey)
+        public void MoveToTop(object layerKey)
         {
             if (layerKey == null)
                 return;
@@ -73,20 +96,20 @@ namespace InputTools
 
         public bool IsLayerReachableByInput(object layerKey)
         {
-            InputLayer layer = this.GetLayer(layerKey) as InputLayer;
-            if (layer == null || !layer.isActive)
+            InputLayer layer = this.Get(layerKey) as InputLayer;
+            if (layer == null || !layer._isActive)
                 return false;
             if (layerKey == null)
-                return layer.isActive;
-            if (layerKey != null && this.inputTools._Global.blockBehaviour == IInputToolsAPI.BlockBehavior.Block)
+                return layer._isActive;
+            if (layerKey != null && this.inputTools._Global._block == IInputToolsAPI.BlockBehavior.Block)
                 return false;
 
             for (int i=this.layers.Count-1; i>=0; i--)
             {
                 if (layerKey == this.layers[i])
                     return true;
-                InputLayer layerI = this.GetLayer(this.layers[i]) as InputLayer;
-                if (layerI.blockBehaviour == IInputToolsAPI.BlockBehavior.Block)
+                InputLayer layerI = this.Get(this.layers[i]) as InputLayer;
+                if (layerI._block == IInputToolsAPI.BlockBehavior.Block)
                     break;
             }
             return false;

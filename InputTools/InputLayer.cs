@@ -16,8 +16,8 @@ namespace InputTools
 {
     public class InputLayer : IInputToolsAPI.IInputLayer
     {
-        internal bool isActive = true;
-        internal IInputToolsAPI.BlockBehavior blockBehaviour;
+        internal bool _isActive = true;
+        internal IInputToolsAPI.BlockBehavior _block;
 
         private InputToolsAPI inputTools;
         internal InputLayer(InputToolsAPI inputTools, object layerKey)
@@ -30,17 +30,17 @@ namespace InputTools
         {
             if (this == this.inputTools.Global)
             {
-                if (stopAtBlock && this.inputTools._Global.blockBehaviour == BlockBehavior.Block)
+                if (stopAtBlock && this.inputTools._Global._block == BlockBehavior.Block)
                     return null;
                 if (this.inputTools.stack.layers.Count > 0)
-                    return this.inputTools.stack.GetLayer(this.inputTools.stack.layers[this.inputTools.stack.layers.Count - 1]) as InputLayer;
+                    return this.inputTools.stack.Get(this.inputTools.stack.layers[this.inputTools.stack.layers.Count - 1]) as InputLayer;
             }
-            else if (!stopAtBlock || this.blockBehaviour == BlockBehavior.PassBelow)
+            else if (!stopAtBlock || this._block == BlockBehavior.PassBelow)
             {
                 for (int i = this.inputTools.stack.layers.Count - 1; i >= 0; i--)
                 {
                     if (this.inputTools.stack.layers[i] == this.layerKey && i > 0)
-                        return this.inputTools.stack.GetLayer(this.inputTools.stack.layers[i - 1]) as InputLayer;
+                        return this.inputTools.stack.Get(this.inputTools.stack.layers[i - 1]) as InputLayer;
                 }
             }
             return null;
@@ -419,6 +419,8 @@ namespace InputTools
         public event EventHandler<UpdateTickedEventArgs> LayerUpdateTicked;
 
         public object layerKey { get; }
+        public bool isActive { get { return this._isActive; } }
+        public IInputToolsAPI.BlockBehavior block { get { return this._block; } }
 
         public IInputToolsAPI.IInputLayer GetBelow(bool stopAtBlock = true)
         {
@@ -429,21 +431,21 @@ namespace InputTools
         {
             if (!this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
                 return false;
-            return this.inputTools.Helper.Input.GetState(button) == SButtonState.Pressed;
+            return this.inputTools.modEntry.IsButtonPressed(button);
         }
 
         public bool IsButtonHeld(SButton button)
         {
             if (!this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
                 return false;
-            return this.inputTools.Helper.Input.GetState(button) == SButtonState.Held;
+            return this.inputTools.modEntry.IsButtonHeld(button);
         }
 
         public bool IsButtonReleased(SButton button)
         {
             if (!this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
                 return false;
-            return this.inputTools.Helper.Input.GetState(button) == SButtonState.Released;
+            return this.inputTools.modEntry.IsButtonReleased(button);
         }
 
         public bool IsButtonPairPressed(Tuple<SButton, SButton> buttonPair)
@@ -457,7 +459,7 @@ namespace InputTools
         {
             if (!this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
                 return false;
-            return this.inputTools.buttonPairsPressing.Contains(buttonPair)
+            return this.inputTools.modEntry.buttonPairsPressing.Contains(buttonPair)
                 && (this.IsButtonHeld(buttonPair.Item1) && this.IsButtonHeld(buttonPair.Item2));
         }
 
@@ -465,7 +467,7 @@ namespace InputTools
         {
             if (!this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
                 return false;
-            return Game1.ticks - this.inputTools.tickButtonPairsReleased <= 1 && this.inputTools.buttonPairsReleased.Contains(buttonPair)
+            return Game1.ticks - this.inputTools.modEntry.tickButtonPairsReleased <= 1 && this.inputTools.modEntry.buttonPairsPressing.Contains(buttonPair)
                 && (this.IsButtonReleased(buttonPair.Item1) || this.IsButtonReleased(buttonPair.Item2));
         }
 
@@ -473,104 +475,100 @@ namespace InputTools
         {
             if (!this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
                 return false;
-            return this.inputTools.mouseWheelMovedLastTick;
+            return this.inputTools.modEntry.mouseWheelMovedLastTick;
         }
 
-        public IInputToolsAPI.InputDevice IsCursorMoved(bool mouse = true, bool controller = true)
+        public IInputToolsAPI.InputDevice IsCursorMoved()
         {
             this.inputTools.GetCurrentInputDevice();
             if (!this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
                 return IInputToolsAPI.InputDevice.None;
-            if (controller && this.inputTools.mouseMovedLastTick &&
+            if (this.inputTools.modEntry.mouseMovedLastTick &&
                 (this.IsButtonHeld(SButton.RightThumbstickUp)
                 || this.IsButtonHeld(SButton.RightThumbstickRight)
                 || this.IsButtonHeld(SButton.RightThumbstickDown)
                 || this.IsButtonHeld(SButton.RightThumbstickLeft)))
                 return IInputToolsAPI.InputDevice.Controller;
-            if (mouse && this.inputTools.mouseMovedLastTick)
+            if (this.inputTools.modEntry.mouseMovedLastTick)
                 return IInputToolsAPI.InputDevice.Mouse;
             return IInputToolsAPI.InputDevice.None;
         }
 
         public bool IsHeldItemBomb()
         {
-            Item item = Game1.player.CurrentItem;
-            if (item == null)
-                return false;
-            int itemID = item.ParentSheetIndex;
-            return Utility.IsNormalObjectAtParentSheetIndex(item, itemID) && (itemID == 286 || itemID == 287 || itemID == 288);
+            return this.inputTools.modEntry.IsHeldItemBomb();
         }
 
         public bool IsPlacementTileFromCursor()
         {
-            return this.inputTools.isLastPlacementTileFromCursor;
+            return this.inputTools.modEntry.isLastPlacementTileFromCursor;
         }
 
         public bool IsPlacementTileChanged()
         {
             if (!this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
                 return false;
-            return this.inputTools.isPlacementTileMovedLastTick;
+            return this.inputTools.modEntry.isPlacementTileMovedLastTick;
         }
 
         public SButton IsConfirmPressed()
         {
-            return this.IsAnyOfTheButtonsPressed(this.inputTools.confirmButtons);
+            return this.IsAnyOfTheButtonsPressed(this.inputTools.modEntry.confirmButtons);
         }
 
         public SButton IsConfirmHeld()
         {
-            return this.IsAnyOfTheButtonsHeld(this.inputTools.confirmButtons);
+            return this.IsAnyOfTheButtonsHeld(this.inputTools.modEntry.confirmButtons);
         }
 
         public SButton IsConfirmReleased()
         {
-            return this.IsAnyOfTheButtonsReleased(this.inputTools.confirmButtons);
+            return this.IsAnyOfTheButtonsReleased(this.inputTools.modEntry.confirmButtons);
         }
 
         public SButton IsCancelPressed()
         {
-            return this.IsAnyOfTheButtonsPressed(this.inputTools.cancelButtons);
+            return this.IsAnyOfTheButtonsPressed(this.inputTools.modEntry.cancelButtons);
         }
 
         public SButton IsCancelHeld()
         {
-            return this.IsAnyOfTheButtonsHeld(this.inputTools.cancelButtons);
+            return this.IsAnyOfTheButtonsHeld(this.inputTools.modEntry.cancelButtons);
         }
 
         public SButton IsCancelReleased()
         {
-            return this.IsAnyOfTheButtonsReleased(this.inputTools.cancelButtons);
+            return this.IsAnyOfTheButtonsReleased(this.inputTools.modEntry.cancelButtons);
         }
 
         public SButton IsAltPressed()
         {
-            return this.IsAnyOfTheButtonsPressed(this.inputTools.altButtons);
+            return this.IsAnyOfTheButtonsPressed(this.inputTools.modEntry.altButtons);
         }
 
         public SButton IsAltHeld()
         {
-            return this.IsAnyOfTheButtonsHeld(this.inputTools.altButtons);
+            return this.IsAnyOfTheButtonsHeld(this.inputTools.modEntry.altButtons);
         }
 
         public SButton IsAltReleased()
         {
-            return this.IsAnyOfTheButtonsReleased(this.inputTools.altButtons);
+            return this.IsAnyOfTheButtonsReleased(this.inputTools.modEntry.altButtons);
         }
 
         public SButton IsMenuPressed()
         {
-            return this.IsAnyOfTheButtonsPressed(this.inputTools.menuButtons);
+            return this.IsAnyOfTheButtonsPressed(this.inputTools.modEntry.menuButtons);
         }
 
         public SButton IsMenuHeld()
         {
-            return this.IsAnyOfTheButtonsHeld(this.inputTools.menuButtons);
+            return this.IsAnyOfTheButtonsHeld(this.inputTools.modEntry.menuButtons);
         }
 
         public SButton IsMenuReleased()
         {
-            return this.IsAnyOfTheButtonsReleased(this.inputTools.menuButtons);
+            return this.IsAnyOfTheButtonsReleased(this.inputTools.modEntry.menuButtons);
         }
 
         public SButton IsMoveButtonPressed()
@@ -626,62 +624,62 @@ namespace InputTools
 
         public SButton IsMoveRightPressed()
         {
-            return this.IsAnyOfTheButtonsPressed(this.inputTools.moveRightButtons);
+            return this.IsAnyOfTheButtonsPressed(this.inputTools.modEntry.moveRightButtons);
         }
 
         public SButton IsMoveRightHeld()
         {
-            return this.IsAnyOfTheButtonsHeld(this.inputTools.moveRightButtons);
+            return this.IsAnyOfTheButtonsHeld(this.inputTools.modEntry.moveRightButtons);
         }
 
         public SButton IsMoveRightReleased()
         {
-            return this.IsAnyOfTheButtonsReleased(this.inputTools.moveRightButtons);
+            return this.IsAnyOfTheButtonsReleased(this.inputTools.modEntry.moveRightButtons);
         }
 
         public SButton IsMoveDownPressed()
         {
-            return this.IsAnyOfTheButtonsPressed(this.inputTools.moveDownButtons);
+            return this.IsAnyOfTheButtonsPressed(this.inputTools.modEntry.moveDownButtons);
         }
 
         public SButton IsMoveDownHeld()
         {
-            return this.IsAnyOfTheButtonsHeld(this.inputTools.moveDownButtons);
+            return this.IsAnyOfTheButtonsHeld(this.inputTools.modEntry.moveDownButtons);
         }
 
         public SButton IsMoveDownReleased()
         {
-            return this.IsAnyOfTheButtonsReleased(this.inputTools.moveDownButtons);
+            return this.IsAnyOfTheButtonsReleased(this.inputTools.modEntry.moveDownButtons);
         }
 
         public SButton IsMoveLeftPressed()
         {
-            return this.IsAnyOfTheButtonsPressed(this.inputTools.moveLeftButtons);
+            return this.IsAnyOfTheButtonsPressed(this.inputTools.modEntry.moveLeftButtons);
         }
 
         public SButton IsMoveLeftHeld()
         {
-            return this.IsAnyOfTheButtonsHeld(this.inputTools.moveLeftButtons);
+            return this.IsAnyOfTheButtonsHeld(this.inputTools.modEntry.moveLeftButtons);
         }
 
         public SButton IsMoveLeftReleased()
         {
-            return this.IsAnyOfTheButtonsReleased(this.inputTools.moveLeftButtons);
+            return this.IsAnyOfTheButtonsReleased(this.inputTools.modEntry.moveLeftButtons);
         }
 
         public SButton IsMoveUpPressed()
         {
-            return this.IsAnyOfTheButtonsPressed(this.inputTools.moveUpButtons);
+            return this.IsAnyOfTheButtonsPressed(this.inputTools.modEntry.moveUpButtons);
         }
 
         public SButton IsMoveUpHeld()
         {
-            return this.IsAnyOfTheButtonsHeld(this.inputTools.moveUpButtons);
+            return this.IsAnyOfTheButtonsHeld(this.inputTools.modEntry.moveUpButtons);
         }
 
         public SButton IsMoveUpReleased()
         {
-            return this.IsAnyOfTheButtonsReleased(this.inputTools.moveUpButtons);
+            return this.IsAnyOfTheButtonsReleased(this.inputTools.modEntry.moveUpButtons);
         }
 
         public Tuple<SButton, SButton> IsActionPressed(string actionID)
@@ -720,24 +718,24 @@ namespace InputTools
             return null;
         }
 
-        public Vector2 GetMoveAxis(bool keyboard = true, bool controller = true)
+        public Vector2 GetMoveAxis()
         {
             SButton moveRight = this.IsMoveRightHeld();
             if (moveRight == SButton.LeftThumbstickRight)
                 return Game1.input.GetGamePadState().ThumbSticks.Left;
             if (moveRight == SButton.RightThumbstickRight)
                 return Game1.input.GetGamePadState().ThumbSticks.Right;
-            SButton moveDown = this.IsMoveRightHeld();
+            SButton moveDown = this.IsMoveDownHeld();
             if (moveDown == SButton.LeftThumbstickDown)
                 return Game1.input.GetGamePadState().ThumbSticks.Left;
             if (moveDown == SButton.RightThumbstickDown)
                 return Game1.input.GetGamePadState().ThumbSticks.Right;
-            SButton moveLeft = this.IsMoveRightHeld();
+            SButton moveLeft = this.IsMoveLeftHeld();
             if (moveLeft == SButton.LeftThumbstickLeft)
                 return Game1.input.GetGamePadState().ThumbSticks.Left;
             if (moveLeft == SButton.RightThumbstickLeft)
                 return Game1.input.GetGamePadState().ThumbSticks.Right;
-            SButton moveUp = this.IsMoveRightHeld();
+            SButton moveUp = this.IsMoveUpHeld();
             if (moveUp == SButton.LeftThumbstickUp)
                 return Game1.input.GetGamePadState().ThumbSticks.Left;
             if (moveUp == SButton.RightThumbstickUp)
@@ -759,71 +757,37 @@ namespace InputTools
 
         public Vector2 GetMouseWheelPos()
         {
-            return new Vector2(Game1.input.GetMouseState().HorizontalScrollWheelValue, Game1.input.GetMouseState().ScrollWheelValue);
+            return this.inputTools.modEntry.GetMouseWheelPos();
         }
 
         public Vector2 GetPlacementTile()
         {
-            return this.inputTools.lastTileHighlightPos;
+            return this.inputTools.modEntry.lastTileHighlightPos;
         }
 
         public Vector2 GetPlacementTileWithController()
         {
-            Vector2 pos = Game1.player.Position / Game1.tileSize;
-
-            if (this.IsHeldItemBomb())
-            {
-                if (Game1.player.facingDirection == 1)
-                    pos.X = MathF.Round(pos.X + 0.47f);
-                else if (Game1.player.facingDirection == 3)
-                    pos.X = MathF.Round(pos.X - 0.45f);
-                else
-                    pos.X = MathF.Round(pos.X - 0f);
-
-                if (Game1.player.facingDirection == 2)
-                    pos.Y = MathF.Round(pos.Y + 0.05f);
-                else if (Game1.player.facingDirection == 0)
-                    pos.Y = MathF.Round(pos.Y - 0.58f);
-                else
-                    pos.Y = MathF.Round(pos.Y - 0.2f);
-            }
-            else
-            {
-                if (Game1.player.facingDirection == 1)
-                    pos.X = MathF.Ceiling(pos.X + 0.85f);
-                else if (Game1.player.facingDirection == 3)
-                    pos.X = MathF.Floor(pos.X - 0.88f);
-                else
-                    pos.X = MathF.Round(pos.X - 0f);
-
-                if (Game1.player.facingDirection == 2)
-                    pos.Y = MathF.Ceiling(pos.Y + 0.5f);
-                else if (Game1.player.facingDirection == 0)
-                    pos.Y = MathF.Floor(pos.Y - 1f);
-                else
-                    pos.Y = MathF.Round(pos.Y - 0.25f);
-            }
-            return pos;
+            return this.inputTools.modEntry.GetPlacementTileWithController();
         }
 
-        public void SetLayerActive(bool active)
+        public void SetActive(bool active)
         {
-            this.isActive = active;
+            this._isActive = active;
         }
 
-        public void SetLayerBlockBehaviour(IInputToolsAPI.BlockBehavior layerBlockBehaviour)
+        public void SetBlock(IInputToolsAPI.BlockBehavior block)
         {
-            this.blockBehaviour = layerBlockBehaviour;
+            this._block = block;
         }
 
-        public void MoveToTopOfStack()
+        public void MoveToTop()
         {
             if (this.layerKey == null || this == this.inputTools.Global)
                 return;
-            this.inputTools.stack.MoveToTopOfStack(this.layerKey);
+            this.inputTools.stack.MoveToTop(this.layerKey);
         }
 
-        public bool IsLayerReachableByInput()
+        public bool IsReachableByInput()
         {
             if (this == this.inputTools.Global)
                 return true;
@@ -836,7 +800,7 @@ namespace InputTools
         {
             if (this.layerKey == null || this == this.inputTools.Global)
                 return;
-            this.inputTools.stack.LayerRemove(this.layerKey);
+            this.inputTools.stack.Remove(this.layerKey);
         }
     }
 }

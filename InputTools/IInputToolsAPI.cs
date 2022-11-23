@@ -54,8 +54,8 @@ namespace InputTools
         /// <returns>The input device enum</returns>
         public IInputToolsAPI.InputDevice GetCurrentInputDevice();
 
-        /// <summary>Gets the most-recently active input device</summary>
-        /// <returns>The input device enum</returns>
+        /// <summary>Checks if keybinding has changed in SDV config. Known issue: Reset button doesn't register.</summary>
+        /// <returns>If keybinging has changed in config</returns>
         public bool IsKeybindingConfigChanged();
 
         /// <summary>List the other mods that have also loaded InputTools.</summary>
@@ -67,42 +67,42 @@ namespace InputTools
         /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
         public IInputToolsAPI.InputDevice GetInputDevice(SButton button);
 
-        /// <summary>Checks if a button is the Confirm action. Keyboard Enter and Controller A buttons are assigned to Confirm.</summary>
+        /// <summary>Checks if a button is the Confirm action. SDV keybindings and Controller A buttons are assigned to Confirm.</summary>
         /// <param name="button">The button enum.</param>
-        /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
+        /// <returns>True if yes.</returns>
         public bool IsConfirmButton(SButton button);
 
-        /// <summary>Checks if a button is the Cancel action. Keyboard Escape (same with Menu) and Controller B buttons are assigned to Cancel.</summary>
+        /// <summary>Checks if a button is the Cancel action. SDV keybindings and Controller B buttons are assigned to Cancel.</summary>
         /// <param name="button">The button enum.</param>
-        /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
+        /// <returns>True if yes.</returns>
         public bool IsCancelButton(SButton button);
 
-        /// <summary>Checks if a button is the Alt action. Keyboard Space and Controller X buttons are assigned to Alt.</summary>
+        /// <summary>Checks if a button is the Alt action. SDV keybindings and Controller X buttons are assigned to Alt.</summary>
         /// <param name="button">The button enum.</param>
-        /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
+        /// <returns>True if yes.</returns>
         public bool IsAltButton(SButton button);
 
-        /// <summary>Checks if a button is the Menu action. Keyboard Escape (same with Cancel) and Controller Y buttons are assigned to Menu.</summary>
+        /// <summary>Checks if a button is the Menu action. SDV keybindings and Controller Y buttons are assigned to Menu.</summary>
         /// <param name="button">The button enum.</param>
-        /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
+        /// <returns>True if yes.</returns>
         public bool IsMenuButton(SButton button);
 
-        /// <summary>Checks if a button is the Move-Right action. Keyboard D and Controller DPad/Left-Thumbstick Right buttons are assigned to Move-Right.</summary>
+        /// <summary>Checks if a button is the Move-Right action. SDV keybindings and Controller DPad/Left-Thumbstick Right buttons are assigned to Move-Right.</summary>
         /// <param name="button">The button enum.</param>
-        /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
+        /// <returns>True if yes.</returns>
         public bool IsMoveRightButton(SButton button);
 
-        /// <summary>Checks if a button is the Move-Down action. Keyboard S and Controller DPad/Left-Thumbstick Down buttons are assigned to Move-Down.</summary>
+        /// <summary>Checks if a button is the Move-Down action. SDV keybindings and Controller DPad/Left-Thumbstick Down buttons are assigned to Move-Down.</summary>
         /// <param name="button">The button enum.</param>
-        /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
+        /// <returns>True if yes.</returns>
         public bool IsMoveDownButton(SButton button);
 
-        /// <summary>Checks if a button is the Move-Left action. Keyboard A and Controller DPad/Left-Thumbstick Left buttons are assigned to Move-Left.</summary>
+        /// <summary>Checks if a button is the Move-Left action. SDV keybindings and Controller DPad/Left-Thumbstick Left buttons are assigned to Move-Left.</summary>
         /// <param name="button">The button enum.</param>
-        /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
+        /// <returns>True if yes.</returns>
         public bool IsMoveLeftButton(SButton button);
 
-        /// <summary>Checks if a button is the Move-Up action. Keyboard W and Controller DPad/Left-Thumbstick Up buttons are assigned to Move-Up.</summary>
+        /// <summary>Checks if a button is the Move-Up action. SDV keybindings and Controller DPad/Left-Thumbstick Up buttons are assigned to Move-Up.</summary>
         /// <param name="button">The button enum.</param>
         /// <returns>Returns the input device the button is from if a valid button, and InputDevice.None is invalid.</returns>
         public bool IsMoveUpButton(SButton button);
@@ -156,13 +156,25 @@ namespace InputTools
         /// <summary>Creates a new custom Input Layer (i.e. object where all input listeners and methods are) at the top of the stack</summary>
         /// <param name="layerKey">Layer ID, can be any object</param>
         /// <param name="startActive">Whether or not input events are processed</param>
-        /// <param name="blockBehaviour">Whether or not input events are sent down to the layer below</param>
-        /// <returns></returns>
-        public IInputToolsAPI.IInputLayer LayerCreate(object layerKey, bool startActive = true, IInputToolsAPI.BlockBehavior blockBehaviour = IInputToolsAPI.BlockBehavior.Block);
+        /// <param name="block">Whether or not input events are sent down to the layer below</param>
+        /// <returns>The created Input Layer</returns>
+        public IInputToolsAPI.IInputLayer CreateLayer(object layerKey, bool startActive = true, IInputToolsAPI.BlockBehavior block = IInputToolsAPI.BlockBehavior.Block);
+
+        /// <summary>Removes Input Layer at the top of the stack. This will disconnect any listeners as well.</summary>
+        /// <returns>The popped Input Layer. If the stack is empty it returns null.</returns>
+        public IInputToolsAPI.IInputLayer PopLayer();
 
         /// <summary>Removes a custom Input Layer. This will disconnect any listeners as well.</summary>
         /// <param name="layerKey">Layer ID, can be any object</param>
-        public void LayerRemove(object layerKey);
+        public void RemoveLayer(object layerKey);
+
+        /// <summary>Gets Input Layer at the top of the stack.</summary>
+        /// <returns>The peeked Input Layer. If the stack is empty it returns null.</returns>
+        public IInputToolsAPI.IInputLayer PeekLayer();
+
+        /// <summary>Gets an Input Layer</summary>
+        /// <param name="layerKey">Layer ID, can be any object</param>
+        /// <returns>The Input Layer from your stack if layerKey is null. If layerKey is null, returns the Global Input Layer</returns>
         public IInputToolsAPI.IInputLayer GetLayer(object layerKey);
 
         /// <summary>The "default" Input Layer that sits above all the custom layers</summary>
@@ -275,6 +287,10 @@ namespace InputTools
 
             /// <summary>Reference to the layer ID</summary>
             public object layerKey { get; }
+            /// <summary>Is the active i.e. firing input events</summary>
+            public bool isActive { get; }
+            /// <summary>Block behaviour of layer i.e. is it stopping inputs from continuing down the stack</summary>
+            public IInputToolsAPI.BlockBehavior block { get; }
 
             /// <summary>Gets the layer directly below this one.</summary>
             /// <param name="stopAtBlock">If false ignore the block settings and always get the layer below</param>
@@ -316,11 +332,9 @@ namespace InputTools
             /// <returns>true if mouse wheel moved this tick</returns>
             public bool IsMouseWheelMoved();
 
-            /// <summary>Checks if the cursor is moved this tick. Always false if layer is inactive</summary>
-            /// <param name="mouse">Check mouse movements</param>
-            /// <param name="controller">Check controller right stick</param>
+            /// <summary>Checks if the cursor is moved this tick. Always None if layer is inactive</summary>
             /// <returns>The device movement was from this tick. If both, Controller is returned. If not moved, None.</returns>
-            public IInputToolsAPI.InputDevice IsCursorMoved(bool mouse = true, bool controller = true);
+            public IInputToolsAPI.InputDevice IsCursorMoved();
 
             /// <summary>Checks if the currently held item is a bomb. Used for placement tile calculattion.</summary>
             /// <returns>true is a bomb</returns>
@@ -334,223 +348,132 @@ namespace InputTools
             /// <returns></returns>
             public bool IsPlacementTileChanged();
 
-            /// <summary>Checks if the Confirm action was pressed this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard inputs</param>
-            /// <param name="controller">Checks controller inputs</param>
-            /// <returns>The device was pressed from. If both, Controller. If not pressed, None.</returns>
+            /// <summary>Checks if the Confirm action was pressed this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was pressed from.If not pressed, None.</returns>
             public SButton IsConfirmPressed();
 
-            /// <summary>Checks if the Confirm action was held since last tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Enter</param>
-            /// <param name="controller">Checks controller A</param>
-            /// <returns>The device was held from. If both, Controller. If not held, None.</returns>
+            /// <summary>Checks if the Confirm action was held since last tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was held from. If not held, None.</returns>
             public SButton IsConfirmHeld();
 
-            /// <summary>Checks if the Confirm action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Enter</param>
-            /// <param name="controller">Checks controller A</param>
-            /// <returns>The device was released from. If both, Controller. If not released, None.</returns>
+            /// <summary>Checks if the Confirm action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. If not released, None.</returns>
             public SButton IsConfirmReleased();
 
-            /// <summary>Checks if the Cancel action was pressed this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Enter</param>
-            /// <param name="controller">Checks controller A</param>
-            /// <returns>The device was pressed from. If both, Controller. If not pressed, None.</returns>
+            /// <summary>Checks if the Cancel action was pressed this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was pressed from. If not pressed, None.</returns>
             public SButton IsCancelPressed();
 
-            /// <summary>Checks if the Cancel action was held since last tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Escape</param>
-            /// <param name="controller">Checks controller B</param>
-            /// <returns>The device was held from. If both, Controller. If not held, None.</returns>
+            /// <summary>Checks if the Cancel action was held since last tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was held from. If not held, None.</returns>
             public SButton IsCancelHeld();
 
-            /// <summary>Checks if the Cancel action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Escape</param>
-            /// <param name="controller">Checks controller B</param>
-            /// <returns>The device was released from. If both, Controller. If not released, None.</returns>
+            /// <summary>Checks if the Cancel action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. If not released, None.</returns>
             public SButton IsCancelReleased();
 
-            /// <summary>Checks if the Alt action was pressed this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Space</param>
-            /// <param name="mouse"> Checks mouse right click</param>
-            /// <param name="controller">Checks controller X</param>
-            /// <returns>The device was pressed from. If both, Controller. If not pressed, None.</returns>
+            /// <summary>Checks if the Alt action was pressed this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was pressed from. If not pressed, None.</returns>
             public SButton IsAltPressed();
 
-            /// <summary>Checks if the Alt action was held since last tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Space</param>
-            /// <param name="mouse"> Checks mouse right click</param>
-            /// <param name="controller">Checks controller X</param>
-            /// <returns>The device was held from. If both, Controller. If not held, None.</returns>
+            /// <summary>Checks if the Alt action was held since last tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was held from. If not held, None.</returns>
             public SButton IsAltHeld();
 
-            /// <summary>Checks if the Alt action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Space</param>
-            /// <param name="mouse"> Checks mouse right click</param>
-            /// <param name="controller">Checks controller X</param>
-            /// <returns>The device was released from. If both, Controller. If not released, None.</returns>
+            /// <summary>Checks if the Alt action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. If not released, None.</returns>
             public SButton IsAltReleased();
 
-            /// <summary>Checks if the Menu action was pressed this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Escape</param>
-            /// <param name="controller">Checks controller Y</param>
-            /// <returns>The device was pressed from. If both, Controller. If not pressed, None.</returns>
+            /// <summary>Checks if the Menu action was pressed this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was pressed from. If not pressed, None.</returns>
             public SButton IsMenuPressed();
 
-            /// <summary>Checks if the Menu action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Escape</param>
-            /// <param name="controller">Checks controller Y</param>
-            /// <returns>The device was released from. If both, Controller. If not held, None.</returns>
+            /// <summary>Checks if the Menu action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. If not held, None.</returns>
             public SButton IsMenuHeld();
 
-            /// <summary>Checks if the Menu action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboard"> Checks keyboard Escape</param>
-            /// <param name="controller">Checks controller Y</param>
-            /// <returns>The device was released from. If both, Controller. If not released, None.</returns>
+            /// <summary>Checks if the Menu action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. If not released, None.</returns>
             public SButton IsMenuReleased();
 
-            /// <summary>Checks if any Move action was pressed this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was pressed from. None is not pressed.</returns>
+            /// <summary>Checks if any Move action was pressed this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was pressed from. None is not pressed.</returns>
             public SButton IsMoveButtonPressed();
 
-            /// <summary>Checks if any Move action was held since last tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was held from. None is not held.</returns>
+            /// <summary>Checks if any Move action was held since last tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was held from. None is not held.</returns>
             public SButton IsMoveButtonHeld();
 
-            /// <summary>Checks if any Move action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was released from. None is not released.</returns>
+            /// <summary>Checks if any Move action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. None is not released.</returns>
             public SButton IsMoveButtonReleased();
 
-            /// <summary>Checks if Move-Right action was pressed this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was pressed from. None is not pressed.</returns>
+            /// <summary>Checks if Move-Right action was pressed this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was pressed from. None is not pressed.</returns>
             public SButton IsMoveRightPressed();
 
-            /// <summary>Checks if Move-Right action was held since last tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was held from. None is not held.</returns>
+            /// <summary>Checks if Move-Right action was held since last tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was held from. None is not held.</returns>
             public SButton IsMoveRightHeld();
 
-            /// <summary>Checks if Move-Right action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was released from. None is not released.</returns>
+            /// <summary>Checks if Move-Right action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. None is not released.</returns>
             public SButton IsMoveRightReleased();
 
-            /// <summary>Checks if Move-Down action was pressed this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was pressed from. None is not pressed.</returns>
+            /// <summary>Checks if Move-Down action was pressed this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was pressed from. None is not pressed.</returns>
             public SButton IsMoveDownPressed();
 
-            /// <summary>Checks if Move-Down action was held since last tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was held from. None is not held.</returns>
+            /// <summary>Checks if Move-Down action was held since last tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was held from. None is not held.</returns>
             public SButton IsMoveDownHeld();
 
-            /// <summary>Checks if Move-Down action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was released from. None is not released.</returns>
+            /// <summary>Checks if Move-Down action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. None is not released.</returns>
             public SButton IsMoveDownReleased();
 
-            /// <summary>Checks if Move-Left action was pressed this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was pressed from. None is not pressed.</returns>
+            /// <summary>Checks if Move-Left action was pressed this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was pressed from. None is not pressed.</returns>
             public SButton IsMoveLeftPressed();
 
-            /// <summary>Checks if Move-Left action was held since last tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was held from. None is not held.</returns>
+            /// <summary>Checks if Move-Left action was held since last tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was held from. None is not held.</returns>
             public SButton IsMoveLeftHeld();
 
-            /// <summary>Checks if Move-Left action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was released from. None is not released.</returns>
+            /// <summary>Checks if Move-Left action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. None is not released.</returns>
             public SButton IsMoveLeftReleased();
 
-            /// <summary>Checks if Move-Up action was pressed this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was pressed from. None is not pressed.</returns>
+            /// <summary>Checks if Move-Up action was pressed this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was pressed from. None is not pressed.</returns>
             public SButton IsMoveUpPressed();
 
-            /// <summary>Checks if Move-Up action was held since last tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was held from. None is not held.</returns>
+            /// <summary>Checks if Move-Up action was held since last tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was held from. None is not held.</returns>
             public SButton IsMoveUpHeld();
 
-            /// <summary>Checks if Move-Up action was released this tick. Always false if layer is inactive.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
-            /// <returns>The input device it was released from. None is not released.</returns>
+            /// <summary>Checks if Move-Up action was released this tick. Always None if layer is inactive.</summary>
+            /// <returns>The button it was released from. None is not released.</returns>
             public SButton IsMoveUpReleased();
 
             /// <summary>Checks if a custom action was pressed this tick. Always false if layer is inactive.</summary>
             /// <param name="actionID">ID of the registered action</param>
-            /// <returns>The button pair that triggered this action. Null if not pressed.</returns>
+            /// <returns>The button pair it was pressed from. Null if not pressed.</returns>
             public Tuple<SButton, SButton> IsActionPressed(string actionID);
 
             /// <summary>Checks if a custom action was held since last tick. Always false if layer is inactive.</summary>
             /// <param name="actionID">ID of the registered action</param>
-            /// <returns>The button pair that triggered this action. Null if not held.</returns>
+            /// <returns>The button pair it was held with. Null if not held.</returns>
             public Tuple<SButton, SButton> IsActionHeld(string actionID);
 
             /// <summary>Checks if a custom action was released this tick. Always false if layer is inactive.</summary>
             /// <param name="actionID">ID of the registered action</param>
-            /// <returns>The button pair that triggered this action. Null if not released.</returns>
+            /// <returns>The button pair it was released from. Null if not released.</returns>
             public Tuple<SButton, SButton> IsActionReleased(string actionID);
 
-            /// <summary>Gets the Move action axis values. Note that it's not sensitive to thumbstick distance/velocity.</summary>
-            /// <param name="keyboardWASD">Checks keyboard WASD</param>
-            /// <param name="keyboardArrows">Checks keyboard arrow keys</param>
-            /// <param name="controllerDPad">Checks controller DPad</param>
-            /// <param name="controllerThumbstick">Checks controller left thumbstick</param>
+            /// <summary>Gets the Move action axis values. Note that it's sensitive to thumbstick distance/velocity.</summary>
             /// <returns>X and Y are either -1 (left, up), 0 (center), or +1 (right, down).</returns>
-            public Vector2 GetMoveAxis(bool keyboard = true, bool controller = true);
+            public Vector2 GetMoveAxis();
 
             /// <summary>Gets the unscaled screen pixels position of the cursor</summary>
             /// <returns>Unscaled screen pixels position</returns>
@@ -574,18 +497,18 @@ namespace InputTools
 
             /// <summary>Sets this Input Layer active to receive inputs, or inactive to ignore inputs.</summary>
             /// <param name="active">True if active</param>
-            public void SetLayerActive(bool active);
+            public void SetActive(bool active);
 
             /// <summary>Sets this Input Stack's block behaviour to determine whether to pass inputs to the layer below.</summary>
-            /// <param name="blockBehaviour">Block stops inputs from continuing, PassBelow allows inputs to continue downwards.</param>
-            public void SetLayerBlockBehaviour(IInputToolsAPI.BlockBehavior blockBehaviour);
+            /// <param name="block">Block stops inputs from continuing, PassBelow allows inputs to continue downwards.</param>
+            public void SetBlock(IInputToolsAPI.BlockBehavior block);
 
-            /// <summary>Moves this Input Layer to the top (but still below the Global layer) so that it can process inputs before the other custom layers.</summary>
-            public void MoveToTopOfStack();
+            /// <summary>Moves this Input Layer to the top of the stack (but still below the Global layer) so that it can process inputs before the other custom layers.</summary>
+            public void MoveToTop();
 
             /// <summary>Checks if this Input Layer is reachable or blocked by a layer above. Also automatically false if inactive.</summary>
             /// <returns>True if layer is reachable and active i.e. processing inputs.</returns>
-            public bool IsLayerReachableByInput();
+            public bool IsReachableByInput();
 
             /// <summary>Deletes this Input Layer.</summary>
             public void RemoveSelf();

@@ -1,31 +1,22 @@
 namespace SmartHorses
 {
     using HarmonyLib;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using StardewModdingAPI;
     using StardewValley;
     using StardewValley.Characters;
     using StardewValley.Extensions;
-    using StardewValley.GameData.Minecarts;
-    using StardewValley.Locations;
-    using StardewValley.TerrainFeatures;
+    using StardewValley.Menus;
     using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Linq;
-    using System.Reflection;
-    using System.Reflection.Emit;
-    using xTile;
+    using System.Numerics;
     using xTile.Dimensions;
     using xTile.Layers;
-    using xTile.Tiles;
 
     internal class InteractPatches
     {
         private static SmartHorses mod;
         private static bool allowInteractWhileRiding = false;
         private static Horse tempHorse = null;
+        private static bool noOffset = false;
 
         internal static void ApplyPatches(SmartHorses smartHorses, Harmony harmony)
         {
@@ -60,17 +51,17 @@ namespace SmartHorses
                 postfix: new HarmonyMethod(typeof(InteractPatches), nameof(HorseGetBoundingBox)));
 
             harmony.Patch(
-               original: AccessTools.Method(typeof(Farmer), nameof(Farmer.OnWarp)),
-               postfix: new HarmonyMethod(typeof(InteractPatches), nameof(OnWarp)));
-
-            harmony.Patch(
                original: AccessTools.Method(typeof(Game1), "onFadedBackInComplete"),
                postfix: new HarmonyMethod(typeof(InteractPatches), nameof(onFadedBackInComplete)));
-            
 
-            // mod.Helper.Events.Player.Warped += (sender, e) => {
-            //     OnWarp(Game1.player);
-            // };
+            harmony.Patch(
+               original: AccessTools.Method(typeof(Horse), nameof(Horse.dismount)),
+               prefix: new HarmonyMethod(typeof(InteractPatches), nameof(Dismount)));
+
+            mod.Helper.Events.Player.Warped += (sender, e) =>
+            {
+                OnWarp(Game1.player);
+            };
         }
 
         public static bool GameLocationCheckActionPrefix(GameLocation __instance, Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
@@ -187,6 +178,20 @@ namespace SmartHorses
             return true;
         }
 
+        public static bool Dismount(Horse __instance)
+        {
+            //Console.WriteLine("DISMOUNTING HORSE LOC:{0}   GAME LOC:{1}   PLAYER LOC:{2}", Game1.player.mount.currentLocation.Name, Game1.currentLocation.Name, Game1.player.currentLocation.Name);
+            //Console.WriteLine("---DisplayFarmer:{0}   IsWorldReady:{1}   EventUp:{2}   Minigame:{3}   Festival:{4}", Game1.displayFarmer, Context.IsWorldReady, Game1.CurrentEvent != null || Game1.eventUp, Game1.currentMinigame, Game1.isFestival());
+
+            // Special case for when opening a shop menu and previewing the farm
+            if (!Game1.displayFarmer && Context.IsWorldReady && !Game1.eventUp && Game1.currentMinigame == null && !Game1.isFestival())
+            {
+                __instance.currentLocation = Game1.player.currentLocation;
+                noOffset = true;
+            }
+            return true;
+        }
+
         public static void HorseGetBoundingBox(Horse __instance, ref Microsoft.Xna.Framework.Rectangle __result)
         {
             if (mod.Config.ThinHorse)
@@ -200,7 +205,6 @@ namespace SmartHorses
 
         public static void OnWarp(Farmer __instance)
         {
-            Console.WriteLine("OnWarp");
             if (Game1.player.CanMove)
                 PutHorseInFrontOfPlayer(__instance, true);
             else
@@ -209,13 +213,15 @@ namespace SmartHorses
 
         public static void onFadedBackInComplete(Game1 __instance)
         {
-            Console.WriteLine("onFadedBackInComplete");
             PutHorseInFrontOfPlayer(Game1.player, true);
         }
 
         public static void PutHorseInFrontOfPlayer(Farmer who, bool mount = false)
         {
             if (Game1.player.mount != null)
+                return;
+
+            if (!Game1.displayFarmer)
                 return;
 
             // 1. Safety Check: Ignore events if the world isn't fully loaded yet
@@ -231,24 +237,22 @@ namespace SmartHorses
                 return;
 
             // 4. Safety Check: Skip if a temporary festival map layout is active
-            if (Game1.player.currentLocation.isFestival())
+            if (Game1.isFestival())
                 return;
 
             Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int)Game1.player.Tile.X * 64, (int)Game1.player.Tile.Y * 64, 64, 64);
             rectangle.Inflate(128, 128);
             foreach (NPC character in Game1.player.currentLocation.characters)
             {
-                if (character != null && !character.IsMonster && character is Horse)
-                {
-                    Console.WriteLine("HORSE FOUND IN LOCATION: {0}", character.tileLocation.ToString());
-                }
                 if (character != null && !character.IsMonster && character is Horse && ((Horse)character).GetBoundingBox().Intersects(rectangle))
                 {
-                    Console.WriteLine("HORSE FOUND NEARBY");
                     // Move nearby horse 1 tile in front of farmer after changing maps (prevents players from accidentally changing map back when mounting a horse at the edge of map)
-                    character.FacingDirection = Game1.player.FacingDirection;
-                    character.setTileLocation(Game1.player.Tile + Utility.DirectionsTileVectors[character.FacingDirection]);
-                    if (mount && mod.Config.AutoMountAfterWarp)
+                    if (noOffset)
+                        character.setTileLocation(Game1.player.Tile);
+                    else
+                        character.setTileLocation(Game1.player.Tile + Utility.DirectionsTileVectors[Game1.player.FacingDirection]);
+                    noOffset = false;
+                    if (mount && mod.Config.MountNearbyHorseWhenChangingMap)
                     {
                         // Auto mount nearby horse after changing maps
                         bool result = ((Horse)character).checkAction(Game1.player, Game1.player.currentLocation);

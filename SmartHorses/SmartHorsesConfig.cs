@@ -1,10 +1,6 @@
 namespace SmartHorses
 {
     using StardewModdingAPI;
-    using StardewModdingAPI.Utilities;
-    using StardewValley;
-    using System;
-
     using GenericModConfigMenu;
 
 

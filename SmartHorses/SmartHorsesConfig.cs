@@ -87,14 +87,6 @@ namespace SmartHorses
                 setValue: value => mod.Config.OnlyDismountOnToolActionInput = value
             );
 
-            api.AddBoolOption(
-                mod: manifest,
-                name: () => mod.Helper.Translation.Get("config.ThinHorse.name"),
-                tooltip: () => mod.Helper.Translation.Get("config.ThinHorse.tooltip"),
-                getValue: () => mod.Config.ThinHorse,
-                setValue: value => mod.Config.ThinHorse = value
-            );
-
             if (mod.HasHorseOverhaulMod)
             {
                 api.AddParagraph(
@@ -116,6 +108,14 @@ namespace SmartHorses
                     text: () => mod.Helper.Translation.Get("config.HasHorseSqueezeMod")
                 );
             }
+
+            api.AddBoolOption(
+                mod: manifest,
+                name: () => mod.Helper.Translation.Get("config.ThinHorse.name"),
+                tooltip: () => mod.Helper.Translation.Get("config.ThinHorse.tooltip"),
+                getValue: () => mod.Config.ThinHorse,
+                setValue: value => mod.Config.ThinHorse = value
+            );
         }
     }
 }

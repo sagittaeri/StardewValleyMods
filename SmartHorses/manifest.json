@@ -12,5 +12,5 @@
         }
     ],
     "MinimumApiVersion": "4.0.0",
-    "UpdateKeys": []
+    "UpdateKeys": [ "Nexus:47032" ]
 }

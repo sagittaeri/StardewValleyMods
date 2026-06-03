@@ -153,7 +153,7 @@ namespace InputTools
 
         public void GetTextFromVirtualKeyboard(Action<string> finishedCallback, Action<string> updateCallback = null, int? textboxWidth = 300, string initialText = "")
         {
-            DelayedAction.functionAfterDelay(new DelayedAction.delayedBehavior(() =>
+            DelayedAction.functionAfterDelay(() =>
             {
                 this.StopListeningForKeybinding();
                 IInputLayer tempLayer = this.CreateLayer(this);
@@ -190,7 +190,7 @@ namespace InputTools
                     this.CloseVirtualKeyboard();
                     finishedCallback.Invoke(textbox.Text);
                 });
-            }), 1);
+            }, 1);
         }
 
         public void CloseVirtualKeyboard()
@@ -209,7 +209,7 @@ namespace InputTools
 
         public void ListenForKeybinding(Action<Tuple<SButton, SButton>> keyBindingCallback)
         {
-            DelayedAction.functionAfterDelay(new DelayedAction.delayedBehavior(() =>
+            DelayedAction.functionAfterDelay(() =>
             {
                 this.StopListeningForKeybinding();
                 IInputLayer tempLayer = this.CreateLayer(this);
@@ -223,7 +223,7 @@ namespace InputTools
                 tempLayer.ButtonPairReleased += this.KeyBindingPairReleased;
                 this.keyBindingCandidate = null;
                 this.keyBindingCallback = keyBindingCallback;
-            }), 1);
+            }, 1);
         }
 
         public void StopListeningForKeybinding()

@@ -1,0 +1,18 @@
+﻿// Copyright 2026 Sagittaeri
+{
+    // Strings used in the config menu
+    "config.InteractWhileRiding.name": "Interact While Riding",
+    "config.InteractWhileRiding.tooltip": "Allows farmer to interact with most objects while riding, including chests, forage, trees, doors, bulletin boards, etc.",
+
+    "config.UseMinecartsWhileRiding.name": "Use Minecarts While Riding",
+    "config.UseMinecartsWhileRiding.tooltip": "Allows farmer to use minecarts while riding. This will bring the horse along with the farmer.",
+
+    "config.MountNearbyHorseWhenChangingMap.name": "Mount Nearby Horse when Changing Map",
+    "config.MountNearbyHorseWhenChangingMap.tooltip": "Automatically mounts a nearby horse (1-tile away) when changing maps.",
+
+    "config.OnlyDismountOnToolActionInput.name": "Only Dismount on Tool Action Input",
+    "config.OnlyDismountOnToolActionInput.tooltip": "Disables the action key for dismounting to allow players to press and hold the action key while riding to automatically interact with multiple objects without having to press the action key again.",
+
+    "config.ThinHorse.name": "Thin Horse",
+    "config.ThinHorse.tooltip": "Allow horses to pass through small doors. Disable if another mod already modifies the size."
+}

@@ -1,18 +1,26 @@
 {
+  /*
+   | This file is automatically updated by ModManifestBuilder
+   | when the project is compiled.
+   | 
+   | Changes made to this file may be overwritten.
+   | 
+   */
+  "$schema": "https://smapi.io/schemas/manifest.json",
+  "UniqueID": "Sagittaeri.InputTools",
   "Name": "InputTools",
   "Author": "Sagittaeri",
-  "Version": "0.2.0",
+  "Version": "0.2.0-Debug",
   "Description": "Tools to simplify inputs from keyboard, mouse and controller.",
-  "UniqueID": "Sagittaeri.InputTools",
-  "EntryDll": "InputTools.dll",
   "MinimumApiVersion": "3.14.0",
-  "UpdateKeys": [
-    "Nexus:14553"
-  ],
+  "EntryDll": "InputTools.dll",
   "Dependencies": [
     {
       "UniqueID": "spacechase0.GenericModConfigMenu",
       "IsRequired": false
     }
+  ],
+  "UpdateKeys": [
+    "Nexus:14553"
   ]
 }

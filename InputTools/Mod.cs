@@ -440,7 +440,8 @@ namespace InputTools
             if (item == null)
                 return false;
             int itemID = item.ParentSheetIndex;
-            return Utility.IsNormalObjectAtParentSheetIndex(item, itemID) && (itemID == 286 || itemID == 287 || itemID == 288);
+            string itemIDString = itemID.ToString();
+            return Utility.IsNormalObjectAtParentSheetIndex(item, itemIDString) && (itemID == 286 || itemID == 287 || itemID == 288);
         }
 
         public Vector2 GetPlacementTileWithController()

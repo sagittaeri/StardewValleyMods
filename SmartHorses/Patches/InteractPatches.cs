@@ -66,6 +66,11 @@ namespace SmartHorses
             harmony.Patch(
                original: AccessTools.Method(typeof(Game1), "onFadedBackInComplete"),
                postfix: new HarmonyMethod(typeof(InteractPatches), nameof(onFadedBackInComplete)));
+            
+
+            // mod.Helper.Events.Player.Warped += (sender, e) => {
+            //     OnWarp(Game1.player);
+            // };
         }
 
         public static bool GameLocationCheckActionPrefix(GameLocation __instance, Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
@@ -195,27 +200,55 @@ namespace SmartHorses
 
         public static void OnWarp(Farmer __instance)
         {
+            Console.WriteLine("OnWarp");
             if (Game1.player.CanMove)
-                onFadedBackInComplete(null);
+                PutHorseInFrontOfPlayer(__instance, true);
+            else
+                PutHorseInFrontOfPlayer(__instance, false);
         }
 
         public static void onFadedBackInComplete(Game1 __instance)
         {
+            Console.WriteLine("onFadedBackInComplete");
+            PutHorseInFrontOfPlayer(Game1.player, true);
+        }
+
+        public static void PutHorseInFrontOfPlayer(Farmer who, bool mount = false)
+        {
             if (Game1.player.mount != null)
+                return;
+
+            // 1. Safety Check: Ignore events if the world isn't fully loaded yet
+            if (!Context.IsWorldReady)
+                return;
+
+            // 2. Safety Check: Skip if a narrative event or cutscene is actively taking control
+            if (Game1.CurrentEvent != null || Game1.eventUp) 
+                return; 
+
+            // 3. Safety Check: Skip if the player is currently inside a minigame (like Journey of the Prairie King)
+            if (Game1.currentMinigame != null)
+                return;
+
+            // 4. Safety Check: Skip if a temporary festival map layout is active
+            if (Game1.player.currentLocation.isFestival())
                 return;
 
             Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int)Game1.player.Tile.X * 64, (int)Game1.player.Tile.Y * 64, 64, 64);
             rectangle.Inflate(128, 128);
-
             foreach (NPC character in Game1.player.currentLocation.characters)
             {
+                if (character != null && !character.IsMonster && character is Horse)
+                {
+                    Console.WriteLine("HORSE FOUND IN LOCATION: {0}", character.tileLocation.ToString());
+                }
                 if (character != null && !character.IsMonster && character is Horse && ((Horse)character).GetBoundingBox().Intersects(rectangle))
                 {
+                    Console.WriteLine("HORSE FOUND NEARBY");
                     // Move nearby horse 1 tile in front of farmer after changing maps (prevents players from accidentally changing map back when mounting a horse at the edge of map)
                     character.FacingDirection = Game1.player.FacingDirection;
                     character.setTileLocation(Game1.player.Tile + Utility.DirectionsTileVectors[character.FacingDirection]);
-
-                    if (mod.Config.MountNearbyHorseWhenChangingMap)
+                    if (mount && mod.Config.AutoMountAfterWarp)
                     {
                         // Auto mount nearby horse after changing maps
                         bool result = ((Horse)character).checkAction(Game1.player, Game1.player.currentLocation);

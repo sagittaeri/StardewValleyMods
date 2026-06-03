@@ -14,5 +14,9 @@
     "config.OnlyDismountOnToolActionInput.tooltip": "Disables the action key for dismounting to allow players to press and hold the action key while riding to automatically interact with multiple objects without having to press the action key again.",
 
     "config.ThinHorse.name": "Thin Horse",
-    "config.ThinHorse.tooltip": "Allow horses to pass through small doors. Disable if another mod already modifies the size."
+    "config.ThinHorse.tooltip": "Allow horses to pass through small doors. Disable if another mod already modifies the size.",
+
+    "config.HasHorseOverhaulMod": "Horse Overhaul mod detected. \"Thin Horse\" in \"Smart Horses\" will be ignored.",
+    "config.HasWeightLossMod": "Pony Weight Loss Program mod detected. \"Thin Horse\" in \"Smart Horses\" will be ignored.",
+    "config.HasHorseSqueezeMod": "Horse Squeeze mod detected. \"Thin Horse\" in \"Smart Horses\" will be ignored."
 }

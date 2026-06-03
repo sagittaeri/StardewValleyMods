@@ -94,6 +94,28 @@ namespace SmartHorses
                 getValue: () => mod.Config.ThinHorse,
                 setValue: value => mod.Config.ThinHorse = value
             );
+
+            if (mod.HasHorseOverhaulMod)
+            {
+                api.AddParagraph(
+                    mod: manifest,
+                    text: () => mod.Helper.Translation.Get("config.HasHorseOverhaulMod")
+                );
+            }
+            if (mod.HasWeightLossMod)
+            {
+                api.AddParagraph(
+                    mod: manifest,
+                    text: () => mod.Helper.Translation.Get("config.HasWeightLossMod")
+                );
+            }
+            if (mod.HasHorseSqueezeMod)
+            {
+                api.AddParagraph(
+                    mod: manifest,
+                    text: () => mod.Helper.Translation.Get("config.HasHorseSqueezeMod")
+                );
+            }
         }
     }
 }

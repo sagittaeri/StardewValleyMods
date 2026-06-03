@@ -194,9 +194,10 @@ namespace SmartHorses
 
         public static void HorseGetBoundingBox(Horse __instance, ref Microsoft.Xna.Framework.Rectangle __result)
         {
-            if (mod.Config.ThinHorse)
+            if (mod.Config.ThinHorse && !mod.HasHorseSqueezeMod && !mod.HasWeightLossMod && !mod.HasHorseOverhaulMod)
             {
                 // Must make the horse thinner so that it doesn't get stuck in doorways after entering buildings etc
+                // Note: tghis is a very simple implementation, and there's jankiness when mounting and dismounting. Horse Overhaul or Pony Weight Loss Program is recommended in addition to this mod
                 if (__instance.Sprite == null)
                     __result = Microsoft.Xna.Framework.Rectangle.Empty;
                 __result = new Microsoft.Xna.Framework.Rectangle((int)__instance.position.X + 32, (int)__instance.position.Y + 16, 48, 32);

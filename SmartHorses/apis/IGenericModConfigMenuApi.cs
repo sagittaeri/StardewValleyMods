@@ -24,6 +24,11 @@ namespace GenericModConfigMenu
         /// <remarks>Each mod can only be registered once, unless it's deleted via <see cref="Unregister"/> before calling this again.</remarks>
         void Register(IManifest mod, Action reset, Action save, bool titleScreenOnly = false);
 
+        /// <summary>Add a paragraph of text at the current position in the form.</summary>
+        /// <param name="mod">The mod's manifest.</param>
+        /// <param name="text">The paragraph text to display.</param>
+        void AddParagraph(IManifest mod, Func<string> text);
+
         /// <summary>Add a boolean option at the current position in the form.</summary>
         /// <param name="mod">The mod's manifest.</param>
         /// <param name="getValue">Get the current value from the mod config.</param>

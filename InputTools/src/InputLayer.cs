@@ -1,23 +1,17 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using InputTools;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
 using StardewValley;
-using StardewValley.Monsters;
 using static InputTools.IInputToolsAPI;
 
 namespace InputTools
 {
-    public class InputLayer : IInputToolsAPI.IInputLayer
+    public class InputLayer : IInputLayer
     {
         internal bool _isActive = true;
-        internal IInputToolsAPI.BlockBehavior _block;
+        internal BlockBehavior _block;
 
         private InputToolsAPI inputTools;
         internal InputLayer(InputToolsAPI inputTools, object layerKey)
@@ -79,287 +73,287 @@ namespace InputTools
         internal void OnButtonPressed(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ButtonPressed?.Invoke(this.layerKey, button);
+                this.ButtonPressed?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnButtonPressed(button);
         }
 
         internal void OnButtonHeld(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ButtonHeld?.Invoke(this.layerKey, button);
+                this.ButtonHeld?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnButtonHeld(button);
         }
 
         internal void OnButtonReleased(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ButtonReleased?.Invoke(this.layerKey, button);
+                this.ButtonReleased?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnButtonReleased(button);
         }
 
         internal void OnButtonPairPressed(Tuple<SButton, SButton> buttons)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ButtonPairPressed?.Invoke(this.layerKey, buttons);
+                this.ButtonPairPressed?.Invoke(this.layerKey, buttons);
             this.GetLayerBelow()?.OnButtonPairPressed(buttons);
         }
 
         internal void OnButtonPairHeld(Tuple<SButton, SButton> buttons)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ButtonPairHeld?.Invoke(this.layerKey, buttons);
+                this.ButtonPairHeld?.Invoke(this.layerKey, buttons);
             this.GetLayerBelow()?.OnButtonPairHeld(buttons);
         }
 
         internal void OnButtonPairReleased(Tuple<SButton, SButton> buttons)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ButtonPairReleased?.Invoke(this.layerKey, buttons);
+                this.ButtonPairReleased?.Invoke(this.layerKey, buttons);
             this.GetLayerBelow()?.OnButtonPairReleased(buttons);
         }
 
         internal void OnConfirmPressed(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ConfirmPressed?.Invoke(this.layerKey, button);
+                this.ConfirmPressed?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnConfirmPressed(button);
         }
 
         internal void OnConfirmHeld(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ConfirmHeld?.Invoke(this.layerKey, button);
+                this.ConfirmHeld?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnConfirmHeld(button);
         }
 
         internal void OnConfirmReleased(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ConfirmReleased?.Invoke(this.layerKey, button);
+                this.ConfirmReleased?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnConfirmReleased(button);
         }
 
         internal void OnCancelPressed(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                CancelPressed?.Invoke(this.layerKey, button);
+                this.CancelPressed?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnCancelPressed(button);
         }
 
         internal void OnCancelHeld(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                CancelHeld?.Invoke(this.layerKey, button);
+                this.CancelHeld?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnCancelHeld(button);
         }
 
         internal void OnCancelReleased(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                CancelReleased?.Invoke(this.layerKey, button);
+                this.CancelReleased?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnCancelReleased(button);
         }
 
         internal void OnAltPressed(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                AltPressed?.Invoke(this.layerKey, button);
+                this.AltPressed?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnAltPressed(button);
         }
 
         internal void OnAltHeld(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                AltHeld?.Invoke(this.layerKey, button);
+                this.AltHeld?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnAltHeld(button);
         }
 
         internal void OnAltReleased(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                AltReleased?.Invoke(this.layerKey, button);
+                this.AltReleased?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnAltReleased(button);
         }
 
         internal void OnMenuPressed(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MenuPressed?.Invoke(this.layerKey, button);
+                this.MenuPressed?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMenuPressed(button);
         }
 
         internal void OnMenuHeld(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MenuHeld?.Invoke(this.layerKey, button);
+                this.MenuHeld?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMenuHeld(button);
         }
 
         internal void OnMenuReleased(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MenuReleased?.Invoke(this.layerKey, button);
+                this.MenuReleased?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMenuReleased(button);
         }
 
         internal void OnMoveRightPressed(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveRightPressed?.Invoke(this.layerKey, button);
+                this.MoveRightPressed?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveRightPressed(button);
         }
 
         internal void OnMoveRightHeld(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveRightHeld?.Invoke(this.layerKey, button);
+                this.MoveRightHeld?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveRightHeld(button);
         }
 
         internal void OnMoveRightReleased(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveRightReleased?.Invoke(this.layerKey, button);
+                this.MoveRightReleased?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveRightReleased(button);
         }
 
         internal void OnMoveDownPressed(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveDownPressed?.Invoke(this.layerKey, button);
+                this.MoveDownPressed?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveDownPressed(button);
         }
 
         internal void OnMoveDownHeld(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveDownHeld?.Invoke(this.layerKey, button);
+                this.MoveDownHeld?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveDownHeld(button);
         }
 
         internal void OnMoveDownReleased(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveDownReleased?.Invoke(this.layerKey, button);
+                this.MoveDownReleased?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveDownReleased(button);
         }
 
         internal void OnMoveLeftPressed(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveLeftPressed?.Invoke(this.layerKey, button);
+                this.MoveLeftPressed?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveLeftPressed(button);
         }
 
         internal void OnMoveLeftHeld(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveLeftHeld?.Invoke(this.layerKey, button);
+                this.MoveLeftHeld?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveLeftHeld(button);
         }
 
         internal void OnMoveLeftReleased(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveLeftReleased?.Invoke(this.layerKey, button);
+                this.MoveLeftReleased?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveLeftReleased(button);
         }
 
         internal void OnMoveUpPressed(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveUpPressed?.Invoke(this.layerKey, button);
+                this.MoveUpPressed?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveUpPressed(button);
         }
 
         internal void OnMoveUpHeld(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveUpHeld?.Invoke(this.layerKey, button);
+                this.MoveUpHeld?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveUpHeld(button);
         }
 
         internal void OnMoveUpReleased(SButton button)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveUpReleased?.Invoke(this.layerKey, button);
+                this.MoveUpReleased?.Invoke(this.layerKey, button);
             this.GetLayerBelow()?.OnMoveUpReleased(button);
         }
 
         internal void OnActionPressed(string actionID)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ActionPressed?.Invoke(this.layerKey, actionID);
+                this.ActionPressed?.Invoke(this.layerKey, actionID);
             this.GetLayerBelow()?.OnActionPressed(actionID);
         }
 
         internal void OnActionHeld(string actionID)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ActionHeld?.Invoke(this.layerKey, actionID);
+                this.ActionHeld?.Invoke(this.layerKey, actionID);
             this.GetLayerBelow()?.OnActionHeld(actionID);
         }
 
         internal void OnActionReleased(string actionID)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                ActionReleased?.Invoke(this.layerKey, actionID);
+                this.ActionReleased?.Invoke(this.layerKey, actionID);
             this.GetLayerBelow()?.OnActionReleased(actionID);
         }
 
         internal void OnMoveAxisPressed(Vector2 val)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveAxisPressed?.Invoke(this.layerKey, val);
+                this.MoveAxisPressed?.Invoke(this.layerKey, val);
             this.GetLayerBelow()?.OnMoveAxisPressed(val);
         }
 
         internal void OnMoveAxisHeld(Vector2 val)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveAxisHeld?.Invoke(this.layerKey, val);
+                this.MoveAxisHeld?.Invoke(this.layerKey, val);
             this.GetLayerBelow()?.OnMoveAxisHeld(val);
         }
 
         internal void OnMoveAxisReleased(Vector2 val)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MoveAxisReleased?.Invoke(this.layerKey, val);
+                this.MoveAxisReleased?.Invoke(this.layerKey, val);
             this.GetLayerBelow()?.OnMoveAxisReleased(val);
         }
 
         internal void OnCursorMoved(InputDevice val)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                CursorMoved?.Invoke(this.layerKey, val);
+                this.CursorMoved?.Invoke(this.layerKey, val);
             this.GetLayerBelow()?.OnCursorMoved(val);
         }
 
         internal void OnMouseWheelMoved(Vector2 val)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                MouseWheelMoved?.Invoke(this.layerKey, val);
+                this.MouseWheelMoved?.Invoke(this.layerKey, val);
             this.GetLayerBelow()?.OnMouseWheelMoved(val);
         }
 
         internal void OnPlacementTileChanged(Vector2 placement)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                PlacementTileChanged?.Invoke(this.layerKey, placement);
+                this.PlacementTileChanged?.Invoke(this.layerKey, placement);
             this.GetLayerBelow()?.OnPlacementTileChanged(placement);
         }
 
         internal void OnPlacementItemChanged(Item item)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                PlacementItemChanged?.Invoke(this.layerKey, item);
+                this.PlacementItemChanged?.Invoke(this.layerKey, item);
             this.GetLayerBelow()?.OnPlacementItemChanged(item);
         }
 
         internal void OnLayerUpdateTicked(UpdateTickedEventArgs e)
         {
             if (this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                LayerUpdateTicked?.Invoke(this.layerKey, e);
+                this.LayerUpdateTicked?.Invoke(this.layerKey, e);
             this.GetLayerBelow()?.OnLayerUpdateTicked(e);
         }
 
@@ -412,7 +406,7 @@ namespace InputTools
         public event EventHandler<Vector2> MoveAxisReleased;
 
         public event EventHandler<Vector2> MouseWheelMoved;
-        public event EventHandler<IInputToolsAPI.InputDevice> CursorMoved;
+        public event EventHandler<InputDevice> CursorMoved;
         public event EventHandler<Vector2> PlacementTileChanged;
         public event EventHandler<Item> PlacementItemChanged;
 
@@ -420,9 +414,9 @@ namespace InputTools
 
         public object layerKey { get; }
         public bool isActive { get { return this._isActive; } }
-        public IInputToolsAPI.BlockBehavior block { get { return this._block; } }
+        public BlockBehavior block { get { return this._block; } }
 
-        public IInputToolsAPI.IInputLayer GetBelow(bool stopAtBlock = true)
+        public IInputLayer GetBelow(bool stopAtBlock = true)
         {
             return this.GetLayerBelow(stopAtBlock);
         }
@@ -478,20 +472,20 @@ namespace InputTools
             return this.inputTools.modEntry.mouseWheelMovedLastTick;
         }
 
-        public IInputToolsAPI.InputDevice IsCursorMoved()
+        public InputDevice IsCursorMoved()
         {
             this.inputTools.GetCurrentInputDevice();
             if (!this.inputTools.stack.IsLayerReachableByInput(this.layerKey))
-                return IInputToolsAPI.InputDevice.None;
+                return InputDevice.None;
             if (this.inputTools.modEntry.mouseMovedLastTick &&
                 (this.IsButtonHeld(SButton.RightThumbstickUp)
                 || this.IsButtonHeld(SButton.RightThumbstickRight)
                 || this.IsButtonHeld(SButton.RightThumbstickDown)
                 || this.IsButtonHeld(SButton.RightThumbstickLeft)))
-                return IInputToolsAPI.InputDevice.Controller;
+                return InputDevice.Controller;
             if (this.inputTools.modEntry.mouseMovedLastTick)
-                return IInputToolsAPI.InputDevice.Mouse;
-            return IInputToolsAPI.InputDevice.None;
+                return InputDevice.Mouse;
+            return InputDevice.None;
         }
 
         public bool IsHeldItemBomb()
@@ -775,9 +769,9 @@ namespace InputTools
             this._isActive = active;
         }
 
-        public void SetBlock(IInputToolsAPI.BlockBehavior block)
+        public void SetBlock(BlockBehavior block_)
         {
-            this._block = block;
+            this._block = block_;
         }
 
         public void MoveToTop()

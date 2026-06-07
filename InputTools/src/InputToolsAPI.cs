@@ -1,17 +1,11 @@
+#nullable enable
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using InputTools;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Menus;
-using StardewValley.Monsters;
 using static InputTools.IInputToolsAPI;
 
 namespace InputTools
@@ -40,20 +34,20 @@ namespace InputTools
         /*********
         ** Private methods
         *********/
-        internal void OnInputDeviceChanged(IInputToolsAPI.InputDevice inputDevice)
+        internal void OnInputDeviceChanged(InputDevice inputDevice)
         {
-            InputDeviceChanged?.Invoke(this, inputDevice);
+            this.InputDeviceChanged?.Invoke(this, inputDevice);
         }
 
         internal void OnKeybindingConfigChanged()
         {
-            KeybindingConfigChanged?.Invoke(this, null);
+            this.KeybindingConfigChanged?.Invoke(this, null!);
         }
 
         private Action<Tuple<SButton, SButton>> keyBindingCallback;
         private Tuple<SButton, SButton> keyBindingCandidate;
         private bool? savedGlobalActive;
-        private IInputToolsAPI.BlockBehavior? savedGlobalBlock;
+        private BlockBehavior? savedGlobalBlock;
         private void KeyBindingSinglePressed(object? sender, SButton val)
         {
             if (this.IsCancelButton(val))
@@ -93,10 +87,10 @@ namespace InputTools
             return this.modEntry.GetListOfModIDs();
         }
 
-        public event EventHandler<IInputToolsAPI.InputDevice> InputDeviceChanged;
+        public event EventHandler<InputDevice> InputDeviceChanged;
         public event EventHandler KeybindingConfigChanged;
 
-        public IInputToolsAPI.InputDevice GetCurrentInputDevice()
+        public InputDevice GetCurrentInputDevice()
         {
             return this.modEntry.GetCurrentInputDevice();
         }
@@ -106,7 +100,7 @@ namespace InputTools
             return this.modEntry.IsKeybindingConfigChanged();
         }
 
-        public IInputToolsAPI.InputDevice GetInputDevice(SButton button)
+        public InputDevice GetInputDevice(SButton button)
         {
             return this.modEntry.GetInputDevice(button);
         }
@@ -274,12 +268,12 @@ namespace InputTools
             return this.actions.GetKeyPairsFromActions(actionID);
         }
 
-        public IInputToolsAPI.IInputLayer CreateLayer(object layerKey, bool startActive = true, IInputToolsAPI.BlockBehavior block = IInputToolsAPI.BlockBehavior.Block)
+        public IInputLayer CreateLayer(object layerKey, bool startActive = true, BlockBehavior block = BlockBehavior.Block)
         {
             return this.stack.Create(layerKey, startActive, block);
         }
 
-        public IInputToolsAPI.IInputLayer PopLayer()
+        public IInputLayer PopLayer()
         {
             return this.stack.Pop();
         }
@@ -289,12 +283,12 @@ namespace InputTools
             this.stack.Remove(layerKey);
         }
 
-        public IInputToolsAPI.IInputLayer PeekLayer()
+        public IInputLayer PeekLayer()
         {
             return this.stack.Peek();
         }
 
-        public IInputToolsAPI.IInputLayer GetLayer(object layerKey)
+        public IInputLayer GetLayer(object layerKey)
         {
             return this.stack.Get(layerKey);
         }

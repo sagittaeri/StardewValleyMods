@@ -12,7 +12,7 @@
   "Author": "Sagittaeri",
   "Version": "0.2.0-Debug",
   "Description": "Tools to simplify inputs from keyboard, mouse and controller.",
-  "MinimumApiVersion": "3.14.0",
+  "MinimumApiVersion": "4.5.2",
   "EntryDll": "InputTools.dll",
   "Dependencies": [
     {

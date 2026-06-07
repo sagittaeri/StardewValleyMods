@@ -7,7 +7,7 @@
   <PropertyGroup>
     <Name>InputTools</Name>
     <Description>Tools to simplify inputs from keyboard, mouse and controller.</Description>
-    <MinimumApiVersion>3.14.0</MinimumApiVersion>
+    <MinimumApiVersion>4.5.2</MinimumApiVersion>
     <UpdateKeys>Nexus:14553</UpdateKeys>
     <Version>0.2.0</Version>
   </PropertyGroup>

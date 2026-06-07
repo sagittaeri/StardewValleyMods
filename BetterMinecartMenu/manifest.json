@@ -1,10 +1,10 @@
 ﻿{
-    "Name": "Smart Horses",
+    "Name": "Better Minecart Menu",
     "Author": "Sagittaeri",
-    "Version": "0.2",
+    "Version": "0.1",
     "Description": "Able to interact with most objects while riding on a horse e.g. forage, chests, trees, bulletin boards, minecarts, etc. Can also teleport with minecart to valid destinations.",
-    "UniqueID": "Sagittaeri.SmartHorses",
-    "EntryDll": "SmartHorses.dll",
+    "UniqueID": "Sagittaeri.BetterMinecartMenu",
+    "EntryDll": "BetterMinecartMenu.dll",
     "Dependencies": [
         {
             "UniqueID": "spacechase0.GenericModConfigMenu",

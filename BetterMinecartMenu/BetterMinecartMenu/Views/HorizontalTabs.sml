@@ -12,14 +12,14 @@
         <lane orientation="vertical" button-press=|HandleButtonPress($Button)|>
             <lane orientation="horizontal" margin="32, 0, 0, -12" z-index="1">
                 <tab *repeat={:Tabs}
-                    layout="96px"
+                    layout="92px"
                     tooltip={:Tooltip}
                     active={<>Active}
                     activate=|Clicked()|>
                     <label text={:Name} />
                 </tab>
             </lane>
-            <frame layout="1000px 550px"
+            <frame layout="1000px 400px"
                    background={@Mods/StardewUI/Sprites/MenuBackground}
                    border={@Mods/StardewUI/Sprites/MenuBorder}
                    border-thickness="36, 36, 40, 36"
@@ -27,10 +27,10 @@
                 <scrollable peeking="128">
                     <grid layout="stretch content"
                           item-layout="count: 3"
-                          item-spacing="16,16"
+                          item-spacing="10,10"
                           horizontal-item-alignment="middle">
                         <button *repeat={:Destinations}
-                            layout="stretch 100px"
+                            layout="stretch 92px"
                             Opacity={:Opacity}
                             click=|Clicked()|>
                             <label text={:Name} />

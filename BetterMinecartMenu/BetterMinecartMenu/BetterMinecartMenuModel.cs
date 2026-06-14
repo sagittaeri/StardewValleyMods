@@ -218,7 +218,7 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
             SButton.RightShoulder => 1,
             _ => 0
         };
-        if (pageOffset != 0)
+        if (pageOffset == 1 || pageOffset == -1)
         {
             this.ActiveTabIndex = (this.ActiveTabIndex + pageOffset + this.Tabs.Count) % this.Tabs.Count;
             this.ClickedTab(this.ActiveTabIndex);

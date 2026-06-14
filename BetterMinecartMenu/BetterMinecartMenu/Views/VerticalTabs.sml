@@ -11,7 +11,7 @@
         <lane orientation="horizontal" button-press=|HandleButtonPress($Button)|>
             <lane layout="335px content" orientation="vertical" margin="0, 30, 0, 0">
                 <frame *repeat={:Tabs}
-                    layout="stretch 64px"
+                    layout="stretch 56px"
                     margin="0, 3"
                     padding="0, 0, 40, 0"
                     horizontal-content-alignment="middle"
@@ -23,7 +23,7 @@
                     <label text={:Tooltip} />
                 </frame>
             </lane>
-            <frame layout="665px 700px"
+            <frame layout="665px 660px"
                    background={@Mods/StardewUI/Sprites/MenuBackground}
                    border={@Mods/StardewUI/Sprites/MenuBorder}
                    border-thickness="36, 36, 40, 36"
@@ -32,7 +32,7 @@
                     <lane layout="stretch content" orientation="vertical">
                         <grid layout="stretch content"
                               item-layout="count: 2"
-                              item-spacing="16,16"
+                              item-spacing="10,10"
                               horizontal-item-alignment="middle">
                             <button *repeat={:Destinations}
                                 layout="stretch 100px"

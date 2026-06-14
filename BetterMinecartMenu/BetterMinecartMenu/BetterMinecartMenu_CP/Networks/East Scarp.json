@@ -1,0 +1,18 @@
+﻿{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Changes": [
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "Entries": {
+                "ESBusNetwork": {
+                    "RemoveNetwork": true
+                },
+                "EastScarp": {
+                    "DisplayName": "{{i18n: Network.EastScarp}}",
+                    "TabName": "{{i18n: Network.EastScarp.Tab}}"
+                }
+            }
+        }
+    ]
+}

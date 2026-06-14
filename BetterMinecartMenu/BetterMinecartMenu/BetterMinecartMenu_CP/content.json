@@ -1,0 +1,46 @@
+﻿{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Format": "2.9.0",
+    "Changes": [
+        //Includes
+        {
+            "Action": "Include",
+            "FromFile": "Networks/Default.json"
+        },
+        {
+            "Action": "Include",
+            "When": { "HasMod |contains=Lemurkat.EastScarp": true },
+            "FromFile": "Networks/East Scarp.json"
+        },
+        {
+            "Action": "Include",
+            "When": { "HasMod |contains=Lumisteria.MtVapius": true },
+            "FromFile": "Networks/Mount Vapius.json"
+        },
+        {
+            "Action": "Include",
+            "When": { "HasMod |contains=Rafseazz.RSVCP": true },
+            "FromFile": "Networks/RSV.json"
+        },
+        {
+            "Action": "Include",
+            "When": { "HasMod |contains=skellady.SBVCP": true },
+            "FromFile": "Networks/Sunberry.json"
+        },
+        {
+            "Action": "Include",
+            "When": { "HasMod |contains=FlashShifter.StardewValleyExpandedCP": true },
+            "FromFile": "Networks/SVE.json"
+        },
+        {
+            "Action": "Include",
+            "When": { "HasMod |contains=flashshifter.FrontierFarm": true },
+            "FromFile": "Networks/Frontier Farm.json"
+        },
+        {
+            "Action": "Include",
+            "When": { "HasMod |contains=jibb.minecarts": true },
+            "FromFile": "Networks/Integrated Minecarts.json"
+        }
+    ]
+}

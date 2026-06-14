@@ -1,0 +1,26 @@
+﻿{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Changes": [
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Outskirts", "AppendDestinations"],
+            "Entries": {
+                "FlashShifter.FernGillRepublic_Ravine": "FlashShifter.FernGillRepublic_Ravine",
+                "FlashShifter.FernGillRepublic_Mountain": "FlashShifter.FernGillRepublic_Mountain",
+                "FlashShifter.FernGillRepublic_Grassland": "FlashShifter.FernGillRepublic_Grassland",
+                "FlashShifter.FernGillRepublic_Beach": "FlashShifter.FernGillRepublic_Beach"
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Default", "AppendDestinations"],
+            "Entries": {
+                "FlashShifter.FrontierFarm_Right": "FlashShifter.FrontierFarm_Right",
+                "FlashShifter.FrontierFarm_Middle": "FlashShifter.FrontierFarm_Middle",
+                "FlashShifter.FrontierFarm_Left": "FlashShifter.FrontierFarm_Left"
+            }
+        }
+    ]
+}

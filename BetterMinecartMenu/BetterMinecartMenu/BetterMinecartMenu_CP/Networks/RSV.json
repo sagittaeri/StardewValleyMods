@@ -1,0 +1,15 @@
+﻿{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Changes": [
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "Entries": {
+                "RSV.MinecartNetwork": {
+                    "DisplayName": "{{i18n: Network.RSV.MinecartNetwork}}",
+                    "TabName": "{{i18n: Network.RSV.MinecartNetwork.Tab}}"
+                }
+            }
+        }
+    ]
+}

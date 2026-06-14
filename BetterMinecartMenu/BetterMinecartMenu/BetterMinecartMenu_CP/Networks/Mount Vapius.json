@@ -1,0 +1,34 @@
+﻿{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Changes": [
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "Entries": {
+                "Lumisteria.MtVapiusNetworkTrainBus": {
+                    "RemoveNetwork": true
+                },
+                "Lumisteria.MtVapiusNetwork": {
+                    "DisplayName": "{{i18n: Network.Lumisteria.MtVapiusNetwork}}",
+                    "TabName": "{{i18n: Network.Lumisteria.MtVapiusNetwork.Tab}}"
+                }
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Data/Minecarts",
+            "TargetField": ["Lumisteria.MtVapiusNetwork", "Destinations", "Lumisteria.MtVapius_Hamlet"],
+            "Entries": {
+                "Condition": "ANY \"LOCATION_CONTEXT Here Lumisteria_MtVapius_Forest\" \"PLAYER_HAS_MAIL Any Lumisteria.MtVapius_MineCartRepairedMail\""
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Data/Minecarts",
+            "TargetField": ["Lumisteria.MtVapiusNetwork", "Destinations", "Lumisteria.MtVapius_ForestCrystalLake"],
+            "Entries": {
+                "Condition": "ANY \"LOCATION_CONTEXT Here Lumisteria_MtVapius_Forest\" \"PLAYER_HAS_MAIL Any Lumisteria.MtVapius_MineCartRepairedMail\", PLAYER_VISITED_LOCATION Current Lumisteria.MtVapius_ForestCrystalLake"
+            }
+        }
+    ]
+}

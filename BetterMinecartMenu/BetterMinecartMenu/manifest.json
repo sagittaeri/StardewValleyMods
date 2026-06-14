@@ -1,16 +1,22 @@
 ﻿{
     "Name": "Better Minecart Menu",
     "Author": "Sagittaeri",
-    "Version": "0.1",
+    "Version": "%ProjectVersion%",
     "Description": "Able to interact with most objects while riding on a horse e.g. forage, chests, trees, bulletin boards, minecarts, etc. Can also teleport with minecart to valid destinations.",
     "UniqueID": "Sagittaeri.BetterMinecartMenu",
     "EntryDll": "BetterMinecartMenu.dll",
     "Dependencies": [
+        {
+            "UniqueID": "focustense.StardewUI",
+//            "MinimumVersion": "0.6.3",
+            "IsRequired": true
+        },
         {
             "UniqueID": "spacechase0.GenericModConfigMenu",
             "IsRequired": false
         }
     ],
     "MinimumApiVersion": "4.0.0",
-    "UpdateKeys": [ "Nexus:47032" ]
+    "MinimumGameVersion": "1.6.0",
+    "UpdateKeys": [ "Nexus:" ]
 }

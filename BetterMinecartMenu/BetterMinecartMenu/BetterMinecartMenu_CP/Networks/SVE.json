@@ -1,0 +1,17 @@
+﻿{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Changes": [
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "Entries": {
+                "Railroad": {
+                    "RemoveNetwork": true
+                },
+                "GrampletonSuburbs": {
+                    "RemoveNetwork": true
+                }
+            }
+        }
+    ]
+}

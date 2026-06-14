@@ -1,0 +1,45 @@
+﻿{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Changes": [
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "Entries": {
+                "Default": {
+                    "DisplayName": "{{i18n: Network.Default}}",
+                    "TabName": "{{i18n: Network.Default.Tab}}",
+                    "RemoveNetwork": false,
+                    "RemoveDestinations": [],
+                    "AppendDestinations": [],
+                    "OrderFromTop": [],
+                    "OrderFromBottom": []
+                }
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Data/Minecarts",
+            "Entries": {
+                "Outskirts": {
+                    "Destinations": [],
+                    "UnlockCondition": "PLAYER_HAS_MAIL Host ccBoilerRoom Received"
+                }
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "Entries": {
+                "Outskirts": {
+                    "DisplayName": "{{i18n: Network.Outskirts}}",
+                    "TabName": "{{i18n: Network.Outskirts.Tab}}",
+                    "RemoveNetwork": false,
+                    "RemoveDestinations": [],
+                    "AppendDestinations": [],
+                    "OrderFromTop": [],
+                    "OrderFromBottom": []
+                }
+            }
+        }
+    ]
+}

@@ -2,7 +2,7 @@
     "Name": "Better Minecart Menu",
     "Author": "Sagittaeri",
     "Version": "%ProjectVersion%",
-    "Description": "Able to interact with most objects while riding on a horse e.g. forage, chests, trees, bulletin boards, minecarts, etc. Can also teleport with minecart to valid destinations.",
+    "Description": "Replaces the Minecart warp menu with a tabbed interface to switch between networks. Works well on gamepad.",
     "UniqueID": "Sagittaeri.BetterMinecartMenu",
     "EntryDll": "BetterMinecartMenu.dll",
     "Dependencies": [

@@ -1,0 +1,28 @@
+﻿{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Changes": [
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Default", "RemoveDestinations"],
+            "Entries": {
+                "maat.BetterThings_EastScarpVillage_Minecart": "maat.BetterThings_EastScarpVillage_Minecart",
+                "maat.BetterThings_RidgesideVillage_Minecart": "maat.BetterThings_RidgesideVillage_Minecart",
+                "maat.BetterThings_SBV.Forest.Minecart": "maat.BetterThings_SBV.Forest.Minecart",
+                "maat.BetterThings_SBV.Mountain.Minecart": "maat.BetterThings_SBV.Mountain.Minecart",
+                "maat.BetterThings_SBV.Farm.Minecart.Mountain.Minecart": "maat.BetterThings_SBV.Farm.Minecart"
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Outskirts", "AppendDestinations"],
+            "Entries": {
+                "maat.BetterThings_Desert_Minecart": "maat.BetterThings_Desert_Minecart",
+                "maat.BetterThings_Forest_Minecart": "maat.BetterThings_Forest_Minecart",
+                "maat.BetterThings_SecretWoods_Minecart": "maat.BetterThings_SecretWoods_Minecart",
+                "maat.BetterThings_IslandFarm_Minecart": "maat.BetterThings_IslandFarm_Minecart"
+            }
+        }
+    ]
+}

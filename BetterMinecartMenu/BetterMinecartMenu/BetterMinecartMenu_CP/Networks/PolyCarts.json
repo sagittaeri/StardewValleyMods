@@ -1,0 +1,53 @@
+﻿{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Changes": [
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Default", "AppendDestinations"],
+            "Entries": {
+                "FlashShifter.FrontierFarm_Right": null,
+                "FlashShifter.FrontierFarm_Middle": null,
+                "FlashShifter.FrontierFarm_Left": null
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "Entries": {
+                "FrontierFarm": {
+                    "RemoveNetwork": true
+                },
+                "RSV.MinecartNetwork": {
+                    "RemoveNetwork": true
+                },
+                "RidgeSide": {
+                    "DisplayName": "{{i18n: Network.RSV.MinecartNetwork}}",
+                    "TabName": "{{i18n: Network.RSV.MinecartNetwork.Tab}}"
+                }
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Outskirts", "AppendDestinations"],
+            "Entries": {
+                "Polydot.PolyCarts_Expa": "Polydot.PolyCarts_Expa",
+                "Polydot.PolyCarts_Forest_North": "Polydot.PolyCarts_Forest_North",
+                "Polydot.PolyCarts_Forest_East": "Polydot.PolyCarts_Forest_East",
+                "Polydot.PolyCarts_Forest_West": "Polydot.PolyCarts_Forest_West",
+                "Polydot.PolyCarts_ForestWest_North": "Polydot.PolyCarts_ForestWest_North",
+                "Polydot.PolyCarts_ForestWest_East": "Polydot.PolyCarts_ForestWest_East",
+                "Polydot.PolyCarts_ForestWest_South": "Polydot.PolyCarts_ForestWest_South",
+                "Polydot.PolyCarts_ForestWest_West": "Polydot.PolyCarts_ForestWest_West",
+                "Polydot.PolyCarts_Secret_Woods": "Polydot.PolyCarts_Secret_Woods",
+                "Polydot.PolyCarts_Desert_North": "Polydot.PolyCarts_Desert_North",
+                "Polydot.PolyCarts_Desert_South": "Polydot.PolyCarts_Desert_South",
+                "Polydot.PolyCarts_GingerIsland_North": "Polydot.PolyCarts_GingerIsland_North",
+                "Polydot.PolyCarts_GingerIsland_East": "Polydot.PolyCarts_GingerIsland_East",
+                "Polydot.PolyCarts_GingerIsland_South": "Polydot.PolyCarts_GingerIsland_South",
+                "Polydot.PolyCarts_GingerIsland_West": "Polydot.PolyCarts_GingerIsland_West"
+            }
+        }
+    ]
+}

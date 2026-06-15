@@ -9,7 +9,7 @@ namespace BetterMinecartMenu
     /// </summary>
     public class BetterMinecartMenuConfig
     {
-        public string NetworkOrder { get; set; } = "Default, Outskirts, RSV.MinecartNetwork, EastScarp, skellady.SBVCP_SBVMinecartNetwork, Lumisteria.MtVapiusNetwork";
+        public string NetworkOrder { get; set; } = "Default, Outskirts, RSV.MinecartNetwork, RidgeSide, EastScarp, skellady.SBVCP_SBVMinecartNetwork, Lumisteria.MtVapiusNetwork";
         public bool UseVerticalTabs { get; set; } = true;
         public bool HideUnavailable { get; set; } = false;
         public bool AllowUnavailable { get; set; } = false;
@@ -34,7 +34,7 @@ namespace BetterMinecartMenu
                     // if the world is ready, then we are not in the main menu, so reset should only reset the keybindings
                     if (Context.IsWorldReady)
                     {
-                        config.NetworkOrder = "Default, Outskirts, RSV.MinecartNetwork, EastScarp, skellady.SBVCP_SBVMinecartNetwork, Lumisteria.MtVapiusNetwork";
+                        config.NetworkOrder = "Default, Outskirts, RSV.MinecartNetwork, RidgeSide, EastScarp, skellady.SBVCP_SBVMinecartNetwork, Lumisteria.MtVapiusNetwork";
                         config.UseVerticalTabs = true;
                         config.HideUnavailable = false;
                         config.AllowUnavailable = false;

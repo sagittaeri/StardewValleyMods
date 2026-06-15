@@ -41,6 +41,16 @@
             "Action": "Include",
             "When": { "HasMod |contains=jibb.minecarts": true },
             "FromFile": "Networks/Integrated Minecarts.json"
+        },
+        {
+            "Action": "Include",
+            "When": { "HasMod |contains=Polydot.PolyCarts": true },
+            "FromFile": "Networks/PolyCarts.json"
+        },
+        {
+            "Action": "Include",
+            "When": { "HasMod |contains=maat.BetterThings": true },
+            "FromFile": "Networks/Better Things.json"
         }
     ]
 }

@@ -15,7 +15,6 @@
             "TargetField": ["Default", "RemoveDestinations"],
             "Entries": {
                 "jibb.EastScarp_Village": "jibb.EastScarp_Village",
-                "jibb.EastScarp_Village": "jibb.EastScarp_Village",
                 "jibb.EastScarp_DeepMountains": "jibb.EastScarp_DeepMountains",
                 "jibb.EastScarp_DeepDark": "jibb.EastScarp_DeepDark",
                 "EastScarp_ClearingHouse": "EastScarp_ClearingHouse",
@@ -56,49 +55,6 @@
                 "jibb.Fostoria": "jibb.Fostoria",
                 "jibb.Stoffton": "jibb.Stoffton",
                 "jibb.AimonSmallHilltopFarm_Quarry": "jibb.AimonSmallHilltopFarm_Quarry"
-            }
-        },
-        {
-            "Action": "EditData",
-            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
-            "TargetField": ["Outskirts", "OrderFromBottom"],
-            "Entries": {
-                "FlashShifter.FernGillRepublic_Ravine": "FlashShifter.FernGillRepublic_Ravine",
-                "FlashShifter.FernGillRepublic_Mountain": "FlashShifter.FernGillRepublic_Mountain",
-                "FlashShifter.FernGillRepublic_Grassland": "FlashShifter.FernGillRepublic_Grassland",
-                "FlashShifter.FernGillRepublic_Beach": "FlashShifter.FernGillRepublic_Beach"
-            }
-        },
-        {
-            "Action": "EditData",
-            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
-            "TargetField": ["Default", "OrderFromTop"],
-            "Entries": {
-                "jibb.Farm": "jibb.Farm",
-                "jibb.IF2RFarmWest": "jibb.IF2RFarmWest",
-                "jibb.IF2RFarmEast": "jibb.IF2RFarmEast",
-                "FlashShifter.FrontierFarm_Right": "FlashShifter.FrontierFarm_Right",
-                "FlashShifter.FrontierFarm_Middle": "FlashShifter.FrontierFarm_Middle",
-                "FlashShifter.FrontierFarm_Left": "FlashShifter.FrontierFarm_Left",
-                "DaisyNiko.ZenithFarmNW": "DaisyNiko.ZenithFarmNW",
-                "DaisyNiko.ZenithFarmNE": "DaisyNiko.ZenithFarmNE",
-                "DaisyNiko.ZenithFarmSW": "DaisyNiko.ZenithFarmSW",
-                "DaisyNiko.ZenithFarmSE": "DaisyNiko.ZenithFarmSE",
-                "DaisyNiko.LavenderMeadows_NorthWest": "DaisyNiko.LavenderMeadows_NorthWest",
-                "DaisyNiko.LavenderMeadows_NorthEast": "DaisyNiko.LavenderMeadows_NorthEast",
-                "DaisyNiko.LavenderMeadows_SouthWest": "DaisyNiko.LavenderMeadows_SouthWest",
-                "DaisyNiko.LavenderMeadows_SouthEast": "DaisyNiko.LavenderMeadows_SouthEast",
-                "DaisyNiko.LavenderMeadows_Cave": "DaisyNiko.LavenderMeadows_Cave",
-                "DaisyNiko.BlackberryFieldsNorth": "DaisyNiko.BlackberryFieldsNorth",
-                "DaisyNiko.BlackberryFieldsQuarry": "DaisyNiko.BlackberryFieldsQuarry",
-                "DaisyNiko.BlackberryFieldsSouthEast": "DaisyNiko.BlackberryFieldsSouthEast",
-                "DaisyNiko.BlackberryFieldsCave": "DaisyNiko.BlackberryFieldsCave",
-                "Pluviophist.FourAcres_NorthWest": "Pluviophist.FourAcres_NorthWest",
-                "Pluviophist.FourAcres_NorthEast": "Pluviophist.FourAcres_NorthEast",
-                "Pluviophist.FourAcres_Greenhouse": "Pluviophist.FourAcres_Greenhouse",
-                "jibb.LunatyxFarmCave": "jibb.LunatyxFarmCave",
-                "jibb.slightymoreinterestingfarmcave": "jibb.slightymoreinterestingfarmcave",
-                "MoonFox.MoonsFarmQuarry": "MoonFox.MoonsFarmQuarry"
             }
         }
     ]

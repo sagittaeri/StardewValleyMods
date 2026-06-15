@@ -11,7 +11,35 @@
                     "RemoveNetwork": false,
                     "RemoveDestinations": [],
                     "AppendDestinations": [],
-                    "OrderFromTop": [],
+                    "OrderFromTop": [
+                        "jibb.Farm",
+                        "jibb.IF2RFarmWest",
+                        "jibb.IF2RFarmEast",
+                        "FlashShifter.FrontierFarm_Right",
+                        "FlashShifter.FrontierFarm_Middle",
+                        "FlashShifter.FrontierFarm_Left",
+                        "maat.BetterThings_Farm_Minecart",
+                        "maat.BetterThings_SVEFarm_Minecart",
+                        "DaisyNiko.ZenithFarmNW",
+                        "DaisyNiko.ZenithFarmNE",
+                        "DaisyNiko.ZenithFarmSW",
+                        "DaisyNiko.ZenithFarmSE",
+                        "DaisyNiko.LavenderMeadows_NorthWest",
+                        "DaisyNiko.LavenderMeadows_NorthEast",
+                        "DaisyNiko.LavenderMeadows_SouthWest",
+                        "DaisyNiko.LavenderMeadows_SouthEast",
+                        "DaisyNiko.LavenderMeadows_Cave",
+                        "DaisyNiko.BlackberryFieldsNorth",
+                        "DaisyNiko.BlackberryFieldsQuarry",
+                        "DaisyNiko.BlackberryFieldsSouthEast",
+                        "DaisyNiko.BlackberryFieldsCave",
+                        "Pluviophist.FourAcres_NorthWest",
+                        "Pluviophist.FourAcres_NorthEast",
+                        "Pluviophist.FourAcres_Greenhouse",
+                        "jibb.LunatyxFarmCave",
+                        "jibb.slightymoreinterestingfarmcave",
+                        "MoonFox.MoonsFarmQuarry"
+                    ],
                     "OrderFromBottom": []
                 }
             }
@@ -37,7 +65,12 @@
                     "RemoveDestinations": [],
                     "AppendDestinations": [],
                     "OrderFromTop": [],
-                    "OrderFromBottom": []
+                    "OrderFromBottom": [
+                        "FlashShifter.FernGillRepublic_Ravine",
+                        "FlashShifter.FernGillRepublic_Mountain",
+                        "FlashShifter.FernGillRepublic_Grassland",
+                        "FlashShifter.FernGillRepublic_Beach"
+                    ]
                 }
             }
         }

@@ -2,7 +2,7 @@
 {
     // Config here
     "config.NetworkOrder.name": "Network Order",
-    "config.NetworkOrder.tooltip": "Order of which the minecart network tabs are shown, comma separated. Use the network ID, not the name. Additional networks are appended at the end",
+    "config.NetworkOrder.tooltip": "Order of which the minecart network tabs are shown, comma separated. Use the network ID and not the name. Unspecified networks are appended at the end. Recommended to edit the config.json file directly.",
 
     "config.UseVerticalTabs.name": "Use Side Tabs",
     "config.UseVerticalTabs.tooltip": "Display the menu with tabs on the left side if checked, and tabs on the top if unchecked.",

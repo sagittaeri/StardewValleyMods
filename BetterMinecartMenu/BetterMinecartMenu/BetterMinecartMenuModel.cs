@@ -169,11 +169,12 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
             tab.Active = tab.index == index;
             tab.Transform = tab.index == index ? "translate: 80, 0" :  "translate: 40, 0";
         }
+        string clickedNetworkId = this.networkIds[this.ActiveTabIndex];
 
         this.Destinations.Clear();
-        foreach (DestinationModel dest in this.visibleDestinations[this.networkIds[this.ActiveTabIndex]])
+        foreach (DestinationModel dest in this.visibleDestinations[clickedNetworkId])
             this.Destinations.Add(dest);
-        this.NetworkName = mod.AllNetworkEdits.ContainsKey(this.networkIds[this.ActiveTabIndex]) && !string.IsNullOrWhiteSpace(mod.AllNetworkEdits[this.networkIds[this.ActiveTabIndex]]?.DisplayName) ? TokenParser.ParseText(mod.AllNetworkEdits[this.networkIds[this.ActiveTabIndex]]?.DisplayName) : this.networkIds[this.ActiveTabIndex];
+        this.NetworkName = mod.AllNetworkEdits.ContainsKey(clickedNetworkId) && !string.IsNullOrWhiteSpace(mod.AllNetworkEdits[clickedNetworkId]?.DisplayName) ? TokenParser.ParseText(mod.AllNetworkEdits[clickedNetworkId]?.DisplayName) : clickedNetworkId;
     }
 
     public void ClickedDestination(string id)

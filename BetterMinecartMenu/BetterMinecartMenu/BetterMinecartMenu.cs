@@ -207,7 +207,7 @@ namespace BetterMinecartMenu
                     }
 
                     // Remove the whole network
-                    if (edit.RemoveNetwork)
+                    if (edit.RemoveNetwork && this.allNetworkData.ContainsKey(networkId))
                         this.hiddenNetworkData[networkId] = this.allNetworkData[networkId];
                 }
             }

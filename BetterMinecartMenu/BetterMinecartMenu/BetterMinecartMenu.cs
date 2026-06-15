@@ -157,9 +157,9 @@ namespace BetterMinecartMenu
                     {
                         if (this.allNetworkData.ContainsKey(networkId))
                             this.allNetworkData[networkId].Destinations.RemoveWhere(e => e.Id == destId);
-                        if (destinationNetworks[destId].Contains(networkId))
+                        if (destinationNetworks.ContainsKey(destId) && destinationNetworks[destId].Contains(networkId))
                             destinationNetworks[destId].Remove(networkId);
-                        if (destinationNetworks[destId].Count == 0)
+                        if (destinationNetworks.ContainsKey(destId) && destinationNetworks[destId].Count == 0)
                             destinationNetworks.Remove(destId);
                     }
 

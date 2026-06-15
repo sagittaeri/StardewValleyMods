@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using PropertyChanged.SourceGenerator;
@@ -72,12 +73,12 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
 
     private Dictionary<string, List<DestinationModel>> visibleDestinations = new();
 
-    public BetterMinecartMenuModel(BetterMinecartMenu mod, string currentDestinationId = null)
+    public BetterMinecartMenuModel(BetterMinecartMenu mod, string currentNetworkId = null, string currentDestinationId = null)
     {
         BetterMinecartMenuModel.mod  = mod;
 
         this.currentDestinationId = currentDestinationId;
-        this.currentNetworkId = this.currentDestinationId != null && mod.AllDestinationNetwork.ContainsKey(this.currentDestinationId) ? mod.AllDestinationNetwork[this.currentDestinationId] : null;
+        this.currentNetworkId = this.currentDestinationId != null && mod.AllDestinationNetwork.ContainsKey(this.currentDestinationId) ? mod.AllDestinationNetwork[this.currentDestinationId] : currentNetworkId;
         foreach (string networkId in mod.AllNetworkData.Keys)
         {
             if (!mod.AllNetworkData.ContainsKey(networkId) || !GameStateQuery.CheckConditions(mod.AllNetworkData[networkId].UnlockCondition))
@@ -140,7 +141,7 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
         i = 0;
         foreach (string networkId in this.networkIds)
         {
-            if (!string.IsNullOrWhiteSpace(this.currentNetworkId) && this.currentNetworkId == networkId)
+            if (this.currentNetworkId == networkId)
                 this.ActiveTabIndex = i;
 
             this.Tabs.Add(new TabModel()
@@ -154,6 +155,8 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
             });
             i++;
         }
+
+        mod.Monitor.Log($"BetterMinecartMenuModel / currentNetworkId:{currentNetworkId} / currentDestinationId:{currentDestinationId} / resolved:{this.currentNetworkId}", LogLevel.Info);
 
         this.ClickedTab(this.ActiveTabIndex);
     }

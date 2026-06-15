@@ -69,7 +69,7 @@ namespace BetterMinecartMenu
                                          Game1.content.LoadString("Strings\\Locations:MineCart_OutOfOrder"));
             else
             {
-                BetterMinecartMenuModel model = new BetterMinecartMenuModel(mod, excludeDestinationId);
+                BetterMinecartMenuModel model = new BetterMinecartMenuModel(mod, currentNetworkId, excludeDestinationId);
                 IClickableMenu menu = mod.viewEngine.CreateMenuFromAsset(mod.Config.UseVerticalTabs ? "Mods/Sagittaeri.BetterMinecartMenu/Views/VerticalTabs" : "Mods/Sagittaeri.BetterMinecartMenu/Views/HorizontalTabs", model);
                 Game1.activeClickableMenu = menu;
             }

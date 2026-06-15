@@ -155,7 +155,8 @@ namespace BetterMinecartMenu
                     // Remove destinations from this network
                     foreach (string destId in edit.RemoveDestinations)
                     {
-                        this.allNetworkData[networkId].Destinations.RemoveWhere(e => e.Id == destId);
+                        if (this.allNetworkData.ContainsKey(networkId))
+                            this.allNetworkData[networkId].Destinations.RemoveWhere(e => e.Id == destId);
                         if (destinationNetworks[destId].Contains(networkId))
                             destinationNetworks[destId].Remove(networkId);
                         if (destinationNetworks[destId].Count == 0)
@@ -167,14 +168,17 @@ namespace BetterMinecartMenu
                     {
                         if (!this.allDestinationData.ContainsKey(destId))
                             continue;
-                        if (!this.allNetworkData[networkId].Destinations.Contains(this.allDestinationData[destId]))
+                        if (this.allNetworkData.ContainsKey(networkId) && !this.allNetworkData[networkId].Destinations.Contains(this.allDestinationData[destId]))
                             this.allNetworkData[networkId].Destinations.Add(this.allDestinationData[destId]);
 
                         // Remove added destinations from other networks
                         if (destinationNetworks.TryGetValue(destId, out List<string> originalNetworkIds))
                         {
                             foreach (string originalNetworkId in originalNetworkIds)
-                                this.allNetworkData[originalNetworkId].Destinations.RemoveWhere(e => e.Id == destId);
+                            {
+                                if (this.allNetworkData.ContainsKey(networkId))
+                                    this.allNetworkData[originalNetworkId].Destinations.RemoveWhere(e => e.Id == destId);
+                            }
                         }
                         destinationNetworks[destId] = new List<string> { networkId };
                     }
@@ -183,7 +187,7 @@ namespace BetterMinecartMenu
                     int i = 0;
                     foreach (string destId in edit.OrderFromTop)
                     {
-                        if (!this.allDestinationData.ContainsKey(destId))
+                        if (!this.allDestinationData.ContainsKey(destId) || !this.allNetworkData.ContainsKey(networkId))
                             continue;
                         int index = this.allNetworkData[networkId].Destinations.IndexOf(this.allDestinationData[destId]);
                         if (index < 0)
@@ -193,7 +197,7 @@ namespace BetterMinecartMenu
                     }
                     foreach (string destId in edit.OrderFromBottom)
                     {
-                        if (!this.allDestinationData.ContainsKey(destId))
+                        if (!this.allDestinationData.ContainsKey(destId) || !this.allNetworkData.ContainsKey(networkId))
                             continue;
                         int index = this.allNetworkData[networkId].Destinations.IndexOf(this.allDestinationData[destId]);
                         if (index < 0)

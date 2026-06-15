@@ -1,7 +1,7 @@
 ﻿{
     "Name": "Smart Horses",
     "Author": "Sagittaeri",
-    "Version": "0.2",
+    "Version": "0.3",
     "Description": "Able to interact with most objects while riding on a horse e.g. forage, chests, trees, bulletin boards, minecarts, etc. Can also teleport with minecart to valid destinations.",
     "UniqueID": "Sagittaeri.SmartHorses",
     "EntryDll": "SmartHorses.dll",

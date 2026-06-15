@@ -34,6 +34,7 @@ namespace BetterMinecartMenu
             }
         }
 
+        [HarmonyBefore("Sagittaeri.SmartHorses")]
         public static void ShowMineCartMenuPostfix(GameLocation __instance, string networkId, string excludeDestinationId)
         {
             if (string.IsNullOrWhiteSpace(networkId) || (mod.AllNetworkData.ContainsKey(networkId) && !mod.HiddenNetworkData.ContainsKey(networkId)))

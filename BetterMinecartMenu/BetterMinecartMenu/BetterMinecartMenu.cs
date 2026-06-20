@@ -9,11 +9,13 @@ namespace BetterMinecartMenu
     using StardewValley.GameData.Minecarts;
     using StardewValley;
     using StardewUI.Framework;
+    using MinecartTravelMenu;
 
     public class BetterMinecartMenu : Mod
     {
         public BetterMinecartMenuConfig Config { get; set; }
         public IViewEngine viewEngine;
+        public IMinecartTravelMenuApi mtm;
 
         private Dictionary<string, MinecartNetworkEdit> allNetworkEdits;
         public Dictionary<string, MinecartNetworkEdit> AllNetworkEdits
@@ -92,6 +94,36 @@ namespace BetterMinecartMenu
                 this.Monitor.Log("EnableHotReloading", LogLevel.Info);
                 this.viewEngine?.EnableHotReloading("/Users/kgtan/Projects/web/StardewValleyMods/BetterMinecartMenu/BetterMinecartMenu");
 #endif
+                this.mtm = this.Helper.ModRegistry.GetApi<IMinecartTravelMenuApi>("ringlord174.MinecartTravelMenu");
+                if (this.mtm != null)
+                {
+                    this.mtm.SuppressMenu("Sagittaeri.BetterMinecartMenu", true);
+                    helper.Events.GameLoop.SaveLoaded += (o, eventArgs) =>
+                    {
+                        if (this.Config.Enable && this.Config.MTM_Enable && this.Config.MTM_Preload)
+                        {
+#if DEBUG
+                            this.Monitor.Log("Caching MTM maps...", LogLevel.Info);
+#endif
+                            List<string> visited = new List<string>();
+                            foreach (MinecartNetworkData networkData in this.AllNetworkData.Values)
+                            {
+                                foreach (MinecartDestinationData destinationData in networkData.Destinations)
+                                {
+                                    if (visited.Contains(destinationData.TargetLocation))
+                                        continue;
+                                    visited.Add(destinationData.TargetLocation);
+                                    GameLocation location = Game1.getLocationFromName(destinationData.TargetLocation);
+                                    if (this.Config.MTM_HighRes)
+                                        this.mtm.GetMapThumbnail(location, 4096, true, false);
+                                    else
+                                        this.mtm.GetMapThumbnail(location);
+
+                                }
+                            }
+                        }
+                    };
+                }
             };
 
             Patcher.PatchAll(this);

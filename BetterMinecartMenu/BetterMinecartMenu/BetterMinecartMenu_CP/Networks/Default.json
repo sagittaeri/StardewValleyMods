@@ -16,8 +16,11 @@
                         "jibb.IF2RFarmWest",
                         "jibb.IF2RFarmEast",
                         "FlashShifter.FrontierFarm_Right",
+                        "jibb.FrontierFarm_Right",
                         "FlashShifter.FrontierFarm_Middle",
+                        "jibb.FrontierFarm_Middle",
                         "FlashShifter.FrontierFarm_Left",
+                        "jibb.FrontierFarm_Left",
                         "maat.BetterThings_Farm_Minecart",
                         "maat.BetterThings_SVEFarm_Minecart",
                         "DaisyNiko.ZenithFarmNW",
@@ -38,7 +41,9 @@
                         "Pluviophist.FourAcres_Greenhouse",
                         "jibb.LunatyxFarmCave",
                         "jibb.slightymoreinterestingfarmcave",
-                        "MoonFox.MoonsFarmQuarry"
+                        "MoonFox.MoonsFarmQuarry",
+                        "Bus",
+                        "Town"
                     ],
                     "OrderFromBottom": []
                 }
@@ -67,9 +72,13 @@
                     "OrderFromTop": [],
                     "OrderFromBottom": [
                         "FlashShifter.FernGillRepublic_Ravine",
+                        "jibb.FernGillRepublic_Ravine",
                         "FlashShifter.FernGillRepublic_Mountain",
+                        "jibb.FernGillRepublic_Mountain",
                         "FlashShifter.FernGillRepublic_Grassland",
-                        "FlashShifter.FernGillRepublic_Beach"
+                        "jibb.FernGillRepublic_Grassland",
+                        "FlashShifter.FernGillRepublic_Beach",
+                        "jibb.FernGillRepublic_Beach"
                     ]
                 }
             }

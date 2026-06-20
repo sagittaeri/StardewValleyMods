@@ -9,35 +9,146 @@
                 "jibb.Railroad": "jibb.Railroad"
             }
         },
+
+        // EAST SCARP EDITS
         {
             "Action": "EditData",
             "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
-            "TargetField": ["Default", "RemoveDestinations"],
+            "TargetField": ["EastScarp", "RemoveDestinations"],
+            "Entries": {
+                "EastScarp_Village": "EastScarp_Village",
+                "EastScarp_DeepMountains": "EastScarp_DeepMountains",
+                "EastScarp_DeepDark": "EastScarp_DeepDark",
+                "EastScarp_Crossing": "EastScarp_Crossing"
+            },
+            "When": { "HasMod |contains=Lemurkat.EastScarp": true }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["EastScarp", "AppendDestinations"],
             "Entries": {
                 "jibb.EastScarp_Village": "jibb.EastScarp_Village",
                 "jibb.EastScarp_DeepMountains": "jibb.EastScarp_DeepMountains",
                 "jibb.EastScarp_DeepDark": "jibb.EastScarp_DeepDark",
-                "EastScarp_ClearingHouse": "EastScarp_ClearingHouse",
+                "EastScarp_ClearingHouse": "EastScarp_ClearingHouse"
+            },
+            "When": { "HasMod |contains=Lemurkat.EastScarp": true }
+        },
+
+        // RSV EDITS
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["RSV.MinecartNetwork", "RemoveDestinations"],
+            "Entries": {
+                "RSV_CableCar": "RSV_CableCar",
+                "RSV_Heaps": "RSV_Heaps",
+                "RSV_Nightingale": "RSV_Nightingale",
+                "RSV_Greenhouse": "RSV_Greenhouse",
+                "RSV_EastSummit": "RSV_EastSummit",
+                "RSV_WestSummit": "RSV_WestSummit"
+            },
+            "When": { "HasMod |contains=Rafseazz.RSVCP": true }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["RSV.MinecartNetwork", "AppendDestinations"],
+            "Entries": {
                 "jibb.RSVCableCar": "jibb.RSVCableCar",
                 "jibb.RSVEast": "jibb.RSVEast",
                 "jibb.RSVNorth": "jibb.RSVNorth",
                 "jibb.RSVSouth": "jibb.RSVSouth",
                 "jibb.RSVSummitEast": "jibb.RSVSummitEast",
-                "jibb.RSVSummitWest": "jibb.RSVSummitWest",
+                "jibb.RSVSummitWest": "jibb.RSVSummitWest"
+            },
+            "When": { "HasMod |contains=Rafseazz.RSVCP": true }
+        },
+
+        // MOUNT VAPIUS EDITS
+        {
+            "Action": "EditData",
+            "Target": "Data/Minecarts",
+            "TargetField": ["Default", "Destinations", "jibb.Lumisteria.MtVapius_Hamlet"],
+            "Entries": {
+                "Condition": "ANY \"LOCATION_CONTEXT Here Lumisteria_MtVapius_Forest\" \"PLAYER_HAS_MAIL Any Lumisteria.MtVapius_MineCartRepairedMail\""
+            },
+            "When": { "HasMod |contains=Lumisteria.MtVapius": true }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Default", "RemoveDestinations"],
+            "Entries": {
                 "jibb.Lumisteria.MtVapius_TrainStation": "jibb.Lumisteria.MtVapius_TrainStation",
-                "jibb.Lumisteria.MtVapius_Hamlet": "jibb.Lumisteria.MtVapius_Hamlet",
-                "jibb.FrontierFarm_Right": "jibb.FrontierFarm_Right",
-                "jibb.FrontierFarm_Middle": "jibb.FrontierFarm_Middle",
-                "jibb.FrontierFarm_Left": "jibb.FrontierFarm_Left",
-                "jibb.FernGillRepublic_Ravine": "jibb.FernGillRepublic_Ravine",
-                "jibb.FernGillRepublic_Mountain": "jibb.FernGillRepublic_Mountain",
-                "jibb.FernGillRepublic_Grassland": "jibb.FernGillRepublic_Grassland",
-                "jibb.FernGillRepublic_Beach": "jibb.FernGillRepublic_Beach",
+                "jibb.Lumisteria.MtVapius_Hamlet": "jibb.Lumisteria.MtVapius_Hamlet"
+            },
+            "When": { "HasMod |contains=Lumisteria.MtVapius": true }
+        },
+//        {
+//            "Action": "EditData",
+//            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+//            "TargetField": ["Lumisteria.MtVapiusNetwork", "RemoveDestinations"],
+//            "Entries": {
+//                "Lumisteria.MtVapius_Hamlet": "Lumisteria.MtVapius_Hamlet",
+//                "Lumisteria.MtVapius_TrainStation": "Lumisteria.MtVapius_TrainStation"
+//            },
+//            "When": { "HasMod |contains=Lumisteria.MtVapius": true }
+//        },
+//        {
+//            "Action": "EditData",
+//            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+//            "TargetField": ["Lumisteria.MtVapiusNetwork", "AppendDestinations"],
+//            "Entries": {
+//                "jibb.Lumisteria.MtVapius_TrainStation": "jibb.Lumisteria.MtVapius_TrainStation",
+//                "jibb.Lumisteria.MtVapius_Hamlet": "jibb.Lumisteria.MtVapius_Hamlet"
+//            },
+//            "When": { "HasMod |contains=Lumisteria.MtVapius": true }
+//        },
+
+        // SUNBURY EDITS
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Default", "RemoveDestinations"],
+            "Entries": {
                 "skellady.SBVCP_SBVForest": "skellady.SBVCP_SBVForest",
                 "skellady.SBVCP_SBVMountain": "skellady.SBVCP_SBVMountain",
                 "skellady.SBVCP_SBVFarm": "skellady.SBVCP_SBVFarm"
-            }
+            },
+            "When": { "HasMod |contains=skellady.SBVCP": true }
         },
+
+        // FRONTIER FARM EDITS
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Default", "AppendDestinations"],
+            "Entries": {
+                "FlashShifter.FrontierFarm_Right": null,
+                "FlashShifter.FrontierFarm_Middle": null,
+                "FlashShifter.FrontierFarm_Left": null
+            },
+            "When": { "HasMod |contains=flashshifter.FrontierFarm": true }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Outskirts", "AppendDestinations"],
+            "Entries": {
+                "FlashShifter.FernGillRepublic_Ravine": null,
+                "FlashShifter.FernGillRepublic_Mountain": null,
+                "FlashShifter.FernGillRepublic_Grassland": null,
+                "FlashShifter.FernGillRepublic_Beach": null,
+                "jibb.FernGillRepublic_Ravine": "jibb.FernGillRepublic_Ravine",
+                "jibb.FernGillRepublic_Mountain": "jibb.FernGillRepublic_Mountain",
+                "jibb.FernGillRepublic_Grassland": "jibb.FernGillRepublic_Grassland",
+                "jibb.FernGillRepublic_Beach": "jibb.FernGillRepublic_Beach"
+            },
+            "When": { "HasMod |contains=flashshifter.FrontierFarm": true }
+        },
+
         {
             "Action": "EditData",
             "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",

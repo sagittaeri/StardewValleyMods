@@ -37,6 +37,8 @@ namespace BetterMinecartMenu
         [HarmonyBefore("Sagittaeri.SmartHorses")]
         public static void ShowMineCartMenuPostfix(GameLocation __instance, string networkId, string excludeDestinationId)
         {
+            if (!mod.Config.Enable)
+                return;
             if (string.IsNullOrWhiteSpace(networkId) || (mod.AllNetworkData.ContainsKey(networkId) && !mod.HiddenNetworkData.ContainsKey(networkId)))
             {
                 Game1.activeClickableMenu?.exitThisMenuNoSound();
@@ -70,7 +72,10 @@ namespace BetterMinecartMenu
             else
             {
                 BetterMinecartMenuModel model = new BetterMinecartMenuModel(mod, currentNetworkId, excludeDestinationId);
-                IClickableMenu menu = mod.viewEngine.CreateMenuFromAsset(mod.Config.UseVerticalTabs ? "Mods/Sagittaeri.BetterMinecartMenu/Views/VerticalTabs" : "Mods/Sagittaeri.BetterMinecartMenu/Views/HorizontalTabs", model);
+                string viewName = mod.Config.UseVerticalTabs ? "VerticalTabs" : "HorizontalTabs";
+                if (mod.mtm != null && mod.Config.MTM_Enable)
+                    viewName += "-MTM";
+                IClickableMenu menu = mod.viewEngine.CreateMenuFromAsset("Mods/Sagittaeri.BetterMinecartMenu/Views/" + viewName, model);
                 Game1.activeClickableMenu = menu;
             }
         }

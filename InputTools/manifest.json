@@ -10,7 +10,7 @@
   "UniqueID": "Sagittaeri.InputTools",
   "Name": "InputTools",
   "Author": "Sagittaeri",
-  "Version": "0.2.0",
+  "Version": "0.2.0-Debug",
   "Description": "Tools to simplify inputs from keyboard, mouse and controller.",
   "MinimumApiVersion": "4.5.2",
   "EntryDll": "InputTools.dll",

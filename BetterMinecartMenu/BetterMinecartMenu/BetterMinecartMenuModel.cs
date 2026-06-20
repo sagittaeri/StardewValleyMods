@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using PropertyChanged.SourceGenerator;
 using StardewModdingAPI;
 using StardewValley;
@@ -36,20 +38,16 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
     public partial class DestinationModel
     {
         public string Name;
+        [Notify] public Tuple<Texture2D, Rectangle> destTexture;
+        [Notify] string buttonOpacity;
+        [Notify] string textureOpacity;
+        [Notify] string statusLayout;
+        [Notify] string statusOpacity;
+        [Notify] string statusText;
 
         internal bool active;
         internal string id;
         internal BetterMinecartMenuModel mainModel;
-
-        public float Opacity
-        {
-            get
-            {
-                if (this.active)
-                    return 1f;
-                return 0.5f;
-            }
-        }
 
         public void Clicked()
         {
@@ -72,10 +70,13 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
     [Notify] public string networkName;
 
     private Dictionary<string, List<DestinationModel>> visibleDestinations = new();
+    private Tuple<Texture2D, Rectangle> blankTexture;
 
     public BetterMinecartMenuModel(BetterMinecartMenu mod, string currentNetworkId = null, string currentDestinationId = null)
     {
         BetterMinecartMenuModel.mod  = mod;
+        if (mod.mtm != null)
+            this.blankTexture = new Tuple<Texture2D, Rectangle>(new Texture2D(Game1.graphics.GraphicsDevice, 2, 1), new Rectangle(0, 0,2,1));
 
         this.currentDestinationId = currentDestinationId;
         this.currentNetworkId = this.currentDestinationId != null && mod.AllDestinationNetwork.ContainsKey(this.currentDestinationId) ? mod.AllDestinationNetwork[this.currentDestinationId] : currentNetworkId;
@@ -105,10 +106,41 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
                 bool passedCondition = GameStateQuery.CheckConditions(dest.Condition, Game1.player.currentLocation);
                 if (mod.Config.HideUnavailable && !passedCondition)
                     continue;
+                GameLocation targetLocation = Game1.getLocationFromName(dest.TargetLocation);
+                Tuple<Texture2D, Rectangle> destTex = null;
+                Texture2D mapTex = null;
+                if (mod.Config.MTM_HighRes && mod.Config.MTM_Enable)
+                    mapTex = mod.mtm?.GetMapThumbnail(targetLocation, 4096, true, false);
+                else
+                    mapTex = mod.mtm?.GetMapThumbnail(targetLocation);
+                if (mapTex != null && mod.Config.MTM_Enable)
+                {
+                    var size = targetLocation.Map.Layers[0].LayerSize;
+                    int cropW = (int)Math.Round(20 * (mapTex.Width / (float)Math.Max(1, size.Width)));
+                    int cropH = (int)Math.Round(10 * (mapTex.Height / (float)Math.Max(1, size.Height)));
+
+                    int px = (int)Math.Round((dest.TargetTile.X + 0.5f) / Math.Max(1, size.Width) * mapTex.Width);
+                    int py = (int)Math.Round((dest.TargetTile.Y - 0.5f) / Math.Max(1, size.Height) * mapTex.Height);
+                    int cropX = Math.Clamp((int)(px - cropW / 2f), 0, Math.Max(0, mapTex.Width - cropW));
+                    int cropY = Math.Clamp((int)(py - cropH / 2f), 0, Math.Max(0, mapTex.Height - cropH));
+                    destTex = new Tuple<Texture2D, Rectangle>(mapTex, new Rectangle(cropX, cropY, cropW, cropH));
+                }
+
+                string statusText = "";
+                if (dest.Id == this.currentDestinationId)
+                    statusText = mod.Helper.Translation.Get("config.LabelYouAreHere");
+                else if (!passedCondition)
+                    statusText = mod.Helper.Translation.Get("config.LabelLocked");
                 this.visibleDestinations[networkId].Add(new DestinationModel()
                 {
                     Name = TokenParser.ParseText(dest.DisplayName),
-                    active = dest.Id != this.currentDestinationId && passedCondition,
+                    DestTexture = passedCondition || !mod.Config.MTM_HideUnavailableThumbnail ? destTex : this.blankTexture,
+                    ButtonOpacity = passedCondition ? "1.0" : "0.5",
+                    TextureOpacity =  dest.Id != this.currentDestinationId ? "1.0" : "0.5",
+                    StatusLayout = mod.mtm == null || !mod.Config.MTM_Enable || statusText == "" ? "0px 0px" : "stretch 60px",
+                    StatusOpacity = statusText == "" ? "0" : "1.0",
+                    StatusText = statusText,
+                    active = statusText == "",
                     id = dest.Id,
                     mainModel = this
                 });

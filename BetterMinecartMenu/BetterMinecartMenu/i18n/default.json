@@ -1,6 +1,13 @@
 ﻿// Copyright 2026 Sagittaeri
 {
+    // Menu labels
+    "config.LabelYouAreHere": "You are here",
+    "config.LabelLocked": "Unavailable",
+
     // Config here
+    "config.Enable.name": "Enable Mod",
+    "config.Enable.tooltip": "Enables this mod.",
+
     "config.NetworkOrder.name": "Network Order",
     "config.NetworkOrder.tooltip": "Order of which the minecart network tabs are shown, comma separated. Use the network ID and not the name. Unspecified networks are appended at the end. Recommended to edit the config.json file directly.",
 
@@ -19,7 +26,22 @@
     "config.AllowUnavailable.name": "Allow Unavailable",
     "config.AllowUnavailable.tooltip": "(CHEAT) Allow currently unavailable destinations (cannot be clicked). Only relevant if they are not hidden. Note that this might send you places you can't come back from, so use with care.",
 
-    "config.CheatWarning": "Options below are are CHEATS. This might break game state, so use with care."
+    "config.CheatWarning": "Options below are are CHEATS. This might break game state, so use with care.",
+
+    // Minecart Travel Menu config
+    "config.MTM_Heading": "These are Minecart Travel Menu options - only applicable if you have that mod.",
+
+    "config.MTM_Enable.name": "Show Map Thumbnails",
+    "config.MTM_Enable.tooltip": "Show map thumbnails from Minecart Travel Menu for destinations.",
+
+    "config.MTM_HighRes.name": "Use High Res",
+    "config.MTM_HighRes.tooltip": "Use high res textures for thumbnails. Might be slow on lower-end systems.",
+
+    "config.MTM_Preload.name": "Preload Maps",
+    "config.MTM_Preload.tooltip": "Cache the maps on game load to remove the 1-second freeze the first time the game is launched.",
+
+    "config.MTM_HideUnavailableThumbnail.name": "Hide Unavailable Thumbnail",
+    "config.MTM_HideUnavailableThumbnail.tooltip": "Hide the thumbnail of unavailable destinations."
 }
 
 /* BEFORE WITHOUT INTEGRATED CARTS

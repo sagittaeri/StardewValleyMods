@@ -9,18 +9,22 @@
                     text={NetworkName} />
         </lane>
         <lane orientation="horizontal" button-press=|HandleButtonPress($Button)|>
-            <lane layout="335px content" orientation="vertical" margin="0, 30, 0, 0">
+            <lane layout="235px content" orientation="vertical" margin="0, 30, 0, 0">
                 <frame *repeat={:Tabs}
                     layout="stretch 56px"
                     margin="0, 3"
                     padding="0, 0, 40, 0"
-                    horizontal-content-alignment="middle"
+                    horizontal-content-alignment="start"
                     vertical-content-alignment="middle"
                     background={@Mods/StardewUI/Sprites/ControlBorder}
                     transform={Transform}
                     focusable="true"
                     click=|Clicked()|>
-                    <label text={:Tooltip} />
+                    <panel margin="60,0,0,0">
+                        <label text={:Tooltip} horizontal-alignment="middle" font="tiny" margin="0,0,0,0" scale="0.5" />
+                        <label text={:Tooltip} horizontal-alignment="middle" font="tiny" margin="1,0,0,0" scale="0.5" />
+                        <label text={:Tooltip} horizontal-alignment="middle" font="tiny" margin="0,1,0,0" scale="0.5" />
+                    </panel>
                 </frame>
             </lane>
             <frame layout="665px 660px"
@@ -34,18 +38,44 @@
                               item-layout="count: 2"
                               item-spacing="10,10"
                               horizontal-item-alignment="middle">
-                            <button *repeat={:Destinations}
-                                layout="stretch 100px"
-                                Opacity={:ButtonOpacity}
-                                click=|Clicked()|>
-                                <panel layout="stretch">
-                                    <panel layout="stretch" vertical-content-alignment="end" margin="0,0,0,-5" opacity={:StatusOpacity}>
+                            <panel *repeat={:Destinations}
+                                layout="stretch content">
+                                <button
+                                    layout="stretch"
+                                    opacity={:ButtonOpacity}
+                                    click=|Clicked()|>
+                                </button>
+                                <panel
+                                    padding="12,12">
+                                    <panel opacity={:TextureOpacity}>
+                                        <image
+                                            layout="stretch content"
+                                            sprite={DestTexture} />
+                                    </panel>
+                                    <panel layout="stretch" vertical-content-alignment="start" margin="0,-1,0,0">
                                         <frame
-                                            layout="stretch 15px"
+                                            layout="stretch 40px"
                                             opacity="0.8"
                                             background={@Mods/StardewUI/Sprites/MenuBackground} />
                                         <panel
-                                            layout="stretch 10px"
+                                            layout="stretch 40px"
+                                            horizontal-content-alignment="middle"
+                                            vertical-content-alignment="middle">
+                                            <label text={:Name} horizontal-alignment="middle" font="tiny" margin="0,0,0,0" scale="0.5" />
+                                            <label text={:Name} horizontal-alignment="middle" font="tiny" margin="1,1,0,0" scale="0.5" />
+                                            <label text={:Name} horizontal-alignment="middle" font="tiny" margin="-1,-1,0,0" scale="0.5" />
+                                            <label text={:Name} horizontal-alignment="middle" font="tiny" margin="1,-1,0,0" scale="0.5" />
+                                            <label text={:Name} horizontal-alignment="middle" font="tiny" margin="-1,1,0,0" scale="0.5" />
+                                        </panel>
+                                    </panel>
+
+                                    <panel layout="stretch" vertical-content-alignment="end" opacity={:StatusOpacity}>
+                                        <frame
+                                            layout="stretch 40px"
+                                            opacity="0.8"
+                                            background={@Mods/StardewUI/Sprites/MenuBackground} />
+                                        <panel
+                                            layout="stretch 35px"
                                             horizontal-content-alignment="middle"
                                             vertical-content-alignment="middle">
                                             <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="1,1,0,0" scale="0.5" />
@@ -54,13 +84,8 @@
                                             <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="-1,1,0,0" scale="0.5" />
                                         </panel>
                                     </panel>
-                                    <frame layout="stretch"
-                                        horizontal-content-alignment="middle"
-                                        vertical-content-alignment="middle">
-                                        <label text={:Name} horizontal-alignment="middle" />
-                                    </frame>
                                 </panel>
-                            </button>
+                            </panel>
                         </grid>
                     </lane>
                 </scrollable>

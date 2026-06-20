@@ -4,6 +4,15 @@
         {
             "Action": "EditData",
             "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "Entries": {
+                "FrontierFarm": {
+                    "RemoveNetwork": true
+                }
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
             "TargetField": ["Outskirts", "AppendDestinations"],
             "Entries": {
                 "FlashShifter.FernGillRepublic_Ravine": "FlashShifter.FernGillRepublic_Ravine",

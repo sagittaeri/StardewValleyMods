@@ -39,6 +39,63 @@ namespace BetterMinecartMenu
         {
             if (!mod.Config.Enable)
                 return;
+
+#if DEBUG
+            mod.Monitor.Log($">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", LogLevel.Info);
+            mod.Monitor.Log($">>> ShowMineCartMenuPostfix / NetworkId:{networkId} / Dest:{excludeDestinationId}", LogLevel.Info);
+#endif
+            // Redirect if exists
+            if (!string.IsNullOrWhiteSpace(networkId) && mod.AllNetworkEdits.ContainsKey(networkId) && !string.IsNullOrWhiteSpace(mod.AllNetworkEdits[networkId].RedirectNetwork))
+            {
+                // mod.Monitor.Log($"ShowMineCartMenuPostfix > Overwrite Redirect / Old:{networkId} / New:{mod.AllNetworkEdits[networkId].RedirectNetwork}", LogLevel.Info);
+                networkId = mod.AllNetworkEdits[networkId].RedirectNetwork;
+            }
+
+            // If part of hidden network (i.e. train or bus), don't modify anything
+            if (string.IsNullOrWhiteSpace(networkId) || !mod.HiddenNetworkData.ContainsKey(networkId))
+            {
+                // Forcefully search for the nearest excludeDestinationId if not provided or if unknown
+                if (excludeDestinationId != null && !mod.AllDestinationNetwork.ContainsKey(excludeDestinationId) &&
+                    mod.Config.AutoFindSource)
+                    excludeDestinationId = null;
+                if (excludeDestinationId == null && mod.Config.AutoFindSource)
+                {
+                    foreach (MinecartNetworkData minecartNetworkData in mod.AllNetworkData.Values)
+                    {
+                        foreach (MinecartDestinationData destinationData in minecartNetworkData.Destinations)
+                        {
+                            if (destinationData.TargetLocation != Game1.player.currentLocation.Name)
+                                continue;
+                            double distanceSquared =
+                                Math.Pow((double)destinationData.TargetTile.X - Game1.player.TilePoint.X, 2.0) +
+                                Math.Pow(destinationData.TargetTile.Y - Game1.player.TilePoint.Y, 2.0);
+                            if (distanceSquared > 50.0)
+                                continue;
+                            // mod.Monitor.Log($"ShowMineCartMenuPostfix > Found Nearby Dest / Dest:{destinationData.Id} / Distance2:{distanceSquared} / Player:{Game1.player.TilePoint} / Cart:{destinationData.TargetTile}", LogLevel.Info);
+                            excludeDestinationId = destinationData.Id;
+                            break;
+                        }
+
+                        if (excludeDestinationId != null)
+                            break;
+                    }
+                }
+
+                // Forcefully correct the network ID
+                if (excludeDestinationId != null && mod.AllDestinationNetwork.ContainsKey(excludeDestinationId))
+                {
+                    // mod.Monitor.Log($"ShowMineCartMenuPostfix > Overwrite NetworkID with DestNetwork / Old:{networkId} / New:{mod.AllDestinationNetwork[excludeDestinationId]}", LogLevel.Info);
+                    networkId = mod.AllDestinationNetwork[excludeDestinationId];
+                }
+
+                if (!string.IsNullOrWhiteSpace(networkId) && mod.AllNetworkData.ContainsKey(networkId) && mod.AllNetworkData[networkId].Destinations.Count == 0)
+                {
+                    // mod.Monitor.Log($"ShowMineCartMenuPostfix > No destinations, treat as null / Old:{networkId}", LogLevel.Info);
+                    networkId = null;
+                }
+            }
+
+            // If not a bus/train network, suppress the default menu and opens this mod's menu
             if (string.IsNullOrWhiteSpace(networkId) || (mod.AllNetworkData.ContainsKey(networkId) && !mod.HiddenNetworkData.ContainsKey(networkId)))
             {
                 Game1.activeClickableMenu?.exitThisMenuNoSound();
@@ -67,8 +124,7 @@ namespace BetterMinecartMenu
             if (currentNetworkId == null || !mod.AllNetworkData.TryGetValue(currentNetworkId, out networkData))
                 mod.Monitor.Log($"Can't show minecart menu for unknown network ID '{currentNetworkId}'.", LogLevel.Warn);
             else if (!mod.Config.AllowUnavailable && !GameStateQuery.CheckConditions(networkData.UnlockCondition, gameLocation))
-                Game1.drawObjectDialogue(TokenParser.ParseText(networkData.LockedMessage) ??
-                                         Game1.content.LoadString("Strings\\Locations:MineCart_OutOfOrder"));
+                Game1.drawObjectDialogue(TokenParser.ParseText(networkData.LockedMessage) ?? Game1.content.LoadString("Strings\\Locations:MineCart_OutOfOrder"));
             else
             {
                 BetterMinecartMenuModel model = new BetterMinecartMenuModel(mod, currentNetworkId, excludeDestinationId);

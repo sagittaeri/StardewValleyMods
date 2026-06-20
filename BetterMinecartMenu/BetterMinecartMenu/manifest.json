@@ -17,6 +17,7 @@
         },
         {
             "UniqueID": "ringlord174.MinecartTravelMenu",
+            "MinimumVersion": "1.1.1",
             "IsRequired": false
         }
     ],

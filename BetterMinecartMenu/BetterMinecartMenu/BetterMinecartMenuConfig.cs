@@ -10,6 +10,7 @@ namespace BetterMinecartMenu
     public class BetterMinecartMenuConfig
     {
         public bool Enable { get; set; } = true;
+        public bool AutoFindSource { get; set; } = true;
         public string NetworkOrder { get; set; } = "Default, Outskirts, RSV.MinecartNetwork, RidgeSide, EastScarp, skellady.SBVCP_SBVMinecartNetwork, Lumisteria.MtVapiusNetwork";
         public bool UseVerticalTabs { get; set; } = true;
         public bool HideUnavailable { get; set; } = false;
@@ -43,6 +44,7 @@ namespace BetterMinecartMenu
                     if (Context.IsWorldReady)
                     {
                         config.Enable = true;
+                        config.AutoFindSource = true;
                         config.NetworkOrder = "Default, Outskirts, RSV.MinecartNetwork, RidgeSide, EastScarp, skellady.SBVCP_SBVMinecartNetwork, Lumisteria.MtVapiusNetwork";
                         config.UseVerticalTabs = true;
                         config.HideUnavailable = false;
@@ -71,6 +73,14 @@ namespace BetterMinecartMenu
                 tooltip: () => mod.Helper.Translation.Get("config.Enable.tooltip"),
                 getValue: () => mod.Config.Enable,
                 setValue: value => mod.Config.Enable = value
+            );
+
+            api.AddBoolOption(
+                mod: manifest,
+                name: () => mod.Helper.Translation.Get("config.AutoFindSource.name"),
+                tooltip: () => mod.Helper.Translation.Get("config.AutoFindSource.tooltip"),
+                getValue: () => mod.Config.AutoFindSource,
+                setValue: value => mod.Config.AutoFindSource = value
             );
 
             api.AddTextOption(

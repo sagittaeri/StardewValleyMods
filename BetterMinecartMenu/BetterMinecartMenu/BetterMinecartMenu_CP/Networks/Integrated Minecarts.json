@@ -86,26 +86,6 @@
             },
             "When": { "HasMod |contains=Lumisteria.MtVapius": true }
         },
-//        {
-//            "Action": "EditData",
-//            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
-//            "TargetField": ["Lumisteria.MtVapiusNetwork", "RemoveDestinations"],
-//            "Entries": {
-//                "Lumisteria.MtVapius_Hamlet": "Lumisteria.MtVapius_Hamlet",
-//                "Lumisteria.MtVapius_TrainStation": "Lumisteria.MtVapius_TrainStation"
-//            },
-//            "When": { "HasMod |contains=Lumisteria.MtVapius": true }
-//        },
-//        {
-//            "Action": "EditData",
-//            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
-//            "TargetField": ["Lumisteria.MtVapiusNetwork", "AppendDestinations"],
-//            "Entries": {
-//                "jibb.Lumisteria.MtVapius_TrainStation": "jibb.Lumisteria.MtVapius_TrainStation",
-//                "jibb.Lumisteria.MtVapius_Hamlet": "jibb.Lumisteria.MtVapius_Hamlet"
-//            },
-//            "When": { "HasMod |contains=Lumisteria.MtVapius": true }
-//        },
 
         // SUNBURY EDITS
         {
@@ -113,9 +93,29 @@
             "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
             "TargetField": ["Default", "RemoveDestinations"],
             "Entries": {
+                "skellady.SBVCP_PTToSBV": null,
+                "skellady.SBVCP_SBVVillage": "skellady.SBVCP_SBVVillage",
                 "skellady.SBVCP_SBVForest": "skellady.SBVCP_SBVForest",
                 "skellady.SBVCP_SBVMountain": "skellady.SBVCP_SBVMountain",
                 "skellady.SBVCP_SBVFarm": "skellady.SBVCP_SBVFarm"
+            },
+            "When": { "HasMod |contains=skellady.SBVCP": true }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["skellady.SBVCP_SBVMinecartNetwork", "RemoveDestinations"],
+            "Entries": {
+                "skellady.SBVCP_SBVVillage": "skellady.SBVCP_SBVVillage"
+            },
+            "When": { "HasMod |contains=skellady.SBVCP": true }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["skellady.SBVCP_SBVMinecartNetwork", "AppendDestinations"],
+            "Entries": {
+                "skellady.SBVCP_PTToSBV": "skellady.SBVCP_PTToSBV"
             },
             "When": { "HasMod |contains=skellady.SBVCP": true }
         },

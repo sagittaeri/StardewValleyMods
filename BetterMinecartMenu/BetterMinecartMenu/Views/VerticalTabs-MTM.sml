@@ -9,7 +9,7 @@
                     text={NetworkName} />
         </lane>
         <lane orientation="horizontal" button-press=|HandleButtonPress($Button)|>
-            <lane layout="235px content" orientation="vertical" margin="0, 30, 0, 0">
+            <lane layout="275px content" orientation="vertical" margin="0, 30, 0, 0">
                 <frame *repeat={:Tabs}
                     layout="stretch 56px"
                     margin="0, 3"

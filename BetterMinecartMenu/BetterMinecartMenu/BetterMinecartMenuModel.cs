@@ -136,7 +136,7 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
                     Name = TokenParser.ParseText(dest.DisplayName),
                     DestTexture = passedCondition || !mod.Config.MTM_HideUnavailableThumbnail ? destTex : this.blankTexture,
                     ButtonOpacity = passedCondition ? "1.0" : "0.5",
-                    TextureOpacity =  dest.Id != this.currentDestinationId ? "1.0" : "0.5",
+                    TextureOpacity =  dest.Id != this.currentDestinationId && (mod.Config.MTM_HideUnavailableThumbnail || statusText == "") ? "1.0" : "0.5",
                     StatusLayout = mod.mtm == null || !mod.Config.MTM_Enable || statusText == "" ? "0px 0px" : "stretch 60px",
                     StatusOpacity = statusText == "" ? "0" : "1.0",
                     StatusText = statusText,
@@ -187,9 +187,7 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
             });
             i++;
         }
-
-        mod.Monitor.Log($"BetterMinecartMenuModel / currentNetworkId:{currentNetworkId} / currentDestinationId:{currentDestinationId} / resolved:{this.currentNetworkId}", LogLevel.Info);
-
+        // mod.Monitor.Log($"BetterMinecartMenuModel / currentNetworkId:{currentNetworkId} / currentDestinationId:{currentDestinationId} / resolved:{this.currentNetworkId}", LogLevel.Info);
         this.ClickedTab(this.ActiveTabIndex);
     }
 

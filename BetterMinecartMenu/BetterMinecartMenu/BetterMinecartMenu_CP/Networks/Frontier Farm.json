@@ -6,7 +6,8 @@
             "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
             "Entries": {
                 "FrontierFarm": {
-                    "RemoveNetwork": true
+                    "RemoveNetwork": true,
+                    "RedirectNetwork": "Default"
                 }
             }
         },

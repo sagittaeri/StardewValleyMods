@@ -10,16 +10,21 @@
                     "TabName": "{{i18n: Network.skellady.SBVCP_SBVMinecartNetwork.Tab}}",
                     "RemoveDestinations": [
                         "skellady.SBVCP_SBVBusStop",
-                        "skellady.SBVCP_SBVTown",
-                        "skellady.SBVCP_SBVVillage"
-                    ],
-                    "AppendDestinations": [
-                        "skellady.SBVCP_PTToSBV"
+                        "skellady.SBVCP_SBVTown"
                     ],
                     "OrderFromTop": [
+                        "skellady.SBVCP_SBVVillage",
                         "skellady.SBVCP_PTToSBV"
                     ]
                 }
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["Default", "RemoveDestinations"],
+            "Entries": {
+                "skellady.SBVCP_PTToSBV": "skellady.SBVCP_PTToSBV"
             }
         }
     ]

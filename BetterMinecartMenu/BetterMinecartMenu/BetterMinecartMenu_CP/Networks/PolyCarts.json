@@ -16,10 +16,12 @@
             "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
             "Entries": {
                 "FrontierFarm": {
-                    "RemoveNetwork": true
+                    "RemoveNetwork": true,
+                    "RedirectNetwork": "Outskirts"
                 },
                 "RSV.MinecartNetwork": {
-                    "RemoveNetwork": true
+                    "RemoveNetwork": true,
+                    "RedirectNetwork": "RidgeSide"
                 },
                 "RidgeSide": {
                     "DisplayName": "{{i18n: Network.RSV.MinecartNetwork}}",

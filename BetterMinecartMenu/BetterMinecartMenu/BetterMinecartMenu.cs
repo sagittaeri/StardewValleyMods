@@ -148,6 +148,7 @@ namespace BetterMinecartMenu
                     this.allNetworkData = null;
                     this.allDestinationData = null;
                     this.allDestinationNetwork = null;
+                    this.hiddenNetworkData = null;
                     this.CacheMinecartData();
                 }
             }
@@ -155,13 +156,12 @@ namespace BetterMinecartMenu
 
         private void CacheMinecartData()
         {
-            this.allNetworkData = DataLoader.Minecarts(Game1.content);
             this.hiddenNetworkData = new();
             this.allDestinationData = new();
             this.allDestinationNetwork = new();
+            this.allNetworkData = DataLoader.Minecarts(Game1.content).DeepClone();
             this.allNetworkEdits = MinecartNetworkEdit.Load();
             Dictionary<string, List<string>> destinationNetworks  = new();
-
             foreach (string networkId in this.allNetworkData.Keys)
             {
                 MinecartNetworkData minecartNetworkData = this.allNetworkData[networkId];
@@ -182,7 +182,9 @@ namespace BetterMinecartMenu
                 foreach (string networkId in this.allNetworkEdits.Keys)
                 {
                     MinecartNetworkEdit edit = this.allNetworkEdits[networkId];
-                    // mod.Monitor.Log($"{networkId}: {edit}", LogLevel.Info);
+#if DEBUG
+                    // this.Monitor.Log($"{networkId}: {edit}", LogLevel.Info);
+#endif
 
                     // Remove destinations from this network
                     foreach (string destId in edit.RemoveDestinations)

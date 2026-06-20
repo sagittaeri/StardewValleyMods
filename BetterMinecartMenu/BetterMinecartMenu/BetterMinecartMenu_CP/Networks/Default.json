@@ -9,6 +9,7 @@
                     "DisplayName": "{{i18n: Network.Default}}",
                     "TabName": "{{i18n: Network.Default.Tab}}",
                     "RemoveNetwork": false,
+                    "RedirectNetwork": "",
                     "RemoveDestinations": [],
                     "AppendDestinations": [],
                     "OrderFromTop": [
@@ -42,8 +43,14 @@
                         "jibb.LunatyxFarmCave",
                         "jibb.slightymoreinterestingfarmcave",
                         "MoonFox.MoonsFarmQuarry",
+                        "Polydot.PolyCarts_Farm_East",
+                        "Polydot.PolyCarts_Farm_West",
+                        "Polydot.PolyCarts_Farm_North",
+                        "Polydot.PolyCarts_FarmCave",
+                        "maat.BetterThings_SVEFarm_Minecart",
                         "Bus",
-                        "Town"
+                        "Town",
+                        "Polydot.PolyCarts_Town_East"
                     ],
                     "OrderFromBottom": []
                 }
@@ -67,6 +74,7 @@
                     "DisplayName": "{{i18n: Network.Outskirts}}",
                     "TabName": "{{i18n: Network.Outskirts.Tab}}",
                     "RemoveNetwork": false,
+                    "RedirectNetwork": "",
                     "RemoveDestinations": [],
                     "AppendDestinations": [],
                     "OrderFromTop": [],

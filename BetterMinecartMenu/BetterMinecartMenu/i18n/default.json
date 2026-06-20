@@ -8,6 +8,9 @@
     "config.Enable.name": "Enable Mod",
     "config.Enable.tooltip": "Enables this mod.",
 
+    "config.AutoFindSource.name": "Auto-Find Source",
+    "config.AutoFindSource.tooltip": "For minecarts that doesn't specify its own source, search for it automatically based on proximity.",
+
     "config.NetworkOrder.name": "Network Order",
     "config.NetworkOrder.tooltip": "Order of which the minecart network tabs are shown, comma separated. Use the network ID and not the name. Unspecified networks are appended at the end. Recommended to edit the config.json file directly.",
 

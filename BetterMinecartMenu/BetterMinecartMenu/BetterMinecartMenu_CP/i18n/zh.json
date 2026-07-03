@@ -1,0 +1,16 @@
+// Copyright 2026 Sagittaeri
+{
+    // Names of minecart networks and their tab abbreviations (up to 3 letters)
+    "Network.Default": "鹈鹕镇",
+    "Network.Default.Tab": "PT",
+    "Network.Outskirts": "郊外",
+    "Network.Outskirts.Tab": "OS",
+    "Network.RSV.MinecartNetwork": "里奇赛德",
+    "Network.RSV.MinecartNetwork.Tab": "RSV",
+    "Network.EastScarp": "东斯卡普",
+    "Network.EastScarp.Tab": "ES",
+    "Network.Lumisteria.MtVapiusNetwork": "雾呜山峰",
+    "Network.Lumisteria.MtVapiusNetwork.Tab": "MV",
+    "Network.skellady.SBVCP_SBVMinecartNetwork": "阳莓村",
+    "Network.skellady.SBVCP_SBVMinecartNetwork.Tab": "SBV"
+}

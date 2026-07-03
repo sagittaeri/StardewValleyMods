@@ -68,6 +68,9 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
     public ObservableCollection<DestinationModel> Destinations { get; set; } = new();
 
     [Notify] public string networkName;
+    [Notify] public SpriteFont localisedFont { get; set; }
+    [Notify] public float localisedFontScale { get; set; }
+    [Notify] public bool localisedFontBold { get; set; }
 
     private Dictionary<string, List<DestinationModel>> visibleDestinations = new();
     private Tuple<Texture2D, Rectangle> blankTexture;
@@ -77,6 +80,59 @@ public partial class BetterMinecartMenuModel : INotifyPropertyChanged
         BetterMinecartMenuModel.mod  = mod;
         if (mod.mtm != null)
             this.blankTexture = new Tuple<Texture2D, Rectangle>(new Texture2D(Game1.graphics.GraphicsDevice, 2, 1), new Rectangle(0, 0,2,1));
+
+        if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.zh
+            || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ja
+            )
+        {
+            this.LocalisedFont = Game1.smallFont;
+            this.LocalisedFontScale = 1f;
+            this.localisedFontBold = false;
+        }
+        else if  (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en
+                  || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.de
+                  || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.fr
+                  || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.es
+                  || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.pt
+                  || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.it
+                  )
+        {
+            this.LocalisedFont = Game1.tinyFont;
+            this.LocalisedFontScale = 0.5f;
+            this.LocalisedFontBold = true;
+        }
+        else if  (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ko)
+        {
+            this.LocalisedFont = Game1.dialogueFont;
+            this.LocalisedFontScale = 0.5f;
+            this.LocalisedFontBold = true;
+        }
+        else if  (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.tr)
+        {
+            this.LocalisedFont = Game1.dialogueFont;
+            this.LocalisedFontScale = 0.49f;
+            this.LocalisedFontBold = true;
+        }
+        else if  (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ru)
+        {
+            this.LocalisedFont = Game1.smallFont;
+            this.LocalisedFontScale = 0.75f;
+            this.LocalisedFontBold = true;
+        }
+        else if  (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.hu
+                  || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.th)
+        {
+            this.LocalisedFont = Game1.smallFont;
+            this.LocalisedFontScale = 0.72f;
+            this.LocalisedFontBold = true;
+        }
+        else
+        {
+            // unknown language - pick safe defaults, which may be too big but at least it won't look awful
+            this.LocalisedFont = Game1.smallFont;
+            this.LocalisedFontScale = 1f;
+            this.LocalisedFontBold = false;
+        }
 
         this.currentDestinationId = currentDestinationId;
         this.currentNetworkId = this.currentDestinationId != null && mod.AllDestinationNetwork.ContainsKey(this.currentDestinationId) ? mod.AllDestinationNetwork[this.currentDestinationId] : currentNetworkId;

@@ -52,27 +52,20 @@
                                         layout="stretch 40px"
                                         horizontal-content-alignment="middle"
                                         vertical-content-alignment="middle">
-                                        <label text={:Name} horizontal-alignment="middle" font="tiny" margin="0,0,0,0" scale="0.5" />
-                                        <label text={:Name} horizontal-alignment="middle" font="tiny" margin="1,1,0,0" scale="0.5" />
-                                        <label text={:Name} horizontal-alignment="middle" font="tiny" margin="-1,-1,0,0" scale="0.5" />
-                                        <label text={:Name} horizontal-alignment="middle" font="tiny" margin="1,-1,0,0" scale="0.5" />
-                                        <label text={:Name} horizontal-alignment="middle" font="tiny" margin="-1,1,0,0" scale="0.5" />
+                                        <label text={:Name} horizontal-alignment="middle" max-lines="1" font={^LocalisedFont} bold={^LocalisedFontBold} scale={^LocalisedFontScale} />
                                     </panel>
                                 </panel>
 
                                 <panel layout="stretch" vertical-content-alignment="end" opacity={:StatusOpacity}>
                                     <frame
-                                        layout="stretch 40px"
+                                        layout="stretch 20px"
                                         opacity="0.8"
                                         background={@Mods/StardewUI/Sprites/MenuBackground} />
                                     <panel
-                                        layout="stretch 35px"
+                                        layout="stretch 15px"
                                         horizontal-content-alignment="middle"
                                         vertical-content-alignment="middle">
-                                        <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="1,1,0,0" scale="0.5" />
-                                        <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="-1,-1,0,0" scale="0.5" />
-                                        <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="1,-1,0,0" scale="0.5" />
-                                        <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="-1,1,0,0" scale="0.5" />
+                                        <label text={:StatusText} horizontal-alignment="middle" max-lines="1" font={^LocalisedFont} bold={^LocalisedFontBold} scale={^LocalisedFontScale} />
                                     </panel>
                                 </panel>
                             </panel>

@@ -20,7 +20,7 @@
                     transform={Transform}
                     focusable="true"
                     click=|Clicked()|>
-                    <label text={:Tooltip} />
+                    <label text={:Tooltip} horizontal-alignment="middle" max-lines="1" font={^LocalisedFont} bold={^LocalisedFontBold} scale={^LocalisedFontScale} />
                 </frame>
             </lane>
             <frame layout="665px 660px"
@@ -39,25 +39,22 @@
                                 Opacity={:ButtonOpacity}
                                 click=|Clicked()|>
                                 <panel layout="stretch">
-                                    <panel layout="stretch" vertical-content-alignment="end" margin="0,0,0,-5" opacity={:StatusOpacity}>
+                                    <panel layout="stretch" vertical-content-alignment="end" margin="20,0,20,-10" opacity={:StatusOpacity}>
                                         <frame
-                                            layout="stretch 15px"
-                                            opacity="0.8"
+                                            layout="stretch 16px"
+                                            opacity="1"
                                             background={@Mods/StardewUI/Sprites/MenuBackground} />
                                         <panel
-                                            layout="stretch 10px"
+                                            layout="stretch 15px"
                                             horizontal-content-alignment="middle"
                                             vertical-content-alignment="middle">
-                                            <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="1,1,0,0" scale="0.5" />
-                                            <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="-1,-1,0,0" scale="0.5" />
-                                            <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="1,-1,0,0" scale="0.5" />
-                                            <label text={:StatusText} horizontal-alignment="middle" font="tiny" margin="-1,1,0,0" scale="0.5" />
+                                            <label text={:StatusText} horizontal-alignment="middle" max-lines="1" font={^LocalisedFont} bold={^LocalisedFontBold} scale={^LocalisedFontScale} />
                                         </panel>
                                     </panel>
                                     <frame layout="stretch"
                                         horizontal-content-alignment="middle"
                                         vertical-content-alignment="middle">
-                                        <label text={:Name} horizontal-alignment="middle" />
+                                        <label text={:Name} horizontal-alignment="middle" max-lines="2" />
                                     </frame>
                                 </panel>
                             </button>

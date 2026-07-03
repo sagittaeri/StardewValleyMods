@@ -1,0 +1,48 @@
+﻿// Copyright 2026 Sagittaeri
+{
+    // Menu labels
+    "config.LabelYouAreHere": "当前位置",
+    "config.LabelLocked": "不可用",
+
+    // Config here
+    "config.Enable.name": "启用模组",
+    "config.Enable.tooltip": "启用此模组。",
+
+    "config.AutoFindSource.name": "自动查找源头",
+    "config.AutoFindSource.tooltip": "对于未指定自身源头的矿车，将根据距离自动搜索源头。",
+
+    "config.NetworkOrder.name": "矿车网络排序",
+    "config.NetworkOrder.tooltip": "矿车线路网标签页的显示顺序，用英文逗号分隔。 请使用网络 ID 而不是名称。 未指定的网络将自动追加到最后。\n建议直接编辑 config.json 文件。",
+
+    "config.UseVerticalTabs.name": "使用侧边标签页",
+    "config.UseVerticalTabs.tooltip": "勾选后，菜单标签页将显示在左侧，未勾选则在顶部显示标签页。",
+
+    "config.HideUnavailable.name": "隐藏 不可用",
+    "config.HideUnavailable.tooltip": "隐藏当前不可用的目的地和网络（将显示为灰色）。",
+
+    "config.ShowUnknown.name": "显示未知",
+    "config.ShowUnknown.tooltip": "显示未知的网络。 请注意，网络名称可能不美观，且它们可能是公交或火车网络。\n请联系模组作者以获得更好的跨模组兼容。",
+
+    "config.ShowHidden.name": "显示隐藏",
+    "config.ShowHidden.tooltip": "显示已知但被隐藏的网络。 这些通常是公交车或火车网络。\n请注意，网络名称可能不美观。",
+
+    "config.AllowUnavailable.name": "允许 不可用",
+    "config.AllowUnavailable.tooltip": "(作弊) 允许点击当前不可用的目的地（原本为无法点击）。 仅在它们未被隐藏时才有效。\n请注意，这可能会将您发送到无法返回的地方，请谨慎使用。",
+
+    "config.CheatWarning": "以下选项属于「作弊功能」。 这可能会破坏游戏状态，请谨慎使用。",
+
+    // Minecart Travel Menu config
+    "config.MTM_Heading": "以下是 Minecart Travel Menu 的选项——仅在安装该模组时生效。",
+
+    "config.MTM_Enable.name": "显示地图缩略图",
+    "config.MTM_Enable.tooltip": "显示来自 Minecart Travel Menu 的目的地地图缩略图。",
+
+    "config.MTM_HighRes.name": "使用高分辨率",
+    "config.MTM_HighRes.tooltip": "缩略图使用高分辨率贴图。 在低配设备上可能会导致运行缓慢。",
+
+    "config.MTM_Preload.name": "预加载地图",
+    "config.MTM_Preload.tooltip": "在游戏加载时缓存地图，以消除首次打开时可能出现的 1 秒卡顿。",
+
+    "config.MTM_HideUnavailableThumbnail.name": "隐藏 不可用缩略图",
+    "config.MTM_HideUnavailableThumbnail.tooltip": "隐藏不可用目的地的缩略图。"
+}

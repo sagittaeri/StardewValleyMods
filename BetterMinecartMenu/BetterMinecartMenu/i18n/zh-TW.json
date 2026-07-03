@@ -1,0 +1,48 @@
+﻿// Copyright 2026 Sagittaeri
+{
+    // Menu labels
+    "config.LabelYouAreHere": "您目前在這裡",
+    "config.LabelLocked": "無法前往",
+
+    // Config here
+    "config.Enable.name": "啟動模組",
+    "config.Enable.tooltip": "啟動或關閉模組。\n關閉後, 所有功能都會停止運作, 但不會刪除已建立的設定。",
+
+    "config.AutoFindSource.name": "自動尋找起點",
+    "config.AutoFindSource.tooltip": "對於未指定起點的礦車, 系統會根據其位置自動進行搜尋。",
+
+    "config.NetworkOrder.name": "礦車路線排序",
+    "config.NetworkOrder.tooltip": "礦車路線分頁的顯示順序, 以小逗號分隔。 請使用路線 ID 而非名稱。 未指定的路線將會附加在末尾。\n建議直接編輯 config.json 檔案。",
+
+    "config.UseVerticalTabs.name": "使用側邊分頁",
+    "config.UseVerticalTabs.tooltip": "若勾選此選項, 則會在左側顯示帶有分頁的選單；若未勾選, 則會在頂部顯示帶有分頁的選單。",
+
+    "config.HideUnavailable.name": "隱藏 無法前往",
+    "config.HideUnavailable.tooltip": "隱藏目前無法前往的目的地與路線（將顯示為灰色）。",
+
+    "config.ShowUnknown.name": "顯示未知",
+    "config.ShowUnknown.tooltip": "顯示未知路線。\n請注意, 路線名稱可能不太美觀, 且這些可能是巴士或火車路線。\n如需更完善的跨模組整合, 請聯絡模組創作者。",
+
+    "config.ShowHidden.name": "顯示隱藏",
+    "config.ShowHidden.tooltip": "顯示已知但被隱藏的路線。 這些通常是公車或火車路線。\n請注意, 路線名稱可能不太美觀。",
+
+    "config.AllowUnavailable.name": "允許 無法前往",
+    "config.AllowUnavailable.tooltip": "(作弊) 允許礦車抵達目前無法前往的目的地（無法點擊）。 僅在這些目的地未被隱藏時才適用。\n請注意, 這可能會把您傳送至無法返回的地方, 因此請謹慎使用。",
+
+    "config.CheatWarning": "以下選項屬於「作弊功能」。 這可能會破壞遊戲狀態, 請謹慎使用。",
+
+    // Minecart Travel Menu config
+    "config.MTM_Heading": "以下是《Minecart Travel Menu》(暫譯：礦車旅程的選單)的選項——僅在您安裝了該模組時才適用。",
+
+    "config.MTM_Enable.name": "顯示地圖縮圖",
+    "config.MTM_Enable.tooltip": "顯示《礦車旅程選單》提供的目的地之地圖預覽畫面。",
+
+    "config.MTM_HighRes.name": "使用高解析度",
+    "config.MTM_HighRes.tooltip": "為縮圖使用高解析度材質。\n在配備較低的系統上可能會比較慢。",
+
+    "config.MTM_Preload.name": "預先載入地圖",
+    "config.MTM_Preload.tooltip": "在遊戲載入時將地圖存入快取, 以消除首次啟動遊戲時出現的約 1 秒卡頓現象。",
+
+    "config.MTM_HideUnavailableThumbnail.name": "隱藏 無法前往的縮圖",
+    "config.MTM_HideUnavailableThumbnail.tooltip": "隱藏目前您無法前往的目的地之縮圖。"
+}

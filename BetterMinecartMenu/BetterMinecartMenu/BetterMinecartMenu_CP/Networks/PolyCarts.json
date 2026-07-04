@@ -1,6 +1,7 @@
 ﻿{
     "$schema": "https://smapi.io/schemas/content-patcher.json",
     "Changes": [
+        // Frontier farm integration
         {
             "Action": "EditData",
             "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
@@ -9,7 +10,8 @@
                 "FlashShifter.FrontierFarm_Right": null,
                 "FlashShifter.FrontierFarm_Middle": null,
                 "FlashShifter.FrontierFarm_Left": null
-            }
+            },
+            "When": { "HasMod |contains=flashshifter.FrontierFarm": true }
         },
         {
             "Action": "EditData",
@@ -18,17 +20,75 @@
                 "FrontierFarm": {
                     "RemoveNetwork": true,
                     "RedirectNetwork": "Outskirts"
-                },
-                "RSV.MinecartNetwork": {
-                    "RemoveNetwork": true,
-                    "RedirectNetwork": "RidgeSide"
-                },
-                "RidgeSide": {
-                    "DisplayName": "{{i18n: Network.RSV.MinecartNetwork}}",
-                    "TabName": "{{i18n: Network.RSV.MinecartNetwork.Tab}}"
                 }
-            }
+            },
+            "When": { "HasMod |contains=flashshifter.FrontierFarm": true }
         },
+        // RSV integration
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "Entries": {
+                "RidgeSide": {
+                    "RemoveNetwork": true,
+                    "RedirectNetwork": "RSV.MinecartNetwork"
+                }
+            },
+            "When": { "HasMod |contains=Rafseazz.RSVCP": true }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["RSV.MinecartNetwork", "AppendDestinations"],
+            "Entries": {
+                "Polydot.PolyCarts_RSV_CableCar_Bottom": "Polydot.PolyCarts_RSV_CableCar_Bottom",
+                "Polydot.PolyCarts_RSV_CableCar_Top": "Polydot.PolyCarts_RSV_CableCar_Top",
+                "Polydot.PolyCarts_RSV_Heaps": "Polydot.PolyCarts_RSV_Heaps",
+                "Polydot.PolyCarts_RSV_Nightingale": "Polydot.PolyCarts_RSV_Nightingale",
+                "Polydot.PolyCarts_RSV_Greenhouse": "Polydot.PolyCarts_RSV_Greenhouse",
+                "Polydot.PolyCarts_RSV_LogCabin": "Polydot.PolyCarts_RSV_LogCabin",
+                "Polydot.PolyCarts_RSV_Hike": "Polydot.PolyCarts_RSV_Hike",
+                "Polydot.PolyCarts_RSV_Falls": "Polydot.PolyCarts_RSV_Falls",
+                "Polydot.PolyCarts_RSV_Pond": "Polydot.PolyCarts_RSV_Pond",
+                "Polydot.PolyCarts_RSV_Ridge_East": "Polydot.PolyCarts_RSV_Ridge_East",
+                "Polydot.PolyCarts_RSV_Ridge_West": "Polydot.PolyCarts_RSV_Ridge_West",
+                "Polydot.PolyCarts_RSV_SummitFarm_East": "Polydot.PolyCarts_RSV_SummitFarm_East",
+                "Polydot.PolyCarts_RSV_SummitFarm_West": "Polydot.PolyCarts_RSV_SummitFarm_West"
+            },
+            "When": { "HasMod |contains=Rafseazz.RSVCP": true }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["RSV.MinecartNetwork", "RemoveDestinations"],
+            "Entries": {
+                "RSV_CableCar": "RSV_CableCar",
+                "RSV_Heaps": "RSV_Heaps",
+                "RSV_Nightingale": "RSV_Nightingale",
+                "RSV_Greenhouse": "RSV_Greenhouse",
+                "RSV_EastSummit": "RSV_EastSummit",
+                "RSV_WestSummit": "RSV_WestSummit"
+            },
+            "When": { "HasMod |contains=Rafseazz.RSVCP": true }
+        },
+        // ES integration
+        {
+            "Action": "EditData",
+            "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",
+            "TargetField": ["EastScarp", "AppendDestinations"],
+            "Entries": {
+                "Polydot.PolyCarts_ScarpCrossing": "Polydot.PolyCarts_ScarpCrossing",
+                "Polydot.PolyCarts_ScarpVillage": "Polydot.PolyCarts_ScarpVillage",
+                "Polydot.PolyCarts_DeepMountains_South": "Polydot.PolyCarts_DeepMountains_South",
+                "Polydot.PolyCarts_DeepMountains_West": "Polydot.PolyCarts_DeepMountains_West",
+                "Polydot.PolyCarts_UnderScarp": "Polydot.PolyCarts_UnderScarp",
+                "Polydot.PolyCarts_MeadowFarm": "Polydot.PolyCarts_MeadowFarm",
+                "Polydot.PolyCarts_Orchard": "Polydot.PolyCarts_Orchard"
+                //"Polydot.PolyCarts_Town_East": "Polydot.PolyCarts_Town_East"
+            },
+            "When": { "HasMod |contains=Lemurkat.EastScarp": true }
+        },
+        // Misc
         {
             "Action": "EditData",
             "Target": "Sagittaeri.BetterMinecartMenu/MinecartNetworkEdits",

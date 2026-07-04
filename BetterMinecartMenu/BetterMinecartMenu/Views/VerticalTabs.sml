@@ -5,7 +5,7 @@
                     background={@Mods/StardewUI/Sprites/BannerBackground}
                     background-border-thickness="48,0"
                     padding="80, 12"
-                    margin="450, 0, 120, 0"
+                    margin="450, 0, 110, 0"
                     text={NetworkName} />
         </lane>
         <lane orientation="horizontal" button-press=|HandleButtonPress($Button)|>

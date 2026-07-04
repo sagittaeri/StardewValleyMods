@@ -5,7 +5,7 @@
                     background={@Mods/StardewUI/Sprites/BannerBackground}
                     background-border-thickness="48,0"
                     padding="80, 12"
-                    margin="450, 0, 120, 0"
+                    margin="390, 0, 170, 0"
                     text={NetworkName} />
         </lane>
         <lane orientation="horizontal" button-press=|HandleButtonPress($Button)|>
@@ -84,7 +84,7 @@
                 </scrollable>
             </frame>
         </lane>
-        <lane layout="1075px content">
+        <lane layout="1015px content">
             <spacer layout="stretch" />
             <image layout="70px 70px"
                    horizontal-alignment="middle"

@@ -1,0 +1,22 @@
+// 版权所有 2026 Sagittaeri
+{
+    // 配置菜单内显示的文字内容
+    "config.InteractWhileRiding.name": "骑乘时可交互",
+    "config.InteractWhileRiding.tooltip": "农夫骑马时可与绝大多数物品交互，包括箱子、采集物、树木、门、公告板等。",
+
+    "config.UseMinecartsWhileRiding.name": "骑马时可用矿车",
+    "config.UseMinecartsWhileRiding.tooltip": "骑马状态下能乘坐矿车，马匹会跟着玩家一同传送。",
+
+    "config.MountNearbyHorseWhenChangingMap.name": "切换地图自动上马",
+    "config.MountNearbyHorseWhenChangingMap.tooltip": "切换场景时，自动骑上身旁1格距离内的马匹。",
+
+    "config.OnlyDismountOnToolActionInput.name": "仅使用工具键下马",
+    "config.OnlyDismountOnToolActionInput.tooltip": "禁用交互键下马的功能；骑马时长按交互键可持续批量互动物品，无需反复按交互键。",
+
+    "config.ThinHorse.name": "瘦小马匹",
+    "config.ThinHorse.tooltip": "让马匹体型变小，可穿过小型门洞。若已安装其他修改马匹体型的模组，请关闭此选项。",
+
+    "config.HasHorseOverhaulMod": "检测到\"HasHorseOverhaul\"模组，下方\"瘦小马匹\"选项将失效",
+    "config.HasWeightLossMod": "检测到\"HasWeightLoss\"模组，下方\"瘦小马匹\"选项将失效",
+    "config.HasHorseSqueezeMod": "检测到\"HasHorseSqueeze\"模组，下方\"瘦小马匹\"选项将失效"
+}

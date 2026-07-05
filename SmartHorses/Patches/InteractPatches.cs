@@ -41,6 +41,10 @@ namespace SmartHorses
                postfix: new HarmonyMethod(typeof(InteractPatches), nameof(GameLocationCheckActionPostfix)));
 
             harmony.Patch(
+                original: AccessTools.Method(typeof(Farmer), nameof(Farmer.Halt)),
+                postfix: new HarmonyMethod(typeof(InteractPatches), nameof(FarmerHaltPostfix)));
+
+            harmony.Patch(
                original: AccessTools.Method(typeof(Farmer), nameof(Farmer.isRidingHorse)),
                prefix: new HarmonyMethod(typeof(InteractPatches), nameof(IsRidingHorsePrefix)));
 
@@ -240,6 +244,13 @@ namespace SmartHorses
         public static void GameLocationCheckActionPostfix(GameLocation __instance, Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
         {
             allowInteractWhileRiding = false;
+        }
+
+        public static void FarmerHaltPostfix(Farmer __instance)
+        {
+            // Fixes a cross-mod bug with Fast Animations where it assumes that the animation is still playing unless a certain variable is reset
+            if (__instance.mount != null && mod.Config.InteractWhileRiding)
+                ((FarmerSprite)__instance.Sprite).currentSingleAnimation = -1;
         }
 
         public static bool IsRidingHorsePrefix(Farmer __instance, ref bool __result)
